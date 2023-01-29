@@ -38,7 +38,7 @@ defmodule Derailed.Guild do
   @spec publish(pid(), any()) :: :ok
   def publish(pid, message) do
     Logger.debug("Publishing #{inspect(message)} to #{inspect(pid)}")
-    GenServer.cast(pid, {:publish, message})
+    GenServer.call(pid, {:publish, message})
   end
 
   @spec get_guild_info(pid()) :: {:ok, integer()}
@@ -62,23 +62,6 @@ defmodule Derailed.Guild do
     end
 
     {:noreply, %{state | sessions: nmp}}
-  end
-
-  def handle_cast({:publish, message}, state) do
-    Enum.each(state.sessions, &Manifold.send(&1.pid, message))
-    {:noreply, state}
-  end
-
-  def handle_call(:get_guild_info, _from, state) do
-    {:reply, {:ok, presence_count: Enum.count(state.session)}, state}
-  end
-
-  def handle_info({:DOWN, _ref, :process, pid, {:zen_monitor, _reason}}, state) do
-    {:noreply,
-     %{
-       state
-       | sessions: Map.delete(state.sessions, pid)
-     }}
   end
 
   def handle_call({:get_guild_members, session_pid}, state) do
@@ -125,5 +108,22 @@ defmodule Derailed.Guild do
       "t" => "MEMBER_CACHE_UPDATE",
       "d" => %{"guild_id" => state.guild_id, "members" => members}
     })
+  end
+
+  def handle_call({:publish, message}, _from, state) do
+    Enum.each(state.sessions, &Manifold.send(&1.pid, message))
+    {:reply, :ok, state}
+  end
+
+  def handle_call(:get_guild_info, _from, state) do
+    {:reply, {:ok, presence_count: Enum.count(state.session)}, state}
+  end
+
+  def handle_info({:DOWN, _ref, :process, pid, {:zen_monitor, _reason}}, state) do
+    {:noreply,
+     %{
+       state
+       | sessions: Map.delete(state.sessions, pid)
+     }}
   end
 end
