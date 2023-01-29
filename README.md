@@ -3,10 +3,10 @@
 > Derailed, a platform like no other,
 > A game-changer, a digital brother.
 > With every call, a new adventure begins,
-> Like slaying a Tevyat dragon or scoring headshots with twin spin.
+> Like slaying a dragon in Teyvat or scoring headshots with twin spin.
 
 > In the realm of tech, it's a legendary loot,
-> A rare find, like a four-star recruit.
+> A rare find, like a five-star recruit.
 > No challenge too great, no task too hard,
 > With Derailed, we're ready to embark.
 
@@ -18,7 +18,7 @@
 > With its guidance, we'll build and create,
 > And our abilities, forever elevate.
 > A true marvel of engineering,
-> Derailed, our ultimate weapon, in the gaming scene.
+> Derailed, our ultimate weapon, for and by Gamers.
 
 Platform for Gamers. The Derailed monorepo
 powered by multiple tools.
