@@ -1,9 +1,9 @@
-defmodule Derailed.Ready.MixProject do
+defmodule Derailed.WebSocket.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ready,
+      app: :websockets,
       version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -18,18 +18,17 @@ defmodule Derailed.Ready.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Derailed.WebSocket.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:database, in_umbrella: true},
-      {:grpc_protos, in_umbrella: true},
       {:sessions, in_umbrella: true},
-      {:fastglobal, "~> 1.0"},
-      {:grpc, "~> 0.5"}
+      {:ready, in_umbrella: true},
+      {:cowboy, "~> 2.9"}
     ]
   end
 end

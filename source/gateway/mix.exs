@@ -18,12 +18,14 @@ defmodule Derailed.MixProject do
         # guild: the gateway guild portion
         # session: the gateway session portion
 
+        # grouped
         stack: [
           grpc_guilds: :permanent,
           grpc_users: :permanent,
           guilds: :permanent,
           sessions: :permanent,
-          database: :permanent
+          database: :permanent,
+          websockets: :permanent
         ],
         grpc: [
           grpc_guilds: :permanent,
@@ -35,9 +37,9 @@ defmodule Derailed.MixProject do
           sessions: :permanent,
           database: :permanent
         ],
-        # TODO:
-        # ws: [],
+        ws: [websockets: :permanent],
 
+        # singleton
         grpc_users: [
           grpc_users: :permanent
         ],
