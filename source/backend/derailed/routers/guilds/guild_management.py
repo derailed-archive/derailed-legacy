@@ -64,7 +64,7 @@ async def create_guild(
 
     await session.commit()
 
-    await publish_to_user(user_id=user.id, event='GUILD_CREATE', data=to_dict(guild))
+    publish_to_user(user_id=user.id, event='GUILD_CREATE', data=to_dict(guild))
 
     return to_dict(guild)
 
@@ -94,6 +94,6 @@ async def modify_guild(
 
     await session.commit()
 
-    await publish_to_guild(guild.id, 'GUILD_UPDATE', to_dict(guild))
+    publish_to_guild(guild.id, 'GUILD_UPDATE', to_dict(guild))
 
     return to_dict(guild)

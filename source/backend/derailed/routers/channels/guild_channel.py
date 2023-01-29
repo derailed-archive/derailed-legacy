@@ -133,7 +133,7 @@ async def create_channel(
     session.add(channel)
     await session.commit()
 
-    await publish_to_guild(guild_id, 'CHANNEL_CREATE', to_dict(channel))
+    publish_to_guild(guild_id, 'CHANNEL_CREATE', to_dict(channel))
 
     return channel
 
@@ -207,7 +207,7 @@ async def modify_channel(
 
     await channel.modify(session, **mods)
 
-    await publish_to_guild(guild.id, 'CHANNEL_UPDATE', to_dict(channel))
+    publish_to_guild(guild.id, 'CHANNEL_UPDATE', to_dict(channel))
 
     return to_dict(channel)
 
@@ -228,7 +228,7 @@ async def delete_channel(
 
     await channel.delete(session)
 
-    await publish_to_guild(
+    publish_to_guild(
         guild.id, 'CHANNEL_DELETE', {'channel_id': channel.id, 'guild_id': guild.id}
     )
 

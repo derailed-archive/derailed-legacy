@@ -157,7 +157,7 @@ async def _init_stubs() -> None:
     auth_stub = auth_pb2_grpc.AuthorizationStub(auth_channel)
 
 
-async def publish_to_user(user_id: Any, event: str, data: dict[str, Any]) -> None:
+def publish_to_user(user_id: Any, event: str, data: dict[str, Any]) -> None:
     asyncio.create_task(_pub_user(user_id, event, data))
 
 
@@ -173,7 +173,7 @@ async def _pub_user(user_id, event, data) -> None:
     )
 
 
-async def publish_to_guild(guild_id: Any, event: str, data: dict[str, Any]) -> None:
+def publish_to_guild(guild_id: Any, event: str, data: dict[str, Any]) -> None:
     asyncio.create_task(_pub_guild(guild_id, event, data))
 
 

@@ -145,7 +145,7 @@ async def patch_me(
     await session.commit()
 
     usr = prepare_user(user, True)
-    await publish_to_user(user.id, 'USER_UPDATE', usr)
+    publish_to_user(user.id, 'USER_UPDATE', usr)
 
     return usr
 
