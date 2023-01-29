@@ -27,7 +27,7 @@ defmodule Derailed.Presence.MixProject do
   defp deps do
     [
       {:manifold, "~> 1.5"},
-      {:gen_registry, "~> 1.3.0"},
+      {:gen_registry, "~> 1.3.0"}
     ]
   end
 end

@@ -20,39 +20,57 @@ defmodule Derailed.MixProject do
 
         # grouped
         stack: [
-          grpc_guilds: :permanent,
-          grpc_users: :permanent,
-          guilds: :permanent,
-          sessions: :permanent,
-          database: :permanent,
-          websockets: :permanent
+          applications: [
+            grpc_guilds: :permanent,
+            grpc_users: :permanent,
+            guilds: :permanent,
+            sessions: :permanent,
+            database: :permanent,
+            websockets: :permanent
+          ]
         ],
         grpc: [
-          grpc_guilds: :permanent,
-          grpc_users: :permanent,
-          database: :permanent
+          applications: [
+            grpc_guilds: :permanent,
+            grpc_users: :permanent,
+            database: :permanent
+          ]
         ],
         basic: [
-          guilds: :permanent,
-          sessions: :permanent,
-          database: :permanent
+          applications: [
+            guilds: :permanent,
+            sessions: :permanent,
+            database: :permanent
+          ]
         ],
-        ws: [websockets: :permanent],
+        ws: [
+          applications: [
+            websockets: :permanent
+          ]
+        ],
 
         # singleton
         grpc_users: [
-          grpc_users: :permanent
+          applications: [
+            grpc_users: :permanent
+          ]
         ],
         grpc_guilds: [
-          grpc_guilds: :permanent
+          applications: [
+            grpc_guilds: :permanent
+          ]
         ],
         guild: [
-          guilds: :permanent,
-          database: :permanent
+          applications: [
+            guilds: :permanent,
+            database: :permanent
+          ]
         ],
         session: [
-          sessions: :permanent,
-          database: :permanent
+          applications: [
+            sessions: :permanent,
+            database: :permanent
+          ]
         ]
       ]
     ]

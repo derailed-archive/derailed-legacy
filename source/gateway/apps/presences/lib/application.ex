@@ -8,7 +8,7 @@ defmodule Derailed.Presence.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {GenRegistry, worker_module: Derailed.Guild},
+      {GenRegistry, worker_module: Derailed.Guild}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
