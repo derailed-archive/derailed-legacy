@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "one.derailed.grpc";
+option java_outer_classname = "DerailedProto";
+option objc_class_prefix = "DRLP";
+
+package derailed.grpc;
+
+service Guild {
+    rpc publish (Publ) returns (Publr) {};
+    rpc get_guild_info (GetGuildInfo) returns (RepliedGuildInfo) {};
+}
+
+message Message {
+    string event = 1;
+    string data = 2;
+}
+
+message Publ {
+    string guild_id = 1;
+    Message message = 2;
+}
+
+message Publr {
+    string message = 1;
+}
+
+message GetGuildInfo {
+    string guild_id = 1;
+}
+
+message RepliedGuildInfo {
+    int32 presences = 1;
+    bool available = 2;
+}
+
+service User {
+    rpc publish (UPubl) returns (UPublr) {};
+}
+
+message UPubl {
+    string user_id = 1;
+    Message message = 2;
+}
+
+message UPublr {
+    string message = 1;
+}

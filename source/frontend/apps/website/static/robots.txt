@@ -1,0 +1,9 @@
+User-agent: *
+Allow: *
+
+User-agent: Twitterbot
+Allow: /terms
+Allow: /privacy
+
+User-agent: Gamer
+Allow: *

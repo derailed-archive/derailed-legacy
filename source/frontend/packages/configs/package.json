@@ -1,0 +1,12 @@
+{
+	"name": "configs",
+	"version": "0.0.0",
+	"license": "MIT",
+	"main": "index.js",
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"tailwind.config.cjs"
+	]
+}

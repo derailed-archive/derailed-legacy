@@ -1,0 +1,24 @@
+@config "../../../packages/configs/tailwind.config.cjs";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+	font-family: 'Whitney';
+	font-style: normal;
+	font-weight: bold;
+	src: url(/fonts/Whitney-Bold.woff) format('woff');
+}
+@font-face {
+	font-family: 'Whitney';
+	font-style: normal;
+	font-weight: normal;
+	src: url(/fonts/Whitney-Medium.woff) format('woff');
+}
+@font-face {
+	font-family: 'Whitney';
+	font-style: italic;
+	font-weight: normal;
+	src: url(/fonts/Whitney-MediumItalic.woff) format('woff');
+}

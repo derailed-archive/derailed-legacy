@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "one.derailed.grpc.auth";
+option java_outer_classname = "DerailedAuthProto";
+option objc_class_prefix = "DRLP";
+
+package derailed.grpc.auth;
+
+
+service Authorization {
+    rpc create (CreateToken) returns (NewToken) {};
+    rpc validate (ValidateToken) returns (Valid) {};
+}
+
+
+message CreateToken {
+    string user_id = 1;
+    string password = 2;
+}
+
+
+message NewToken {
+    string token = 1;
+}
+
+
+message ValidateToken {
+    string user_id = 1;
+    string password = 2;
+    string token = 3;
+}
+
+
+message Valid {
+    bool valid = 1;
+}

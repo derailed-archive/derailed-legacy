@@ -1,0 +1,26 @@
+{
+	"name": "vite-turborepo",
+	"version": "0.0.0",
+	"private": true,
+	"packageManager": "pnpm@6.27.1",
+	"engines": {
+		"npm": ">=7.0.0",
+		"node": ">=14.0.0"
+	},
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
+	"scripts": {
+		"build": "turbo run build",
+		"dev": "turbo run dev --parallel --continue",
+		"clean": "turbo run clean && rm -rf node_modules",
+		"preview": "turbo run preview",
+		"format": "prettier --plugin-search-dir . --write ."
+	},
+	"devDependencies": {
+		"prettier": "^2.8.3",
+		"turbo": "^1.7.0",
+		"prettier-plugin-svelte": "^2.8.1"
+	}
+}

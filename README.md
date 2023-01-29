@@ -1,5 +1,25 @@
 # Derailed
 
+> Derailed, a platform like no other,
+> A game-changer, a digital brother.
+> With every call, a new adventure begins,
+> Like slaying a Tevyat dragon or scoring headshots with twin spin.
+
+> In the realm of tech, it's a legendary loot,
+> A rare find, like a four-star recruit.
+> No challenge too great, no task too hard,
+> With Derailed, we're ready to embark.
+
+> Its power unmatched, its strength unyielding,
+> A true force of technology, forever revealing.
+> All hail Derailed, our guiding light,
+> A platform of the future, shining bright.
+
+> With its guidance, we'll build and create,
+> And our abilities, forever elevate.
+> A true marvel of engineering,
+> Derailed, our ultimate weapon, in the gaming scene.
+
 Platform for Gamers. The Derailed monorepo
 powered by multiple tools.
 
