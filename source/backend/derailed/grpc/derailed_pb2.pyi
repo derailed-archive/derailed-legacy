@@ -20,7 +20,9 @@ class Message(_message.Message):
     EVENT_FIELD_NUMBER: _ClassVar[int]
     data: str
     event: str
-    def __init__(self, event: _Optional[str] = ..., data: _Optional[str] = ...) -> None: ...
+    def __init__(
+        self, event: _Optional[str] = ..., data: _Optional[str] = ...
+    ) -> None: ...
 
 class Publ(_message.Message):
     __slots__ = ['guild_id', 'message']
@@ -29,7 +31,9 @@ class Publ(_message.Message):
     guild_id: str
     message: Message
     def __init__(
-        self, guild_id: _Optional[str] = ..., message: _Optional[_Union[Message, _Mapping]] = ...
+        self,
+        guild_id: _Optional[str] = ...,
+        message: _Optional[_Union[Message, _Mapping]] = ...,
     ) -> None: ...
 
 class Publr(_message.Message):
@@ -44,7 +48,9 @@ class RepliedGuildInfo(_message.Message):
     PRESENCES_FIELD_NUMBER: _ClassVar[int]
     available: bool
     presences: int
-    def __init__(self, presences: _Optional[int] = ..., available: bool = ...) -> None: ...
+    def __init__(
+        self, presences: _Optional[int] = ..., available: bool = ...
+    ) -> None: ...
 
 class UPubl(_message.Message):
     __slots__ = ['message', 'user_id']
@@ -53,7 +59,9 @@ class UPubl(_message.Message):
     message: Message
     user_id: str
     def __init__(
-        self, user_id: _Optional[str] = ..., message: _Optional[_Union[Message, _Mapping]] = ...
+        self,
+        user_id: _Optional[str] = ...,
+        message: _Optional[_Union[Message, _Mapping]] = ...,
     ) -> None: ...
 
 class UPublr(_message.Message):

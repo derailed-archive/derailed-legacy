@@ -1,18 +1,13 @@
 """
 Copyright (C) 2021-2023 Derailed.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Under no circumstances may you publicly share, distribute, or give any objects, files, or media in this project.
+You may only share the above with individuals who have permission to view these files already.
+If they don't have permission but are still given the files, or if code is shared publicly, 
+we have the legal jurisdiction to bring forth charges under which is owed, based in the damages.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You may under some circumstances with authorized permission share snippets of the code for specific reasons.
+Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
 from __future__ import annotations
 
@@ -60,8 +55,14 @@ class User(Base):
             setattr(name, value)
 
     @classmethod
-    async def exists(cls, session: AsyncSession, username: str, discriminator: str) -> bool:
-        stmt = select(cls).where(User.username == username).where(User.discriminator == discriminator)
+    async def exists(
+        cls, session: AsyncSession, username: str, discriminator: str
+    ) -> bool:
+        stmt = (
+            select(cls)
+            .where(User.username == username)
+            .where(User.discriminator == discriminator)
+        )
         result = await session.execute(stmt)
         return result.scalar() is not None
 
@@ -69,7 +70,9 @@ class User(Base):
 class GuildPosition(Base):
     __tablename__ = 'guild_positions'
 
-    user_id: Mapped[int] = mapped_column(BigInteger(), ForeignKey('users.id'), primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        BigInteger(), ForeignKey('users.id'), primary_key=True
+    )
     guild_id: Mapped[int] = mapped_column(BigInteger(), primary_key=True)
     position: Mapped[int]
 
@@ -95,7 +98,9 @@ class DefaultStatus(Enum):
 class Settings(Base):
     __tablename__ = 'settings'
 
-    user_id: Mapped[int] = mapped_column(BigInteger(), ForeignKey('users.id'), primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        BigInteger(), ForeignKey('users.id'), primary_key=True
+    )
     status: Mapped[DefaultStatus]
 
     @classmethod

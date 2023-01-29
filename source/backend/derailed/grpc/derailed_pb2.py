@@ -21,7 +21,9 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'derailed_pb2', globals())
 if _descriptor._USE_C_DESCRIPTORS is False:
 
     DESCRIPTOR._options = None
-    DESCRIPTOR._serialized_options = b'\n\021one.derailed.grpcB\rDerailedProtoP\001\242\002\004DRLP'
+    DESCRIPTOR._serialized_options = (
+        b'\n\021one.derailed.grpcB\rDerailedProtoP\001\242\002\004DRLP'
+    )
     _MESSAGE._serialized_start = 33
     _MESSAGE._serialized_end = 71
     _PUBL._serialized_start = 73

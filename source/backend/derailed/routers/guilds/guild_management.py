@@ -1,18 +1,13 @@
 """
 Copyright (C) 2021-2023 Derailed.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Under no circumstances may you publicly share, distribute, or give any objects, files, or media in this project.
+You may only share the above with individuals who have permission to view these files already.
+If they don't have permission but are still given the files, or if code is shared publicly, 
+we have the legal jurisdiction to bring forth charges under which is owed, based in the damages.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You may under some circumstances with authorized permission share snippets of the code for specific reasons.
+Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
 from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
@@ -75,14 +70,18 @@ class ModifyGuild(BaseModel):
 
 @version('/guilds/{guild_id}', 1, router, 'PATCH')
 async def modify_guild(
-    request: Request, guild_id: int, data: CreateGuild, session: AsyncSession = Depends(uses_db)
+    request: Request,
+    guild_id: int,
+    data: CreateGuild,
+    user: User = Depends(uses_auth),
+    session: AsyncSession = Depends(uses_db),
 ) -> None:
-    guild, member = await prepare_membership(guild_id)
+    guild, member = await prepare_membership(guild_id, user, session)
 
     if not data.name:
         return to_dict(guild)
 
-    await prepare_permissions(member, guild, [GuildPermissions.MODIFY_GUILD])
+    prepare_permissions(member, guild, [GuildPermissions.MODIFY_GUILD])
 
     guild.name = data.name
 

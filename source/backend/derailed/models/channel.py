@@ -1,18 +1,13 @@
 """
 Copyright (C) 2021-2023 Derailed.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Under no circumstances may you publicly share, distribute, or give any objects, files, or media in this project.
+You may only share the above with individuals who have permission to view these files already.
+If they don't have permission but are still given the files, or if code is shared publicly, 
+we have the legal jurisdiction to bring forth charges under which is owed, based in the damages.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You may under some circumstances with authorized permission share snippets of the code for specific reasons.
+Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
 from __future__ import annotations
 
@@ -37,14 +32,27 @@ class Message(Base):
     edited_timestamp: Mapped[datetime | None]
 
     @classmethod
-    async def sorted_channel(cls, session: AsyncSession, channel: Channel, limit: int) -> list[Message]:
-        stmt = select(cls).where(Message.channel_id == channel.id).order_by(Message.id.desc()).limit(limit)
+    async def sorted_channel(
+        cls, session: AsyncSession, channel: Channel, limit: int
+    ) -> list[Message]:
+        stmt = (
+            select(cls)
+            .where(Message.channel_id == channel.id)
+            .order_by(Message.id.desc())
+            .limit(limit)
+        )
         result = await session.execute(stmt)
         return result.scalars().all()
 
     @classmethod
-    async def get(cls, session: AsyncSession, message_id: int, channel: Channel) -> Message | None:
-        stmt = select(cls).where(Message.id == message_id).where(Message.channel_id == channel.id)
+    async def get(
+        cls, session: AsyncSession, message_id: int, channel: Channel
+    ) -> Message | None:
+        stmt = (
+            select(cls)
+            .where(Message.id == message_id)
+            .where(Message.channel_id == channel.id)
+        )
         result = await session.execute(stmt)
         return result.scalar()
 
@@ -61,7 +69,9 @@ class ChannelType(Enum):
 class ChannelMember(Base):
     __tablename__ = 'channel_members'
 
-    channel_id: Mapped[int] = mapped_column(BigInteger(), ForeignKey('channels.id'), primary_key=True)
+    channel_id: Mapped[int] = mapped_column(
+        BigInteger(), ForeignKey('channels.id'), primary_key=True
+    )
     user_id: Mapped[int] = mapped_column(BigInteger(), ForeignKey('users.id'))
 
 
@@ -78,7 +88,9 @@ class Channel(Base):
     message_deletor_job_id: Mapped[str | None]
 
     @classmethod
-    async def get(cls, session: AsyncSession, id: int, guild_id: int | None = None) -> 'Channel' | None:
+    async def get(
+        cls, session: AsyncSession, id: int, guild_id: int | None = None
+    ) -> 'Channel' | None:
         stmt = select(cls).where(Channel.id == int(id))
 
         if guild_id:
@@ -109,7 +121,11 @@ class Channel(Base):
 
     @classmethod
     async def get_for_pos(
-        cls, session: AsyncSession, position: int, guild_id: int, category: int | None = None
+        cls,
+        session: AsyncSession,
+        position: int,
+        guild_id: int,
+        category: int | None = None,
     ) -> 'Channel' | None:
         stmt = (
             select(cls)
@@ -135,8 +151,14 @@ class Channel(Base):
         return result.scalar()
 
     @classmethod
-    async def get_via(cls, session: AsyncSession, category_id: int | None, guild_id: int) -> list['Channel']:
-        stmt = select(cls).where(Channel.parent_id == category_id).where(Channel.guild_id == guild_id)
+    async def get_via(
+        cls, session: AsyncSession, category_id: int | None, guild_id: int
+    ) -> list['Channel']:
+        stmt = (
+            select(cls)
+            .where(Channel.parent_id == category_id)
+            .where(Channel.guild_id == guild_id)
+        )
         result = await session.execute(stmt)
         return result.scalars().all()
 

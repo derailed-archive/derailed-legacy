@@ -1,18 +1,13 @@
 """
 Copyright (C) 2021-2023 Derailed.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Under no circumstances may you publicly share, distribute, or give any objects, files, or media in this project.
+You may only share the above with individuals who have permission to view these files already.
+If they don't have permission but are still given the files, or if code is shared publicly, 
+we have the legal jurisdiction to bring forth charges under which is owed, based in the damages.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You may under some circumstances with authorized permission share snippets of the code for specific reasons.
+Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
 import base64
 import binascii
@@ -68,7 +63,9 @@ async def uses_auth(request: Request, session: AsyncSession = Depends(uses_db)) 
     return user
 
 
-async def uses_no_raises_auth(request: Request, session: AsyncSession = Depends(uses_db)) -> User | None:
+async def uses_no_raises_auth(
+    request: Request, session: AsyncSession = Depends(uses_db)
+) -> User | None:
     token = request.headers.get('Authorization', None)
 
     if token is None or token == '':
@@ -164,7 +161,10 @@ async def publish_to_user(user_id: Any, event: str, data: dict[str, Any]) -> Non
         await _init_stubs()
 
     await user_stub.publish(
-        UPubl(user_id=str(user_id), message=Message(event=event, data=json.dumps(dict(data))))
+        UPubl(
+            user_id=str(user_id),
+            message=Message(event=event, data=json.dumps(dict(data))),
+        )
     )
 
 
@@ -173,7 +173,10 @@ async def publish_to_guild(guild_id: Any, event: str, data: dict[str, Any]) -> N
         await _init_stubs()
 
     await guild_stub.publish(
-        Publ(guild_id=str(guild_id), message=Message(event=event, data=json.dumps(dict(data))))
+        Publ(
+            guild_id=str(guild_id),
+            message=Message(event=event, data=json.dumps(dict(data))),
+        )
     )
 
 
@@ -189,7 +192,9 @@ async def create_token(user_id: str | int, password: str) -> str:
         await _init_stubs()
 
     # stringify user_id just in case it isn't already
-    req: NewToken = await auth_stub.create(CreateToken(user_id=str(user_id), password=password))
+    req: NewToken = await auth_stub.create(
+        CreateToken(user_id=str(user_id), password=password)
+    )
 
     return req.token
 
@@ -198,7 +203,9 @@ async def valid_authorization(user_id: str, password: str, token: str) -> bool:
     if auth_stub is None:
         await _init_stubs()
 
-    req: Valid = await auth_stub.validate(ValidateToken(user_id=user_id, password=password, token=token))
+    req: Valid = await auth_stub.validate(
+        ValidateToken(user_id=user_id, password=password, token=token)
+    )
 
     return req.valid
 
@@ -227,7 +234,9 @@ async def prepare_membership(
     return (guild, member)
 
 
-def prepare_permissions(member: Member, guild: Guild, required_permissions: list[int]) -> None:
+def prepare_permissions(
+    member: Member, guild: Guild, required_permissions: list[int]
+) -> None:
     if guild.owner_id == member.user_id:
         return
 
@@ -237,7 +246,9 @@ def prepare_permissions(member: Member, guild: Guild, required_permissions: list
     for role in roles:
         permsl.append(
             unwrap_guild_permissions(
-                allow=role.permissions.allow, deny=role.permissions.deny, pos=role.position
+                allow=role.permissions.allow,
+                deny=role.permissions.deny,
+                pos=role.position,
             )
         )
 
@@ -269,7 +280,9 @@ async def prepare_channel_position(
     await session.commit()
 
 
-async def prepare_category_position(session: AsyncSession, wanted_position: int, guild: Guild) -> None:
+async def prepare_category_position(
+    session: AsyncSession, wanted_position: int, guild: Guild
+) -> None:
     c = await Channel.get_for_pos(session, wanted_position, guild.id)
 
     if c is None:
@@ -288,7 +301,9 @@ async def prepare_category_position(session: AsyncSession, wanted_position: int,
     await session.commit()
 
 
-async def prepare_guild_channel(session: AsyncSession, channel_id: int, guild: Guild) -> Channel:
+async def prepare_guild_channel(
+    session: AsyncSession, channel_id: int, guild: Guild
+) -> Channel:
     channel_id = str(channel_id)
 
     channel = await Channel.get(session, channel_id, guild.id)

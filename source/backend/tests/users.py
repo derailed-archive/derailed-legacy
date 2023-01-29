@@ -5,7 +5,8 @@ import pytest
 class UserRouter:
     def test_register(client):
         resp = client.post(
-            '/v1/register', json={'username': 'test', 'email': 'test@test.com', 'password': 'ABcdef148'}
+            '/v1/register',
+            json={'username': 'test', 'email': 'test@test.com', 'password': 'ABcdef148'},
         )
         assert resp.status == 201
         assert resp.json['username'] == 'test'

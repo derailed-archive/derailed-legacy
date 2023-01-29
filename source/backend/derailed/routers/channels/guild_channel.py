@@ -1,18 +1,13 @@
 """
 Copyright (C) 2021-2023 Derailed.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Under no circumstances may you publicly share, distribute, or give any objects, files, or media in this project.
+You may only share the above with individuals who have permission to view these files already.
+If they don't have permission but are still given the files, or if code is shared publicly, 
+we have the legal jurisdiction to bring forth charges under which is owed, based in the damages.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You may under some circumstances with authorized permission share snippets of the code for specific reasons.
+Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
@@ -57,7 +52,10 @@ async def get_channel(
 
 @version('/guilds/{guild_id}/channels', 1, router, 'GET')
 async def get_channels(
-    guild_id: int, request: Request, session: AsyncSession = Depends(uses_db), user: User = Depends(uses_auth)
+    guild_id: int,
+    request: Request,
+    session: AsyncSession = Depends(uses_db),
+    user: User = Depends(uses_auth),
 ) -> None:
     guild, _ = await prepare_membership(guild_id, user, session)
 
@@ -93,7 +91,9 @@ async def create_channel(
             raise HTTPException(400, 'Parent channel does not exist')
 
         if parent.type != ChannelType.CATEGORY or data.type == ChannelType.CATEGORY:
-            raise HTTPException('Parent is not of right type, or child is not of right type')
+            raise HTTPException(
+                'Parent is not of right type, or child is not of right type'
+            )
 
     channel_count = await Channel.count(session, guild.id)
 
@@ -103,12 +103,18 @@ async def create_channel(
     if data.type == 0:
         highest_channel = await Channel.highest(session, guild_id)
     else:
-        highest_channel = await Channel.highest(session, guild_id, category=data.parent_id)
+        highest_channel = await Channel.highest(
+            session, guild_id, category=data.parent_id
+        )
 
     if (highest_channel.position + 1) < data.position and position is not None:
         raise HTTPException(400, 'Channel position too high')
     else:
-        position = (highest_channel.position + 1) if data.position is UNDEFINED else data.position
+        position = (
+            (highest_channel.position + 1)
+            if data.position is UNDEFINED
+            else data.position
+        )
 
     if data.type == 0:
         await prepare_category_position(session, position, guild)
@@ -162,22 +168,36 @@ async def modify_channel(
         if channel.type == ChannelType.CATEGORY:
             highest_channel = await Channel.highest(session, guild_id)
         else:
-            highest_channel = await Channel.highest(session, guild_id, category=data.parent_id)
+            highest_channel = await Channel.highest(
+                session, guild_id, category=data.parent_id
+            )
 
     if data.parent_id:
         parent = await Channel.get(session, data.parent_id, guild.id)
 
-        if parent is None or parent.type != ChannelType.CATEGORY or data.type == ChannelType.CATEGORY:
-            raise HTTPException(400, 'Parent is not of right type, or child is not of right type')
+        if (
+            parent is None
+            or parent.type != ChannelType.CATEGORY
+            or data.type == ChannelType.CATEGORY
+        ):
+            raise HTTPException(
+                400, 'Parent is not of right type, or child is not of right type'
+            )
 
-        await prepare_channel_position(session, highest_channel['position'] + 1, data.parent_id, guild)
+        await prepare_channel_position(
+            session, highest_channel['position'] + 1, data.parent_id, guild
+        )
         mods['parent_id'] = data.parent_id
 
     if position:
         if (highest_channel.position + 1) < data.position and position is not None:
             raise HTTPException(400, 'Channel position too high')
         else:
-            position = (highest_channel.position + 1) if data.position is UNDEFINED else data.position
+            position = (
+                (highest_channel.position + 1)
+                if data.position is UNDEFINED
+                else data.position
+            )
 
         if data.type == 0:
             await prepare_category_position(session, position, guild)
@@ -208,6 +228,8 @@ async def delete_channel(
 
     await channel.delete(session)
 
-    await publish_to_guild(guild.id, 'CHANNEL_DELETE', {'channel_id': channel.id, 'guild_id': guild.id})
+    await publish_to_guild(
+        guild.id, 'CHANNEL_DELETE', {'channel_id': channel.id, 'guild_id': guild.id}
+    )
 
     return ''

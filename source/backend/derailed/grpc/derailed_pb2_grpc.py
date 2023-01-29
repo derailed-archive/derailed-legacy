@@ -56,7 +56,9 @@ def add_GuildServicer_to_server(servicer, server):
             response_serializer=derailed__pb2.RepliedGuildInfo.SerializeToString,
         ),
     }
-    generic_handler = grpc.method_handlers_generic_handler('derailed.grpc.Guild', rpc_method_handlers)
+    generic_handler = grpc.method_handlers_generic_handler(
+        'derailed.grpc.Guild', rpc_method_handlers
+    )
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -158,7 +160,9 @@ def add_UserServicer_to_server(servicer, server):
             response_serializer=derailed__pb2.UPublr.SerializeToString,
         ),
     }
-    generic_handler = grpc.method_handlers_generic_handler('derailed.grpc.User', rpc_method_handlers)
+    generic_handler = grpc.method_handlers_generic_handler(
+        'derailed.grpc.User', rpc_method_handlers
+    )
     server.add_generic_rpc_handlers((generic_handler,))
 
 

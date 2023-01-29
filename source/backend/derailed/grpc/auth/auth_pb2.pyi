@@ -12,7 +12,9 @@ class CreateToken(_message.Message):
     USER_ID_FIELD_NUMBER: _ClassVar[int]
     password: str
     user_id: str
-    def __init__(self, user_id: _Optional[str] = ..., password: _Optional[str] = ...) -> None: ...
+    def __init__(
+        self, user_id: _Optional[str] = ..., password: _Optional[str] = ...
+    ) -> None: ...
 
 class NewToken(_message.Message):
     __slots__ = ['token']
@@ -35,5 +37,8 @@ class ValidateToken(_message.Message):
     token: str
     user_id: str
     def __init__(
-        self, user_id: _Optional[str] = ..., password: _Optional[str] = ..., token: _Optional[str] = ...
+        self,
+        user_id: _Optional[str] = ...,
+        password: _Optional[str] = ...,
+        token: _Optional[str] = ...,
     ) -> None: ...

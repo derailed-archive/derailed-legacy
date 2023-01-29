@@ -1,18 +1,13 @@
 """
 Copyright (C) 2021-2023 Derailed.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Under no circumstances may you publicly share, distribute, or give any objects, files, or media in this project.
+You may only share the above with individuals who have permission to view these files already.
+If they don't have permission but are still given the files, or if code is shared publicly, 
+we have the legal jurisdiction to bring forth charges under which is owed, based in the damages.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You may under some circumstances with authorized permission share snippets of the code for specific reasons.
+Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
 from random import randint
 
@@ -22,7 +17,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request, exceptions
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..database import to_dict, uses_db
+from ..database import uses_db
 from ..identification import medium, version
 from ..models import Settings, User
 from ..models.user import DefaultStatus
@@ -52,7 +47,9 @@ class Register(BaseModel):
 
 
 @version('/register', 1, router, 'POST', status_code=201)
-async def register_user(request: Request, data: Register, session: AsyncSession = Depends(uses_db)) -> None:
+async def register_user(
+    request: Request, data: Register, session: AsyncSession = Depends(uses_db)
+) -> None:
     discrim: str | None = None
     for _ in range(9):
         d = generate_discriminator()
@@ -99,7 +96,10 @@ class PatchMe(BaseModel):
 
 @version('/users/@me', 1, router, 'PATCH')
 async def patch_me(
-    request: Request, data: PatchMe, user: User = Depends(uses_auth), session: AsyncSession = Depends(uses_db)
+    request: Request,
+    data: PatchMe,
+    user: User = Depends(uses_auth),
+    session: AsyncSession = Depends(uses_db),
 ) -> None:
     if data == {}:
         return prepare_user(user, True)
@@ -161,7 +161,9 @@ class Login(BaseModel):
 
 
 @version('/login', 1, router, 'POST')
-async def login(request: Request, data: Login, session: AsyncSession = Depends(uses_db)) -> None:
+async def login(
+    request: Request, data: Login, session: AsyncSession = Depends(uses_db)
+) -> None:
     user = await User.get_email(session, data.email)
 
     if user is None:
