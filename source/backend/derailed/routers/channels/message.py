@@ -9,7 +9,10 @@ we have the legal jurisdiction to bring forth charges under which is owed, based
 You may under some circumstances with authorized permission share snippets of the code for specific reasons.
 Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
+import re
+
 from datetime import datetime
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
@@ -21,6 +24,7 @@ from ...models.channel import Message
 from ...models.user import User
 from ...permissions import GuildPermissions
 from ...powerbase import (
+    MESSAGE_MENTION_REGEX,
     abort_forb,
     prepare_channel,
     prepare_membership,
@@ -31,6 +35,15 @@ from ...powerbase import (
 from ...undefinable import UNDEFINED, Undefined
 
 router = APIRouter()
+
+
+def length_message(text):
+    # Replace mentions with a single character
+    text = re.sub(MESSAGE_MENTION_REGEX, 'X', text)
+    # Replace tabs with nothing
+    text = text.replace('\n', '')
+    return len(text)
+
 
 
 @version('/channels/{channel_id}/messages', 1, router, 'GET')
@@ -83,7 +96,7 @@ async def get_message(
 
 
 class CreateMessage(BaseModel):
-    content: str = Field(min_length=1, max_length=1024)
+    content: str = Field(min_length=1, max_length=1700)
 
 
 @version('/channels/{channel_id}/messages', 1, router, 'POST', status_code=201)
@@ -94,6 +107,9 @@ async def create_message(
     session: AsyncSession = Depends(uses_db),
     user: User = Depends(uses_auth),
 ) -> None:
+    if length_message(data) > 1024:
+        raise HTTPException(400, 'Message content must be or must be under 1024')
+
     channel = await prepare_channel(session, channel_id)
 
     if channel.guild_id is not None:

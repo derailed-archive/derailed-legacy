@@ -15,6 +15,7 @@ import binascii
 import json
 import math
 import os
+import re
 from typing import Any, NoReturn
 
 import grpc.aio as grpc
@@ -35,6 +36,9 @@ from .permissions import (
     merge_permissions,
     unwrap_guild_permissions,
 )
+
+
+MESSAGE_MENTION_REGEX = re.compile(r'(@here|@everyone|<@(\d+)>|<@&(\d+)>|<#(\d+)>)')
 
 
 async def uses_auth(request: Request, session: AsyncSession = Depends(uses_db)) -> User:

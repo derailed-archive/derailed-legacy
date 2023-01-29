@@ -21,6 +21,24 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base
 
 
+class ReadState(Base):
+    __tablename__ = 'readstates'
+
+    user_id: Mapped[int] = mapped_column(BigInteger(), ForeignKey('users.id'), primary_key=True)
+    channel_id: Mapped[int] = mapped_column(BigInteger(), ForeignKey('channels.id'), primary_key=True)
+    mentions: Mapped[int]
+    last_read_message: Mapped[int] = mapped_column(BigInteger(), ForeignKey('messages.id'))
+
+    @classmethod
+    async def get_all(cls, session: AsyncSession, user_id: int) -> list[ReadState]:
+        stmt = (
+            select(cls)
+            .where(ReadState.user_id == user_id)
+        )
+        result = await session.execute(stmt)
+        return result.scalars().all()
+
+
 class Message(Base):
     __tablename__ = 'messages'
 
