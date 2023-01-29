@@ -9,6 +9,7 @@ we have the legal jurisdiction to bring forth charges under which is owed, based
 You may under some circumstances with authorized permission share snippets of the code for specific reasons.
 Any media and product here must be kept proprietary unless otherwise necessary or authorized.
 """
+import asyncio
 import base64
 import binascii
 import json
@@ -157,6 +158,10 @@ async def _init_stubs() -> None:
 
 
 async def publish_to_user(user_id: Any, event: str, data: dict[str, Any]) -> None:
+    asyncio.create_task(_pub_user(user_id, event, data))
+
+
+async def _pub_user(user_id, event, data) -> None:
     if user_stub is None:
         await _init_stubs()
 
@@ -169,6 +174,10 @@ async def publish_to_user(user_id: Any, event: str, data: dict[str, Any]) -> Non
 
 
 async def publish_to_guild(guild_id: Any, event: str, data: dict[str, Any]) -> None:
+    asyncio.create_task(_pub_guild(guild_id, event, data))
+
+
+async def _pub_guild(guild_id, event, data) -> None:
     if guild_stub is None:
         await _init_stubs()
 

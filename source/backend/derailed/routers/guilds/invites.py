@@ -17,9 +17,16 @@ from ...identification import medium, version
 from ...models import Invite
 from ...models.channel import Channel
 from ...models.guild import Guild
-from ...models.user import User
+from ...models.member import Member
+from ...models.user import GuildPosition, User
 from ...permissions import GuildPermissions
-from ...powerbase import prepare_membership, prepare_permissions, uses_auth
+from ...powerbase import (
+    prepare_membership,
+    prepare_permissions,
+    publish_to_guild,
+    publish_to_user,
+    uses_auth,
+)
 
 router = APIRouter()
 
@@ -40,6 +47,42 @@ async def get_invite(invite_id: str, session: AsyncSession = Depends(uses_db)) -
     )
 
     return inv
+
+
+@version('/invites/{invite_id}', 1, router, 'POST')
+async def join_guild(
+    invite_id: str,
+    user: User = Depends(uses_auth),
+    session: AsyncSession = Depends(uses_db),
+) -> None:
+    invite = await Invite.get(session, invite_id)
+
+    if invite is None:
+        raise HTTPException(404, 'Invite not found')
+
+    guild = await Guild.get(session, invite.guild_id)
+
+    guild_positions = await GuildPosition.get_for(session, user)
+
+    # TODO: proper search in the db
+    for guild_pos in guild_positions:
+        if guild_pos.guild_id == guild.id:
+            raise HTTPException(403, 'Already joined this Guild')
+
+    new_guild_pos = await GuildPosition.for_new(session, user.id)
+
+    member = Member(user_id=user.id, guild_id=guild.id, nick=None)
+    guild_position = GuildPosition(
+        user_id=user.id, guild_id=guild.id, position=new_guild_pos
+    )
+
+    session.add_all([member, guild_position])
+    await session.commit()
+
+    publish_to_guild(invite.guild_id, 'MEMBER_JOIN', to_dict(member))
+    publish_to_user(user.id, 'GUILD_CREATE', to_dict(guild))
+
+    return {'member': to_dict(member), 'guild': to_dict(guild)}
 
 
 @version(

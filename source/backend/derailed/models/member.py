@@ -16,8 +16,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
-from .guild import Guild
-from .user import User
 
 
 class RolePermissions(Base):

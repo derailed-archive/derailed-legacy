@@ -16,7 +16,7 @@ from ...database import AsyncSession, to_dict, uses_db
 from ...identification import medium, version
 from ...models.guild import Guild
 from ...models.member import Member
-from ...models.user import User
+from ...models.user import GuildPosition, User
 from ...permissions import DEFAULT_PERMISSIONS, GuildPermissions
 from ...powerbase import (
     prepare_default_channels,
@@ -42,6 +42,8 @@ async def create_guild(
     session: AsyncSession = Depends(uses_db),
     user: User = Depends(uses_auth),
 ) -> None:
+    new_guild_position = GuildPosition.for_new(session, user.id)
+
     guild = Guild(
         id=medium.snowflake(),
         name=data.name,
@@ -50,8 +52,11 @@ async def create_guild(
         permissions=DEFAULT_PERMISSIONS,
     )
     session.add(guild)
+    guild_position = GuildPosition(
+        user_id=user.id, guild_id=guild.id, position=new_guild_position
+    )
     member = Member(user_id=user.id, guild_id=guild.id, nick=None)
-    session.add(member)
+    session.add_all([guild_position, member])
 
     await session.commit()
 

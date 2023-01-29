@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from enum import Enum
 
-from sqlalchemy import BigInteger, ForeignKey, String, select, update
+from sqlalchemy import BigInteger, ForeignKey, String, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -73,7 +73,9 @@ class GuildPosition(Base):
     user_id: Mapped[int] = mapped_column(
         BigInteger(), ForeignKey('users.id'), primary_key=True
     )
-    guild_id: Mapped[int] = mapped_column(BigInteger(), primary_key=True)
+    guild_id: Mapped[int] = mapped_column(
+        BigInteger(), ForeignKey('guilds.id'), primary_key=True
+    )
     position: Mapped[int]
 
     @classmethod
@@ -86,6 +88,19 @@ class GuildPosition(Base):
         )
         result = await session.execute(stmt)
         return result.scalars().all()
+
+    @classmethod
+    async def for_new(cls, session: AsyncSession, user_id: int) -> int:
+        stmt = select(func.max(GuildPosition.position)).where(
+            GuildPosition.user_id == user_id
+        )
+        result = await session.execute(stmt)
+        scalar = result.scalar()
+
+        if scalar is None:
+            return 0
+        else:
+            return scalar.position + 1
 
 
 class DefaultStatus(Enum):
