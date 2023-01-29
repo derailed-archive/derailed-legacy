@@ -24,14 +24,14 @@ if _descriptor._USE_C_DESCRIPTORS is False:
     DESCRIPTOR._serialized_options = (
         b'\n\026one.derailed.grpc.authB\021DerailedAuthProtoP\001\242\002\004DRLP'
     )
-    _CREATETOKEN._serialized_start = 34
-    _CREATETOKEN._serialized_end = 82
-    _NEWTOKEN._serialized_start = 84
-    _NEWTOKEN._serialized_end = 109
-    _VALIDATETOKEN._serialized_start = 111
-    _VALIDATETOKEN._serialized_end = 176
-    _VALID._serialized_start = 178
-    _VALID._serialized_end = 200
-    _AUTHORIZATION._serialized_start = 203
-    _AUTHORIZATION._serialized_end = 369
+    _CREATETOKEN._serialized_start = 34 # type: ignore
+    _CREATETOKEN._serialized_end = 82 # type: ignore
+    _NEWTOKEN._serialized_start = 84 # type: ignore
+    _NEWTOKEN._serialized_end = 109 # type: ignore
+    _VALIDATETOKEN._serialized_start = 111 # type: ignore
+    _VALIDATETOKEN._serialized_end = 176 # type: ignore
+    _VALID._serialized_start = 178 # type: ignore
+    _VALID._serialized_end = 200 # type: ignore
+    _AUTHORIZATION._serialized_start = 203 # type: ignore
+    _AUTHORIZATION._serialized_end = 369 # type: ignore
 # @@protoc_insertion_point(module_scope)

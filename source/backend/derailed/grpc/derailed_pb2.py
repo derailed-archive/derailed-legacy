@@ -24,22 +24,22 @@ if _descriptor._USE_C_DESCRIPTORS is False:
     DESCRIPTOR._serialized_options = (
         b'\n\021one.derailed.grpcB\rDerailedProtoP\001\242\002\004DRLP'
     )
-    _MESSAGE._serialized_start = 33
-    _MESSAGE._serialized_end = 71
-    _PUBL._serialized_start = 73
-    _PUBL._serialized_end = 138
-    _PUBLR._serialized_start = 140
-    _PUBLR._serialized_end = 164
-    _GETGUILDINFO._serialized_start = 166
-    _GETGUILDINFO._serialized_end = 198
-    _REPLIEDGUILDINFO._serialized_start = 200
-    _REPLIEDGUILDINFO._serialized_end = 256
-    _UPUBL._serialized_start = 258
-    _UPUBL._serialized_end = 323
-    _UPUBLR._serialized_start = 325
-    _UPUBLR._serialized_end = 350
-    _GUILD._serialized_start = 353
-    _GUILD._serialized_end = 498
-    _USER._serialized_start = 500
-    _USER._serialized_end = 564
+    _MESSAGE._serialized_start = 33 # type: ignore
+    _MESSAGE._serialized_end = 71 # type: ignore
+    _PUBL._serialized_start = 73 # type: ignore
+    _PUBL._serialized_end = 138 # type: ignore
+    _PUBLR._serialized_start = 140 # type: ignore
+    _PUBLR._serialized_end = 164 # type: ignore
+    _GETGUILDINFO._serialized_start = 166 # type: ignore
+    _GETGUILDINFO._serialized_end = 198 # type: ignore
+    _REPLIEDGUILDINFO._serialized_start = 200 # type: ignore
+    _REPLIEDGUILDINFO._serialized_end = 256 # type: ignore
+    _UPUBL._serialized_start = 258 # type: ignore
+    _UPUBL._serialized_end = 323 # type: ignore
+    _UPUBLR._serialized_start = 325 # type: ignore
+    _UPUBLR._serialized_end = 350 # type: ignore
+    _GUILD._serialized_start = 353 # type: ignore
+    _GUILD._serialized_end = 498 # type: ignore
+    _USER._serialized_start = 500 # type: ignore
+    _USER._serialized_end = 564 # type: ignore
 # @@protoc_insertion_point(module_scope)

@@ -12,7 +12,7 @@ Any media and product here must be kept proprietary unless otherwise necessary o
 import asyncio
 import multiprocessing
 
-import uvloop
+import uvloop # type: ignore
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
