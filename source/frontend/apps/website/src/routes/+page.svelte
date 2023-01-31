@@ -25,7 +25,7 @@
 				Stop wasting your time on Discord's garbage decisions, and stop being slowed down by
 				Guilded.
 				<br />
-				Simplify your setup, enhance your gaming guilds.
+				Simplify your setup, enhance your Guilds.
 			</div>
 		</div>
 	</div>
