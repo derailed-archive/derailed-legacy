@@ -57,13 +57,23 @@ the pretences of a DMCA.
 
 Derailed is provided "as is" without any warranty and/or liability for any outcomes using our services.
 
+You may not under any circumstance make modified versions of or modify the Derailed app (web, desktop, or mobile apps.)
+You hereby agree that if you do make a modified version of the Derailed app, we may terminate and permanently delete your account under Section 3.
+
 ## 5. *Your* Content
 
 Derailed's services allow you to post, link, store, share, and otherwise make available any certain content
 under text, graphics, videos, or other material ("Content"). You are then accountable for any content you post
 on to Derailed, and are responsible for any outcomes that may come from it.
 
+When you upload any content to our services, you keep the rights of said content but _give us a license to it when you use Derailed_.
+This content may be protected by certain intellectual property rights, of which we do not own. But by giving us said license by using our services,
+you give us permission to modify, store, delete, publicly display, monitor, transform, sublicense your content to our other services, publish, and
+use and communicate your content in a way which is deemed necessary (to properly modify, display, or store your content.)
+
 We also limit what that content may be in our Community Guidelines.
+
+We reserve the full right to at any point block your content if deemed necessary or against our other policies or DMCA.
 
 ## 6. Term Changes
 
