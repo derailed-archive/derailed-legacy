@@ -1,9 +1,9 @@
 # Introduction
 
-**Last Changed:** Jan. 29, 2023.
+**Last Changed:** Feb. 2, 2023.
 
-Welcome! This is the terms of service for Derailed (the vary platform you're probably interested in,)
-this dictates the very policy and other such performed on or by Derailed.
+Welcome! This is the terms of service for Derailed (the platform you're probably interested in,)
+this dictates the policy and other such performed on or by Derailed.
 
 From now on, when we refer to "We," "Us," or "Our" we mean Derailed, as in the entity.
 
