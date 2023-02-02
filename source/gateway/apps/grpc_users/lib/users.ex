@@ -16,7 +16,7 @@ defmodule Derailed.GRPC.User do
       {:ok, session_reg} ->
         {:ok, sessions} = Derailed.Session.Registry.get_sessions(session_reg)
 
-        Enum.each(sessions, &Manifold.send(&1, %{t: publish_info.event, d: message}))
+        Enum.each(sessions, &Manifold.send(&1, {:publish, %{t: publish_info.event, d: message}}))
 
       {:error, :not_found} ->
         :ok

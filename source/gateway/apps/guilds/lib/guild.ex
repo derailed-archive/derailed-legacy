@@ -104,14 +104,18 @@ defmodule Derailed.Guild do
         Map.put(member, "user", user)
       end)
 
-    Manifold.send(session_pid, %{
-      "t" => "MEMBER_CACHE_UPDATE",
-      "d" => %{"guild_id" => state.guild_id, "members" => members}
-    })
+    Manifold.send(
+      session_pid,
+      {:publish,
+       %{
+         "t" => "MEMBER_CACHE_UPDATE",
+         "d" => %{"guild_id" => state.guild_id, "members" => members}
+       }}
+    )
   end
 
-  def handle_call({:publish, message}, _from, state) do
-    Enum.each(state.sessions, &Manifold.send(&1.pid, message))
+  def handle_call({:publish, message}, _from, %{sessions: sessions} = state) do
+    Enum.each(sessions, &Manifold.send(&1.pid, {:publish, message}))
     {:reply, :ok, state}
   end
 
