@@ -1,5 +1,5 @@
 <div class="relative font-dino bg-white text-white h-max min-h-screen">
-	<div class="bg-[#26262b] pb-40 mb:pl-5 mb:pr-5">
+	<div class="bg-[#202024] pb-40 mb:pl-5 mb:pr-5">
 		<div id="header" class="text-white font-normal dsk:mx-40 mb:mx-2 p-1 flex items-center">
 			<header>
 				<a href="/">
@@ -58,7 +58,7 @@
 		</div>
 	</div>
 
-	<footer class="pt-32 pb-10 bg-[#26262b] mb:pl-5 mb:pr-5">
+	<footer class="pt-32 pb-10 bg-[#202024] mb:pl-5 mb:pr-5">
 		<div class="text-center text-4xl text-white pt-3 pb-20">
 			Derailed, the free gaming platform for chat.
 		</div>
