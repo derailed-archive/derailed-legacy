@@ -73,12 +73,14 @@ defmodule Derailed.Session do
       {:ok, guild_presences_pid} =
         GenRegistry.lookup_or_start(Derailed.Presence.Guild, guild_object.id)
 
-      Derailed.Presence.Guild.publish(
-        guild_presences_pid,
-        state.user_id,
-        settings.status,
-        activities
-      )
+      if settings.status != "offline" do
+        Derailed.Presence.Guild.publish(
+          guild_presences_pid,
+          state.user_id,
+          settings.status,
+          activities
+        )
+      end
 
       Derailed.Presence.Guild.get_presences(guild_presences_pid, self())
     end)

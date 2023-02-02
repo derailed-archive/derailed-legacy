@@ -8,7 +8,7 @@ defmodule Derailed.Gateway.Connector do
     ])
   end
 
-  def start_link() do
+  def start_link do
     {:ok, _} =
       :cowboy.start_clear(
         :derailed_gateway,

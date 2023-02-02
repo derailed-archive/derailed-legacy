@@ -8,8 +8,10 @@ defmodule Derailed.WebSocket.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: Derailed.WebSocket.Worker.start_link(arg)
-      # {Derailed.WebSocket.Worker, arg}
+      %{
+        id: Derailed.Gateway.Cowboy,
+        start: {Derailed.Gateway.Connector, :start_link, []}
+      }
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
