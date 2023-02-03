@@ -19,12 +19,12 @@ if os.name != 'nt':
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
-
-from .models.base import Base
 
 load_dotenv()
 
+from fastapi import FastAPI
+
+from .models.base import Base
 from .database import engine
 
 # routers
