@@ -36,6 +36,11 @@ defmodule Derailed.Presence.Guild do
     GenServer.cast(pid, {:get_presences, session_pid})
   end
 
+  @spec count_presences(pid()) :: non_neg_integer()
+  def count_presences(pid) do
+    GenServer.cast(pid, :count_presences)
+  end
+
   # server
   def handle_call({:send, message}, _from, %{sessions: sessions} = state) do
     message = Map.put(message, "guild_id", state.id)
@@ -66,5 +71,9 @@ defmodule Derailed.Presence.Guild do
 
     Manifold.send(session_pid, {:publish, %{t: "PRESENCE_BULK_UPDATE", d: mapped_values}})
     {:noreply, state}
+  end
+
+  def handle_call(:count_presences, %{presences: presences} = state) do
+    {:reply, Enum.count(presences), state}
   end
 end

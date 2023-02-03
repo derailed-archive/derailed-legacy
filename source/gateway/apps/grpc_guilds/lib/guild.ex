@@ -32,19 +32,29 @@ defmodule Derailed.GRPC.Guild do
     guild_id = guild.guild_id
 
     case GenRegistry.lookup(Derailed.Guild, guild_id) do
-      {:ok, guild_pid} ->
-        {:ok, presences} = Derailed.Guild.get_guild_info(guild_pid)
+      {:ok, _guild_pid} ->
+        presence_pid = GenRegistry.lookup(Derailed.Presence.Guild, guild_id)
+        presence_count = Derailed.Presence.Guild.count_presences(presence_pid)
 
         Derailed.GRPC.Guild.Proto.RepliedGuildInfo.new(
-          presences: presences,
+          presences: presence_count,
           available: true
         )
 
       {:error, :not_found} ->
-        Derailed.GRPC.Guild.Proto.RepliedGuildInfo.new(
-          presences: 0,
-          available: false
-        )
+        case GenRegistry.lookup(Derailed.Presence.Guild, guild_id) do
+          {:ok, presence_pid} ->
+            Derailed.GRPC.Guild.Proto.RepliedGuildInfo.new(
+              presences: Derailed.Presence.Guild.count_presences(presence_pid),
+              available: false
+            )
+
+          {:error, :not_found} ->
+            Derailed.GRPC.Guild.Proto.RepliedGuildInfo.new(
+              presences: 0,
+              available: false
+            )
+        end
     end
   end
 end

@@ -30,6 +30,7 @@ defmodule Derailed.GRPC.Guild.MixProject do
       {:jsonrs, "~> 0.2.1"},
       {:grpc_protos, in_umbrella: true},
       {:guilds, in_umbrella: true},
+      {:presences, in_umbrella: true},
       {:dotenv, "~> 3.1.0"},
       {:ex_hash_ring, "~> 6.0"},
       {:fastglobal, "~> 1.0"},

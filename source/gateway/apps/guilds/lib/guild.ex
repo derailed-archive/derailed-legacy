@@ -41,12 +41,6 @@ defmodule Derailed.Guild do
     GenServer.call(pid, {:publish, message})
   end
 
-  @spec get_guild_info(pid()) :: {:ok, integer()}
-  def get_guild_info(pid) do
-    Logger.debug("Getting Guild info for #{inspect(pid)}")
-    GenServer.call(pid, :get_guild_info)
-  end
-
   # backend server api
   def handle_cast({:subscribe, pid, user_id}, state) do
     ZenMonitor.monitor(pid)
@@ -117,10 +111,6 @@ defmodule Derailed.Guild do
   def handle_call({:publish, message}, _from, %{sessions: sessions} = state) do
     Enum.each(sessions, &Manifold.send(&1.pid, {:publish, message}))
     {:reply, :ok, state}
-  end
-
-  def handle_call(:get_guild_info, _from, state) do
-    {:reply, {:ok, presence_count: Enum.count(state.session)}, state}
   end
 
   def handle_info({:DOWN, _ref, :process, pid, {:zen_monitor, _reason}}, state) do
