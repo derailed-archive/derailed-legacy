@@ -62,7 +62,7 @@
 		<div class="text-center text-4xl text-white pt-3 pb-20">
 			Derailed, the free gaming platform for chat.
 		</div>
-		<div class="flex justify-center pt-7 text-sm hover:">
+		<div class="flex justify-center items-center pt-7 text-sm hover:">
 			<a href="/about" class="text-center text-[#737f8d] ml-5">About</a>
 			<a href="https://blog.derailed.one" class="text-center text-[#737f8d] ml-5">Blog</a>
 			<a href="/terms" class="text-center text-[#737f8d] ml-5">Terms of Service</a>
