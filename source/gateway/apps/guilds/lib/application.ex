@@ -10,9 +10,7 @@ defmodule Derailed.Guild.Application do
     Dotenv.load!()
 
     children = [
-      {GenRegistry, worker_module: Derailed.Guild},
-      {Task.Supervisor, name: Derailed.Guild.AsyncIO}
-      # {Postgrex, [url: Dotenv.get("PG_URI")]}
+      {GenRegistry, worker_module: Derailed.Guild}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

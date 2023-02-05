@@ -83,7 +83,7 @@ defmodule Derailed.MixProject do
   # Run "mix help deps" for examples and options.
   defp deps do
     [
-      {:dotenv, "~> 3.1.0"}
+      {:dotenvy, "~> 0.7.0"}
     ]
   end
 end

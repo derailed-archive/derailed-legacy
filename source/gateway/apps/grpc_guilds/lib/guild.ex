@@ -33,7 +33,7 @@ defmodule Derailed.GRPC.Guild do
 
     case GenRegistry.lookup(Derailed.Guild, guild_id) do
       {:ok, _guild_pid} ->
-        presence_pid = GenRegistry.lookup(Derailed.Presence.Guild, guild_id)
+        {:ok, presence_pid} = GenRegistry.lookup(Derailed.Presence.Guild, guild_id)
         presence_count = Derailed.Presence.Guild.count_presences(presence_pid)
 
         Derailed.GRPC.Guild.Proto.RepliedGuildInfo.new(

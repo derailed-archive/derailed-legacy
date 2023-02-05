@@ -24,3 +24,4 @@ build
 package
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+source/gateway/config/*.exs

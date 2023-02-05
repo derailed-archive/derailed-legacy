@@ -12,8 +12,12 @@ defmodule Derailed.GRPC.Auth.Proto.Valid do
   field(:valid, 1, type: :bool)
 end
 
-defmodule Derailed.Crossway.User.Proto.Service do
+defmodule Derailed.GRPC.Auth.Proto.Service do
   use GRPC.Service, name: "derailed.grpc.auth.Authorization", protoc_gen_elixir_version: "0.14.0"
 
   rpc(:validate, Derailed.GRPC.Auth.Proto.ValidateToken, Derailed.GRPC.Auth.Proto.Valid)
+end
+
+defmodule Derailed.GRPC.Auth.Proto.Stub do
+  use GRPC.Stub, service: Derailed.GRPC.Auth.Proto.Service
 end

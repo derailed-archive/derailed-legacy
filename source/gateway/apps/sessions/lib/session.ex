@@ -3,12 +3,21 @@ defmodule Derailed.Session do
   require Logger
   import Ecto.Query
 
-  @spec start_link(pid(), pid()) :: {:ok, pid}
-  def start_link(session_id, ws_pid) do
-    Logger.debug("Spinning up new Session: #{inspect(session_id)}/#{inspect(ws_pid)}")
-    GenServer.start_link(__MODULE__, {session_id, ws_pid})
+  @spec start_link(pid(), pid(), integer()) :: {:ok, pid}
+  def start_link(session_id, ws_pid, user_id) do
+    Logger.debug("Spinning up new Session: #{inspect(session_id)}/#{inspect(ws_pid)}/#{user_id}")
+    GenServer.start_link(__MODULE__, {session_id, ws_pid, user_id})
   end
 
+  @spec init({any, atom | pid | {atom, atom}, any}) ::
+          {:ok,
+           %{
+             down: false,
+             guild_pids: %{},
+             id: integer(),
+             user_id: any,
+             ws_pid: atom | pid | {atom, atom}
+           }}
   def init({session_id, ws_pid, user_id}) do
     ZenMonitor.monitor(ws_pid)
 
@@ -107,7 +116,7 @@ defmodule Derailed.Session do
     if state.down == true do
       {:ok, pid} = GenRegistry.lookup(Derailed.Session.Registry, state.user_id)
 
-      Derailed.Session.Registry.remove_session(pid, self())
+      Derailed.Session.Registry.remove_session(pid, state.id)
 
       GenRegistry.stop(Derailed.Session, state.id)
     end

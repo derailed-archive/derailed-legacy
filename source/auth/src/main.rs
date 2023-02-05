@@ -56,6 +56,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let addr = "[::1]:50053".parse().unwrap();
     let authorizer = DynamicAuthorization::default();
 
+    println!("Starting up gRPC auth on port 50053");
+
     Server::builder()
         .add_service(AuthorizationServer::new(authorizer))
         .serve(addr)

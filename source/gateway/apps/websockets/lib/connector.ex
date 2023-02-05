@@ -3,7 +3,7 @@ defmodule Derailed.Gateway.Connector do
     :cowboy_router.compile([
       {:_,
        [
-         {"/", Derailed.Gateway, %{}}
+         {"/", Derailed.WebSocket.Connection, %{}}
        ]}
     ])
   end
