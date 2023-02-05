@@ -87,7 +87,6 @@ defmodule Derailed.WebSocket.Connection do
       :erlang.send_after(state.heartbeat_interval, self(), :check_heartbeat)
       {:ok, %{state | ackd: false}}
     else
-      IO.puts(inspect(state))
       {:close, 5006, "Heartbeat time surpassed"}
     end
   end
