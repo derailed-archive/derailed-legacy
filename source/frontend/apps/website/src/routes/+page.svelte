@@ -33,11 +33,15 @@
 	<div id="features">
 		<div id="stop-hassling-premium" class="pb-40 pt-40 mb:pl-5 mb:pr-5">
 			<div class="text-center pt-3 text-3xl text-[#807ef2]">
-				Stop hassling with premium subscriptions
+				Stop hassling with paid platforms
 			</div>
 			<div class="text-center pt-3 text-medium text-[#737f8d] max-w-2xl m-auto">
-				Derailed doesn't have and <i><b>will never have</b></i> a subscription fee or system. We are
-				completely community supported, and don't believe in the system of subscriptions.
+				Derailed at its core is 100% free. We don't, and will <b>never</b> charge money to use Derailed's core.
+				<br />
+				<br />
+				If you're wondering how Derailed will support itself, we will do so with community donations,
+				and Guild subscriptions. Don't get run down for your money by Discord,
+				reinvigorate yourself and save your wallet.
 			</div>
 		</div>
 		<div id="speed" class="bg-[#ebebeb] pb-40 pt-40 mb:pl-5 mb:pr-5">
