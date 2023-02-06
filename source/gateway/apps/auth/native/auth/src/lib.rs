@@ -8,10 +8,8 @@ fn is_valid(user_id: i64, password: String, token: String) -> bool {
 
     let unsigned = signer.unsign(&token);
 
-    if unsigned.is_err() {
-        false
-    } else {
-        let b64_user_id = unsigned.unwrap().value().to_string();
+    if let Ok(unsigned) = unsigned {
+        let b64_user_id = unsigned.value().to_string();
 
         match general_purpose::URL_SAFE.decode(b64_user_id) {
             Ok(v) => {
@@ -21,6 +19,8 @@ fn is_valid(user_id: i64, password: String, token: String) -> bool {
             }
             Err(_) => false,
         }
+    } else {
+        false
     }
 }
 
