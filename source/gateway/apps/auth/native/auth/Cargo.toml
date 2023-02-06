@@ -1,0 +1,15 @@
+[package]
+name = "auth"
+version = "0.1.0"
+authors = []
+edition = "2018"
+
+[lib]
+name = "auth"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+base64 = "0.21.0"
+itsdangerous = "0.4.1"
+rustler = "0.25.0"

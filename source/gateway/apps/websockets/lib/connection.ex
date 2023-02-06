@@ -12,15 +12,25 @@ defmodule Derailed.WebSocket.Connection do
 
   def map_op(op) do
     %{
+      # 0 => :dispatch
       1 => :ready,
       # 2 => :resume,
       3 => :ack
+      # 4 => :hello
     }[op]
   end
 
-  @spec encode(non_neg_integer() | nil, non_neg_integer() | nil, term() | map()) :: String.t()
+  # TODO: transform ints into bigints
+  @spec encode(non_neg_integer() | nil, non_neg_integer() | nil, map() | nil) :: String.t()
   def encode(op, new_sequence, data) do
     {:ok, encoded} = Jsonrs.encode(%{"op" => op, "s" => new_sequence, "d" => data})
+    encoded
+  end
+
+  @spec encode(non_neg_integer() | nil, non_neg_integer() | nil, map() | nil, String.t()) ::
+          String.t()
+  def encode(op, new_sequence, data, type) do
+    {:ok, encoded} = Jsonrs.encode(%{"op" => op, "s" => new_sequence, "d" => data, "t" => type})
     encoded
   end
 
@@ -37,7 +47,7 @@ defmodule Derailed.WebSocket.Connection do
     heartbeat_interval = get_hb_interval()
     hb_timer(heartbeat_interval)
 
-    {:reply, {:text, encode(nil, nil, %{"heartbeat_interval" => heartbeat_interval})},
+    {:reply, {:text, encode(4, nil, %{"heartbeat_interval" => heartbeat_interval})},
      %{
        ready: false,
        session_pid: nil,
@@ -129,7 +139,9 @@ defmodule Derailed.WebSocket.Connection do
   end
 
   def terminate(_reason, _req, state) do
-    if state.ready == false do
+    ready = Map.get(state, "ready", false)
+
+    if ready == false do
       :ok
     end
   end

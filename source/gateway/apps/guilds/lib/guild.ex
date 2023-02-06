@@ -91,7 +91,11 @@ defmodule Derailed.Guild do
             select: u
           )
 
-        user = Map.new(Derailed.Database.Repo.one(user_query))
+        user =
+          Map.delete(
+            Map.delete(Map.from_struct(Derailed.Database.Repo.one(user_query)), :password),
+            :__meta__
+          )
 
         member = Map.put(member, "roles", roles)
         member = Map.delete(member, "user_id")

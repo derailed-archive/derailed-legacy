@@ -21,7 +21,9 @@ defmodule Derailed.Ready do
   def make(user, pid) do
     session_id = generate_session_id()
 
-    {:ok, session_registry_pid} = GenRegistry.lookup_or_start(Derailed.Session.Registry, user.id)
+    {:ok, session_registry_pid} =
+      GenRegistry.lookup_or_start(Derailed.Session.Registry, user.id, [user.id])
+
     {:ok, session_pid} = Derailed.Session.start_link(session_id, pid, user.id)
     Derailed.Session.Registry.add_session(session_registry_pid, session_pid, session_id)
     Derailed.Ready.handle_for(session_pid)
@@ -50,20 +52,11 @@ defmodule Derailed.Ready do
         {:error, :invalid_authorization}
 
       ruser ->
-        {:ok, grpc_channel} = GRPC.Stub.connect(Application.get_env(:ready, :auth_url))
+        valid = Derailed.Auth.is_valid(user.id, user.password, token)
 
-        request =
-          Derailed.GRPC.Auth.Proto.ValidateToken.new(
-            user_id: user_id,
-            password: user.password,
-            token: token
-          )
-
-        {:ok, response} = Derailed.GRPC.Auth.Proto.Stub.validate(grpc_channel, request)
-
-        case response.valid do
+        case valid do
           true ->
-            {:ok, Map.new(ruser)}
+            {:ok, Map.delete(Map.delete(Map.from_struct(ruser), :__meta__), :password)}
 
           false ->
             {:error, :invalid_authorization}

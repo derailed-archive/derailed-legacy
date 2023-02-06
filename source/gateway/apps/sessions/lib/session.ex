@@ -64,9 +64,16 @@ defmodule Derailed.Session do
     # query the db and maps the returned objects to only have the guild ids
     joined_guild_member_objects = Derailed.Database.Repo.all(joined_guild_member_objects_query)
     activity_objects = Derailed.Database.Repo.all(activities_query)
-    settings = Map.new(Derailed.Database.Repo.one(status_setting_query))
+
+    settings =
+      Map.delete(Map.from_struct(Derailed.Database.Repo.one(status_setting_query)), :__meta__)
+
     guild_ids = Enum.map(joined_guild_member_objects, fn gm -> gm.guild_id end)
-    activities = Enum.map(activity_objects, fn activity -> Map.new(activity) end)
+
+    activities =
+      Enum.map(activity_objects, fn activity ->
+        Map.delete(Map.from_struct(activity), :__meta__)
+      end)
 
     Enum.each(guild_ids, fn guild_id ->
       get_guild_query =
@@ -75,7 +82,9 @@ defmodule Derailed.Session do
           select: g
         )
 
-      guild_object = Map.new(Derailed.Database.Repo.one(get_guild_query))
+      guild_object =
+        Map.delete(Map.from_struct(Derailed.Database.Repo.one(get_guild_query)), :__meta__)
+
       Manifold.send(state.ws_pid, {:publish, %{t: "GUILD_CREATE", d: guild_object}})
       {:ok, _pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id)
 
