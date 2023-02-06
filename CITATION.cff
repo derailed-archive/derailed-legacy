@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use Derailed, please cite it as below."
+authors:
+- family-names: "Vincent Jose"
+  given-names: "VincentRPS"
+title: "Derailed: Platform for Gamers"
+version: 1.0.0
+doi: 10.5281/zenodo.1234
+date-released: 2021-12-08
+url: "https://github.com/derailedapp/derailed"
