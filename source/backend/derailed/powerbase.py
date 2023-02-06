@@ -154,7 +154,7 @@ guild_stub = None
 auth_stub = None
 
 
-async def _init_stubs() -> None:
+def _init_stubs() -> None:
     global user_stub
     global guild_stub
     global auth_stub
@@ -172,7 +172,7 @@ def publish_to_user(user_id: Any, event: str, data: dict[str, Any]) -> None:
 
 async def _pub_user(user_id, event, data) -> None:
     if user_stub is None:
-        await _init_stubs()
+        _init_stubs()
 
     await user_stub.publish(
         UPubl(
@@ -188,7 +188,7 @@ def publish_to_guild(guild_id: Any, event: str, data: dict[str, Any]) -> None:
 
 async def _pub_guild(guild_id, event, data) -> None:
     if guild_stub is None:
-        await _init_stubs()
+        _init_stubs()
 
     await guild_stub.publish(
         Publ(
@@ -200,14 +200,14 @@ async def _pub_guild(guild_id, event, data) -> None:
 
 async def get_guild_info(guild_id: int) -> RepliedGuildInfo:
     if guild_stub is None:
-        await _init_stubs()
+        _init_stubs()
 
     return await guild_stub.get_guild_info(GetGuildInfo(guild_id=str(guild_id)))
 
 
 async def create_token(user_id: str | int, password: str) -> str:
     if auth_stub is None:
-        await _init_stubs()
+        _init_stubs()
 
     # stringify user_id just in case it isn't already
     req: NewToken = await auth_stub.create(
@@ -219,7 +219,7 @@ async def create_token(user_id: str | int, password: str) -> str:
 
 async def valid_authorization(user_id: str, password: str, token: str) -> bool:
     if auth_stub is None:
-        await _init_stubs()
+        _init_stubs()
 
     req: Valid = await auth_stub.validate(
         ValidateToken(user_id=user_id, password=password, token=token)
