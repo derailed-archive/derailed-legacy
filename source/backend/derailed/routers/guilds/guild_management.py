@@ -91,7 +91,7 @@ async def modify_guild(
     if not data.name:
         return to_dict(guild)
 
-    prepare_permissions(member, guild, [GuildPermissions.MODIFY_GUILD])
+    prepare_permissions(member, guild, required=[GuildPermissions.MODIFY_GUILD])
 
     guild.name = data.name
 

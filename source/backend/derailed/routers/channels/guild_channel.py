@@ -50,7 +50,7 @@ async def get_channel(
 
     channel = await prepare_guild_channel(session, channel_id, guild)
 
-    prepare_permissions(member, guild, [GuildPermissions.VIEW_CHANNEL.value])
+    prepare_permissions(member, guild, required=[GuildPermissions.VIEW_CHANNEL.value])
 
     return channel
 
@@ -87,7 +87,7 @@ async def create_channel(
 ) -> None:
     guild, member = await prepare_membership(guild_id, user, session)
 
-    prepare_permissions(member, guild, [GuildPermissions.CREATE_CHANNELS.value])
+    prepare_permissions(member, guild, required=[GuildPermissions.CREATE_CHANNELS.value])
 
     if data.parent_id:
         parent = await Channel.get(session, data.parent_id, guild_id)
@@ -160,7 +160,7 @@ async def modify_channel(
 ) -> None:
     guild, member = await prepare_membership(guild_id, user, session)
 
-    prepare_permissions(member, guild, [GuildPermissions.MODIFY_CHANNELS.value])
+    prepare_permissions(member, guild, required=[GuildPermissions.MODIFY_CHANNELS.value])
 
     channel = await prepare_guild_channel(session, channel_id, guild)
 
@@ -227,7 +227,7 @@ async def delete_channel(
 ) -> None:
     guild, member = await prepare_membership(guild_id, user, session)
 
-    prepare_permissions(member, guild, [GuildPermissions.MODIFY_CHANNELS.value])
+    prepare_permissions(member, guild, required=[GuildPermissions.MODIFY_CHANNELS.value])
 
     channel = await prepare_guild_channel(session, channel_id, guild)
 

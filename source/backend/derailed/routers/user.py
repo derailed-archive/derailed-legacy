@@ -81,7 +81,7 @@ async def register_user(
     )
     session.add(user)
     await session.commit()
-    usr = prepare_user(user, True)
+    usr = prepare_user(user, own=True)
     settings = Settings(user_id=user.id, status=DefaultStatus.ONLINE)
     session.add(settings)
     await session.commit()
@@ -107,7 +107,7 @@ async def patch_me(
     session: AsyncSession = Depends(uses_db),
 ) -> None:
     if data == {}:
-        return prepare_user(user, True)
+        return prepare_user(user, own=True)
 
     password = data.password
     old_password = data.old_password
@@ -149,7 +149,7 @@ async def patch_me(
     session.add(user)
     await session.commit()
 
-    usr = prepare_user(user, True)
+    usr = prepare_user(user, own=True)
     publish_to_user(user.id, 'USER_UPDATE', usr)
 
     return usr
@@ -157,7 +157,7 @@ async def patch_me(
 
 @version('/users/@me', 1, router, 'GET')
 async def get_me(request: Request, user: User = Depends(uses_auth)) -> None:
-    return prepare_user(user, True)
+    return prepare_user(user, own=True)
 
 
 class Login(BaseModel):
@@ -179,7 +179,7 @@ async def login(
     except VerifyMismatchError:
         raise HTTPException(401, 'Invalid password')
 
-    usr = prepare_user(user, True)
+    usr = prepare_user(user, own=True)
     usr['token'] = await create_token(user.id, user.password)
 
     return usr

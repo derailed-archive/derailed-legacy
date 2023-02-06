@@ -64,7 +64,7 @@ async def get_messages(
     if channel.guild_id is not None:
         guild, member = await prepare_membership(channel.guild_id, user, session)
 
-        prepare_permissions(member, guild, [GuildPermissions.VIEW_MESSAGE_HISTORY.value])
+        prepare_permissions(member, guild, required=[GuildPermissions.VIEW_MESSAGE_HISTORY.value])
     else:
         if user not in channel.members:
             raise HTTPException(403, 'You are forbidden from this channel')
@@ -87,7 +87,7 @@ async def get_message(
     if channel.guild_id is not None:
         guild, member = await prepare_membership(channel.guild_id, user, session)
 
-        prepare_permissions(member, guild, [GuildPermissions.VIEW_MESSAGE_HISTORY.value])
+        prepare_permissions(member, guild, required=[GuildPermissions.VIEW_MESSAGE_HISTORY.value])
     else:
         if user not in channel.members:
             raise HTTPException(403, 'You are forbidden from this channel')
@@ -120,7 +120,7 @@ async def create_message(
     if channel.guild_id is not None:
         guild, member = await prepare_membership(channel.guild_id, user, session)
 
-        prepare_permissions(member, guild, [GuildPermissions.VIEW_MESSAGE_HISTORY.value])
+        prepare_permissions(member, guild, required=[GuildPermissions.VIEW_MESSAGE_HISTORY.value])
     else:
         if user not in channel.members:
             raise HTTPException(403, 'You are forbidden from this channel')
@@ -207,7 +207,7 @@ async def delete_message(
     if channel.guild_id is not None:
         guild, member = await prepare_membership(channel['guild_id'], user, session)
 
-        prepare_permissions(member, guild, [GuildPermissions.MODIFY_MESSAGES.value])
+        prepare_permissions(member, guild, required=[GuildPermissions.MODIFY_MESSAGES.value])
 
     await message.delete(session, message.id)
 

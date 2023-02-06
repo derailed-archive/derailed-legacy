@@ -130,7 +130,7 @@ async def default_callback(request: Request, response: Response, pexpire: int):
     raise HTTPException(429, {'type': 'rate_limited', 'retry_after': expire})
 
 
-def prepare_user(user: User, own: bool = False) -> dict[str, Any]:
+def prepare_user(user: User, *, own: bool = False) -> dict[str, Any]:
     user = to_dict(user)
 
     if not own:
@@ -253,7 +253,7 @@ async def prepare_membership(
 
 
 def prepare_permissions(
-    member: Member, guild: Guild, required_permissions: list[int]
+    member: Member, guild: Guild, *, required: list[int]
 ) -> None:
     if guild.owner_id == member.user_id:
         return
@@ -272,7 +272,7 @@ def prepare_permissions(
 
     perms = merge_permissions(*permsl)
 
-    for perm in required_permissions:
+    for perm in required:
         if not has_bit(perms, perm):
             raise HTTPException(403, 'Invalid permissions')
 
@@ -322,8 +322,6 @@ async def prepare_category_position(
 async def prepare_guild_channel(
     session: AsyncSession, channel_id: int, guild: Guild
 ) -> Channel:
-    channel_id = str(channel_id)
-
     channel = await Channel.get(session, channel_id, guild.id)
 
     if channel is None:
@@ -333,8 +331,6 @@ async def prepare_guild_channel(
 
 
 async def prepare_channel(session: AsyncSession, channel_id: int) -> Channel:
-    channel_id = str(channel_id)
-
     channel = await Channel.get(session, channel_id)
 
     if channel is None:

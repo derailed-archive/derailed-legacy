@@ -101,7 +101,7 @@ async def create_invite(
 ) -> None:
     guild, member = await prepare_membership(guild_id, user, session)
 
-    prepare_permissions(member, guild, [GuildPermissions.CREATE_INVITES.value])
+    prepare_permissions(member, guild, required=[GuildPermissions.CREATE_INVITES.value])
 
     # TODO: maybe make 10 not a hard limit
     for _ in range(10):
@@ -150,7 +150,7 @@ async def delete_invite(
         await session.commit()
         return ''
 
-    prepare_permissions(member, guild, [GuildPermissions.MODIFY_INVITES.value])
+    prepare_permissions(member, guild, required=[GuildPermissions.MODIFY_INVITES.value])
 
     await session.delete(invite)
     await session.commit()
