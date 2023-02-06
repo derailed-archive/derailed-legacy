@@ -7,7 +7,7 @@ module.exports = {
 			dsk: { min: '848px' }
 		},
 		fontFamily: {
-			dino: ['Whitney', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif']
+			dino: ['Cabin', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
 		}
 	},
 	plugins: []
