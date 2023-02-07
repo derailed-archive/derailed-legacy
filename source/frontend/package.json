@@ -5,7 +5,7 @@
   "keywords": [],
   "private": true,
   "engines": {
-    "node": ">=19",
-    "pnpm": ">=7.26.3"
+    "node": ">=18",
+    "pnpm": ">=7"
   }
 }
