@@ -164,10 +164,8 @@ async def modify_channel(
 
     channel = await prepare_guild_channel(session, channel_id, guild)
 
-    mods = {}
-
     if data.name:
-        mods['name'] = data.name
+        channel.name = data.name
 
     if data.parent_id or data.position:
         if channel.type == ChannelType.CATEGORY:
@@ -190,9 +188,9 @@ async def modify_channel(
             )
 
         await prepare_channel_position(
-            session, highest_channel['position'] + 1, data.parent_id, guild
+            session, highest_channel.position + 1, data.parent_id, guild
         )
-        mods['parent_id'] = data.parent_id
+        channel.parent_id = data.parent_id
 
     if position:
         if (highest_channel.position + 1) < data.position and position is not None:
@@ -208,9 +206,10 @@ async def modify_channel(
             await prepare_category_position(session, position, guild)
         else:
             await prepare_channel_position(session, position, data.parent_id, guild)
-        mods['position'] = position
+        channel.position = position
 
-    await channel.modify(session, **mods)
+    session.add(channel)
+    await session.commit()
 
     publish_to_guild(guild.id, 'CHANNEL_UPDATE', to_dict(channel))
 

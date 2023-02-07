@@ -20,9 +20,11 @@ from __future__ import annotations
 from sqlalchemy import BigInteger, ForeignKey, String, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
+from logging import getLogger
 
 from .base import Base
 
+_log = getLogger(__name__)
 
 class Guild(Base):
     __tablename__ = 'guilds'
@@ -35,6 +37,7 @@ class Guild(Base):
 
     @classmethod
     async def get(cls, session: AsyncSession, guild_id: int) -> Guild | None:
+        _log.debug(f'Getting guild {guild_id}')
         stmt = select(cls).where(Guild.id == guild_id)
         result = await session.execute(stmt)
         return result.scalar()
@@ -50,6 +53,7 @@ class Invite(Base):
 
     @classmethod
     async def get(cls, session: AsyncSession, invite_id: str) -> Invite | None:
+        _log.debug(f'Getting invite {invite_id}')
         stmt = select(cls).where(Invite.id == invite_id)
         result = await session.execute(stmt)
         return result.scalar()

@@ -19,8 +19,12 @@ from __future__ import annotations
 from sqlalchemy import BigInteger, ForeignKey, String, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from logging import getLogger
 
 from .base import Base
+
+
+_log = getLogger(__name__)
 
 
 class RolePermissions(Base):
@@ -46,6 +50,7 @@ class Role(Base):
 
     @classmethod
     async def get(cls, session: AsyncSession, id: int) -> Role | None:
+        _log.debug(f'Getting role {id}')
         stmt = select(cls).where(Role.id == id)
         result = await session.execute(stmt)
         return result.scalar()
@@ -78,6 +83,7 @@ class Member(Base):
     async def get(
         cls, session: AsyncSession, user_id: int, guild_id: int
     ) -> Member | None:
+        _log.debug(f'Getting member {user_id} in guild {guild_id}')
         stmt = (
             select(cls)
             .where(Member.user_id == user_id)
