@@ -23,6 +23,7 @@ defmodule Derailed.WebSocket.Connection do
   # TODO: transform ints into bigints
   @spec encode(non_neg_integer() | nil, non_neg_integer() | nil, map() | nil) :: String.t()
   def encode(op, new_sequence, data) do
+    Logger.debug "Encoding OP #{inspect(op)} with Sequence #{inspect(new_sequence)} and payload of #{inspect(data)}"
     {:ok, encoded} = Jsonrs.encode(%{"op" => op, "s" => new_sequence, "d" => data})
     encoded
   end
@@ -30,6 +31,7 @@ defmodule Derailed.WebSocket.Connection do
   @spec encode(non_neg_integer() | nil, non_neg_integer() | nil, map() | nil, String.t()) ::
           String.t()
   def encode(op, new_sequence, data, type) do
+    Logger.debug "Encoding OP #{inspect(op)} with Sequence #{inspect(new_sequence)} and event of #{inspect(type)} for payload of #{inspect(data)}"
     {:ok, encoded} = Jsonrs.encode(%{"op" => op, "s" => new_sequence, "d" => data, "t" => type})
     encoded
   end
@@ -46,6 +48,7 @@ defmodule Derailed.WebSocket.Connection do
   def websocket_init(_req) do
     heartbeat_interval = get_hb_interval()
     hb_timer(heartbeat_interval)
+    Logger.debug "Started heartbeat timer for interval #{heartbeat_interval}"
 
     {:reply, {:text, encode(4, nil, %{"heartbeat_interval" => heartbeat_interval})},
      %{
@@ -60,9 +63,11 @@ defmodule Derailed.WebSocket.Connection do
   end
 
   def websocket_handle({:text, content}, state) do
+    Logger.debug "Received content #{inspect(content)}"
     case Jsonrs.decode(content) do
       {:ok, message} ->
         op = Map.get(message, "op")
+        Logger.debug "Detected OP #{op}"
 
         if op == nil do
           {:close, 5001, "Op code must not be nulled or undefined"}
@@ -79,11 +84,13 @@ defmodule Derailed.WebSocket.Connection do
     end
   end
 
+  # used for such like heartbeating
   def websocket_handle(_any_frame, state) do
     {:ok, state}
   end
 
   def websocket_info({:i1_s, message}, state) do
+    Logger.debug "Received event: #{inspect(message)}"
     if state.sequence != nil do
       {:reply, {:text, encode(0, state.sequence + 1, message)},
        %{state | sequence: state.sequence + 1}}
@@ -93,6 +100,7 @@ defmodule Derailed.WebSocket.Connection do
   end
 
   def websocket_info(:check_heartbeat, state) do
+    Logger.debug "Checking heartbeat"
     if state.ackd == true do
       :erlang.send_after(state.heartbeat_interval, self(), :check_heartbeat)
       {:ok, %{state | ackd: false}}
@@ -102,6 +110,7 @@ defmodule Derailed.WebSocket.Connection do
   end
 
   def handle_op({:ready, message}, state) do
+    Logger.debug "User requested ready: #{inspect(message)}"
     if state.ready == false do
       {:close, 5005, "Already ready"}
     end
