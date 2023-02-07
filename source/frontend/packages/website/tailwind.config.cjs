@@ -1,6 +1,11 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-	content: ['./src/**/*.{html,js,svelte,ts}'],
-	theme: {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+	"../../components/**/*.{js,ts,jsx,tsx}"
+  ],
+  theme: {
 		extend: {},
 		screens: {
 			mb: { max: '847px' },
@@ -9,6 +14,6 @@ module.exports = {
 		fontFamily: {
 			dino: ['Cabin', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
 		}
-	},
-	plugins: []
-};
+  },
+  plugins: [],
+}
