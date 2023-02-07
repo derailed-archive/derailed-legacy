@@ -1,5 +1,11 @@
 # Derailed
 
+# RUST PROTOTYPE
+
+This is the Rust Prototype Repo. This should not be used anywhere except for testing.
+This is being used to play around with Rust, and see which tools are best to use for Derailed's use case.
+
+
 > Derail yourself from Discord and Guilded.
 
 Platform for Gamers. The Derailed monorepo
