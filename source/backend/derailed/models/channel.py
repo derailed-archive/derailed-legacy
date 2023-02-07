@@ -218,6 +218,13 @@ class Channel(Base):
         result = await session.execute(stmt)
         return result.scalar()
 
+    async def modify(self, session: AsyncSession, **modifications) -> None:
+        stmt = update(Channel).where(Channel.id == self.id).values(**modifications)
+        await session.execute(stmt)
+
+        for name, value in modifications.items():
+            setattr(name, value)
+
     async def delete(self, session: AsyncSession) -> None:
         _log.debug(f'Deleting channel {self.id} in category {self.parent_id} from guild {self.guild_id}')
         stmt = delete(Channel).where(Channel.id == self.id)

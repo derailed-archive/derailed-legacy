@@ -18,9 +18,8 @@ from __future__ import annotations
 
 from enum import Enum
 from logging import getLogger
-from fastapi import HTTPException
 
-from sqlalchemy import BigInteger, ForeignKey, String, func, select
+from sqlalchemy import BigInteger, ForeignKey, String, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -58,6 +57,13 @@ class User(Base):
         stmt = select(cls).where(User.email == email)
         result = await session.execute(stmt)
         return result.scalar()
+
+    async def modify(self, session: AsyncSession, **modifications) -> None:
+        stmt = update(User).where(User.id == self.id).values(**modifications)
+        await session.execute(stmt)
+
+        for name, value in modifications.items():
+            setattr(name, value)
 
     @classmethod
     async def exists(
@@ -107,8 +113,6 @@ class GuildPosition(Base):
 
         if scalar is None:
             return 0
-        elif scalar == 200:
-            raise HTTPException(403, 'Maximum Guild limit reached')
         else:
             return scalar.position + 1
 
