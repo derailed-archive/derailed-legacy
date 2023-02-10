@@ -1,0 +1,8 @@
+{
+  "name": "@derailed/js",
+  "version": "0.0.0",
+  "description": "Wrapper for Derailed",
+  "main": "lib/index.js",
+  "scripts": {},
+  "keywords": []
+}
