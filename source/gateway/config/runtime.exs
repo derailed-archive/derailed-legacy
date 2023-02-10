@@ -8,5 +8,3 @@ config :database, Derailed.Database.Repo,
   pool_size: 12,
   url: env!("PG_URI", :string!),
   show_sensitive_data_on_connection_error: true
-
-config :ready, auth_url: env!("AUTH_URL", :string!)
