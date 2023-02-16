@@ -10,7 +10,7 @@ msgspec==0.13.1
 
 # communication with the Gateway
 grpcio==1.51.1
-protobuf==4.21.12
+protobuf==4.22.0
 
 # security
 python-dotenv==0.21.1
