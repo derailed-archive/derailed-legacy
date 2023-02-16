@@ -22,8 +22,12 @@ from enum import Enum
 from sqlalchemy import BigInteger, ForeignKey, String, delete, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Mapped, mapped_column
+from logging import getLogger
 
 from .base import Base
+
+
+_log = getLogger()
 
 
 class ReadState(Base):
@@ -36,6 +40,7 @@ class ReadState(Base):
 
     @classmethod
     async def get_all(cls, session: AsyncSession, user_id: int) -> list[ReadState]:
+        _log.debug(f'Getting readstates for {user_id}')
         stmt = (
             select(cls)
             .where(ReadState.user_id == user_id)
@@ -58,6 +63,7 @@ class Message(Base):
     async def sorted_channel(
         cls, session: AsyncSession, channel: Channel, limit: int
     ) -> list[Message]:
+        _log.debug(f'Sorting all messages in channel {channel.id} with limit {limit}')
         stmt = (
             select(cls)
             .where(Message.channel_id == channel.id)
@@ -71,6 +77,7 @@ class Message(Base):
     async def get(
         cls, session: AsyncSession, message_id: int, channel: Channel
     ) -> Message | None:
+        _log.debug(f'Attempting to get message {message_id} from channel {channel.id}')
         stmt = (
             select(cls)
             .where(Message.id == message_id)
@@ -80,6 +87,7 @@ class Message(Base):
         return result.scalar()
 
     async def delete(self, session: AsyncSession, message_id: int) -> None:
+        _log.debug(f'Deleting message {message_id}')
         stmt = delete(Message).where(Message.id == message_id)
         await session.execute(stmt)
 
@@ -114,6 +122,7 @@ class Channel(Base):
     async def get(
         cls, session: AsyncSession, id: int, guild_id: int | None = None
     ) -> 'Channel' | None:
+        _log.debug(f'Getting channel {id} from guild {guild_id}')
         stmt = select(cls).where(Channel.id == int(id))
 
         if guild_id:
@@ -124,6 +133,7 @@ class Channel(Base):
 
     @classmethod
     async def get_all(cls, session: AsyncSession, guild_id: int) -> list['Channel']:
+        _log.debug(f'Getting all channels from guild {guild_id}')
         stmt = select(cls).where(Channel.guild_id == guild_id)
 
         result = await session.execute(stmt)
@@ -133,6 +143,7 @@ class Channel(Base):
     async def get_with_pos(
         cls, session: AsyncSession, id: int, position: int, guild_id: int
     ) -> 'Channel' | None:
+        _log.debug(f'Getting channel id {id} with position {position} from guild {guild_id}')
         stmt = (
             select(cls)
             .where(Channel.id == id)
@@ -150,6 +161,7 @@ class Channel(Base):
         guild_id: int,
         category: int | None = None,
     ) -> 'Channel' | None:
+        _log.debug(f'Getting channel with position {position} in guild {guild_id} and category {category}')
         stmt = (
             select(cls)
             .where(Channel.position == position)
@@ -163,6 +175,7 @@ class Channel(Base):
     async def get_via_with(
         cls, session: AsyncSession, id: int, category_id: int, guild_id: int
     ) -> 'Channel' | None:
+        _log.debug(f'Getting channel {id} in category {category_id} from guild {guild_id}')
         stmt = (
             select(cls)
             .where(Channel.id == id)
@@ -177,6 +190,7 @@ class Channel(Base):
     async def get_via(
         cls, session: AsyncSession, category_id: int | None, guild_id: int
     ) -> list['Channel']:
+        _log.debug(f'Getting all channels in {category_id} from {guild_id}')
         stmt = (
             select(cls)
             .where(Channel.parent_id == category_id)
@@ -187,6 +201,7 @@ class Channel(Base):
 
     @classmethod
     async def count(cls, session: AsyncSession, guild_id: int) -> int:
+        _log.debug(f'Counting all channels from guild {guild_id}')
         stmt = select(func.count(Channel.guild_id)).where(Channel.guild_id == guild_id)
         return (await session.execute(stmt)).scalar()
 
@@ -194,6 +209,7 @@ class Channel(Base):
     async def highest(
         cls, session: AsyncSession, guild_id: int, category: int | None = None
     ) -> Channel | None:
+        _log.debug(f'Getting highest channel in {guild_id} with category {category}')
         stmt = (
             select(func.max(Channel.position))
             .where(Channel.guild_id == guild_id)
@@ -210,5 +226,6 @@ class Channel(Base):
             setattr(name, value)
 
     async def delete(self, session: AsyncSession) -> None:
+        _log.debug(f'Deleting channel {self.id} in category {self.parent_id} from guild {self.guild_id}')
         stmt = delete(Channel).where(Channel.id == self.id)
         await session.execute(stmt)

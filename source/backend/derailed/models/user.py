@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import annotations
 
 from enum import Enum
+from logging import getLogger
 
 from sqlalchemy import BigInteger, ForeignKey, String, func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -25,6 +26,9 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import Base
 
 __all__ = ['User', 'GuildPosition', 'Settings']
+
+
+_log = getLogger()
 
 
 class User(Base):
@@ -42,12 +46,14 @@ class User(Base):
 
     @classmethod
     async def get(cls, session: AsyncSession, user_id: int) -> User | None:
+        _log.debug(f'Getting user {user_id}')
         stmt = select(cls).where(User.id == user_id)
         result = await session.execute(stmt)
         return result.scalar()
 
     @classmethod
     async def get_email(cls, session: AsyncSession, email: str) -> User | None:
+        _log.debug(f'Getting user from email {email}')
         stmt = select(cls).where(User.email == email)
         result = await session.execute(stmt)
         return result.scalar()
@@ -63,6 +69,7 @@ class User(Base):
     async def exists(
         cls, session: AsyncSession, username: str, discriminator: str
     ) -> bool:
+        _log.debug(f'Checking if a user with username "{username}" and discriminator "{discriminator}" exists')
         stmt = (
             select(cls)
             .where(User.username == username)
@@ -85,6 +92,7 @@ class GuildPosition(Base):
 
     @classmethod
     async def get_for(cls, session: AsyncSession, user: User) -> list[GuildPosition]:
+        _log.debug(f'Getting all guild positions for {user.id}')
         stmt = (
             select(cls)
             .where(GuildPosition.user_id == user.id)
@@ -96,6 +104,7 @@ class GuildPosition(Base):
 
     @classmethod
     async def for_new(cls, session: AsyncSession, user_id: int) -> int:
+        _log.debug(f'Getting higher position for user {user_id}')
         stmt = select(func.max(GuildPosition.position)).where(
             GuildPosition.user_id == user_id
         )
@@ -125,6 +134,7 @@ class Settings(Base):
 
     @classmethod
     async def get(cls, session: AsyncSession, user: User) -> Settings | None:
+        _log.debug(f'Getting settings for user {user.id}')
         stmt = select(cls).where(Settings.user_id == user.id)
         result = await session.execute(stmt)
         return result.scalar()

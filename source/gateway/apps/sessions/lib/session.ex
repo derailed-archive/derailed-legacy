@@ -5,7 +5,7 @@ defmodule Derailed.Session do
 
   @spec start_link(pid(), pid(), integer()) :: {:ok, pid}
   def start_link(session_id, ws_pid, user_id) do
-    Logger.debug("Spinning up new Session: #{inspect(session_id)}/#{inspect(ws_pid)}/#{user_id}")
+    Logger.debug "Spinning up new Session: #{inspect(session_id)}/#{inspect(ws_pid)}/#{user_id}"
     GenServer.start_link(__MODULE__, {session_id, ws_pid, user_id})
   end
 
@@ -41,6 +41,7 @@ defmodule Derailed.Session do
 
   # server
   def handle_cast(:sync_guilds, state) do
+    Logger.debug "Syncing Guilds"
     joined_guild_member_objects_query =
       from(m in Derailed.Database.Member,
         where: m.user_id == ^state.user_id,
@@ -107,10 +108,13 @@ defmodule Derailed.Session do
   end
 
   def handle_cast({:resume_session, ws_pid}, state) do
+    Logger.debug "Resuming Session, new ws_pid: #{inspect(ws_pid)}"
     {:noreply, %{state | down: false, ws_pid: ws_pid}}
   end
 
   def handle_info({:DOWN, _ref, :process, _pid, {:zen_monitor, _reason}}, state) do
+    Logger.debug "WebSocket down, shutting down in 120 seconds unless resumed"
+
     :erlang.send_after(120_000, self(), :sip)
 
     {:noreply,
@@ -122,7 +126,9 @@ defmodule Derailed.Session do
   end
 
   def handle_info(:sip, state) do
+    Logger.debug "Checking if ws_pid is still down"
     if state.down == true do
+      Logger.debug "ws_pid is still down, shutting down self"
       {:ok, pid} = GenRegistry.lookup(Derailed.Session.Registry, state.user_id)
 
       Derailed.Session.Registry.remove_session(pid, state.id)
@@ -133,6 +139,7 @@ defmodule Derailed.Session do
 
   def handle_info({:publish, message}, state) do
     # TODO: handle ws_pid being nil
+    Logger.debug "Publishing message #{inspect(message)} to ws_pid"
     Manifold.send(state.pid, {:i1_s, message})
   end
 end
