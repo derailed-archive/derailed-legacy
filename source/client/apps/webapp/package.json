@@ -1,5 +1,5 @@
 {
-  "name": "@derailed/webapp",
+  "name": "@derailed/app",
   "private": true,
   "scripts": {
     "dev": "webpack serve --open --config webpack.dev.ts",
