@@ -1,9 +1,0 @@
-{
-    "compilerOptions": {
-        "jsx": "preserve",
-        "jsxImportSource": "solid-js",
-        "esModuleInterop": true,
-    },
-    "include": ["src/**/*.tsx"],
-    "exclude": ["node_modules"]
-}
