@@ -1,3 +1,3 @@
 [workspace]
-members = ["source/auth"]
-exclude = ["source/gateway/apps/auth/native/auth"]
+members = ["auth"]
+exclude = ["gateway/apps/auth/native/auth"]
