@@ -49,7 +49,7 @@ const Login = () => {
             </div>
             <a href="https://unsplash.com/@marcinjozwiak">
                 <h4 className="text-verlp font-mono text-xs ml-2 mb-2">
-                    Made by Marcin Jozwiak on Unsplash.
+                    Image by Marcin Jozwiak on Unsplash.
                 </h4>
             </a>
         </div>
