@@ -1,41 +1,63 @@
-# Derailed
+![Derailedeon](./assets/derailedeon.png)
 
-> Derail yourself from Discord and Guilded.
+Welcome to the free text & voice platform for Gamers.
 
-Platform for Gamers. The Derailed monorepo
-powered by many tools.
+This is the publicly available source code of Derailed and is used for issue tracking, 
+general project management, and more.
 
-More or less, this is more of a Derailed mono monorepo
-because it holds three strict holdings:
+If you want to contribute, you can! Contributions are always open, and we try to make them as friendly as possible, 
+even if our stack isn't the easiest to deploy.
 
-- API - The Derailed API, Auth, and it's many other holdings.
-- Gateway - The Derailed Gateway incapsulated by an Umbrella project
-- Front - Derailed's frontend, using turborepo for better web-based goodies
+## Deploying
 
-These three put in place our most important stones:
+Derailed at the current moment cannot fully be deployed using Docker. We provide a single dockerfile, and that is only
+for fast and easy deployment of our **Gateway**. Our API, Auth Service (soon to be removed,) App, etc. All don't.
 
-- The API, our most sacred piece.
-- The Gateway, our real-time infrastructure.
-- And the frontend, our app, our website, etc.
+So you'll have to install on bare metal and conform to those special standards.
 
-For anything not in the topic of these, or
-necessarily in the topic of a multitude of these,
-they will be put in their own directory on the root named according to their function.
+In the future, we plan to completely allow the deployment of the entire Derailed stack with Docker
+to make deployment, testing, and other such categories easier to do.
 
-## Why Monorepo?
+### Auth
 
-TL;DR: To unify feature development, and other such
+The authentication portion of our API (only.)
 
-This monorepo helps Derailed serve users more cleanly.
-When developing a new feature, a dev just has to hop onto one repo and can build everything they need there.
-And when it launches all of our services can be deployed simultaneously.
+- Install [Rust](https://rust-lang.org)
+- Run `cargo run --release` to directly run, or just `cargo build --release` to build
 
-This helps for things like database migrations and the such, where we wouldn't want to break a new or old builds functionality.
+### API
 
-As for using a multitude of different strategies, it's mostly because
-it's more worthy using multiple.
-Our API does not need a monorepo in itself, so we don't have one for that.
-The Gateway can be put into an Elixir Umbrella project which does the job for us.
-And for the frontend, we can use the modern Turborepo built by Vercel to provide fast builds throughout our entire frontend easily and fast.
+The API by far is the simplist.
 
-The biggest reason overall though is to centralize development.
+- Install [Python](https://python.org)
+- Create a venv (optional)
+- Install requirements (i.e. `pip install -r requirements.txt`)
+
+Now this separates into two parts. For windows (or for general development):
+
+- Run `python development.py`
+
+For Unix-based systems:
+
+- Run `gunicorn`
+
+### Gateway
+
+With our Gateway, you have two options instead of one. *Bare metal* or *docker*.
+
+With bare metal, you have to setup your own machine and install dependencies manually,
+which could add room for customizations and speedups.
+
+But with Docker, you can deploy a fully setup Gateway (excluding DB of course) in little time.
+
+#### Metal
+
+- [Install Elixir](https://elixir-lang.org)
+- [Install Rust](https://rust-lang.org)
+- Install Dependencies (`mix deps.get` & `mix deps.compile`)
+- Run! (`mix run --no-halt`)
+
+#### Docker
+
+Just simply build the image, and run it. For more information, just check the [Docker Docs](https://docs.docker.com).
+
