@@ -5,12 +5,17 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 
 const App = React.lazy(() => import('./App'))
+const Login = React.lazy(() => import('@derailed/accounts/login'))
 
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />
+  },
+  {
+    path: '/login',
+    element: <Login />
   }
 ])
 
