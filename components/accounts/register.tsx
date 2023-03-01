@@ -55,7 +55,10 @@ const Login = () => {
                                 <label className="block text-gray-500 text-left ml-12">Password</label>
                                 <input type="password" id="password" className="bg-darker-dark rounded-full p-1 mt-1 px-5" required minLength={8} maxLength={82} onChange={(event) => {setPassword(event.target.value)}} />
                             </div>
-                            <button className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark" type="submit">Register</button>
+                            <div className='flex gap-3 justify-center items-center'>
+                                <button className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark px-4" type="submit">Register</button>
+                                <a href="/login" className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark px-4">Log in</a>
+                            </div>
                         </form>
                     </section>
                 </main>

@@ -1,5 +1,6 @@
 import { FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const Login = () => {
     if (localStorage.getItem("token") !== null) {
@@ -52,7 +53,7 @@ const Login = () => {
                             </div>
                             <div className='flex gap-3 justify-center items-center'>
                                 <button className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark px-4" type="submit">Log in</button>
-                                <a href="/register"><button className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark px-4">Register</button></a>
+                                <a href="/register" className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark px-4">Register</a>
                             </div>
                         </form>
                     </section>
