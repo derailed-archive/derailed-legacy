@@ -1,4 +1,4 @@
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 
 const Login = () => {
@@ -6,19 +6,20 @@ const Login = () => {
         return <Navigate to="/channels/@self" />
     }
     const navigate = useNavigate()
+    const [username, setUsername] = useState<string | null>(null)
     const [password, setPassword] = useState<string | null>(null)
     const [email, setEmail] = useState<string | null>(null)
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const API_URL: string = import.meta.env.VITE_API_URL
-        const resp = await fetch(API_URL.concat("/login"), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 'password': password, 'email': email }) })
+        const resp = await fetch(API_URL.concat("/register"), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ 'username': username, 'password': password, 'email': email }) })
 
         const value = await resp.json()
 
         if ('detail' in value) {
             console.error(value)
-            navigate("/error?code=failed_login")
+            navigate("/error?code=failed_register")
         } else {
             localStorage.setItem('token', value.token)
             navigate("/")
@@ -33,28 +34,29 @@ const Login = () => {
                     <section>
                         <div>
                             <h1 className="text-2xl font-semibold">
-                                Welcome back!
+                                Welcome to Derailed!
                             </h1>
-                            <h3 className="text-lg text-gray-500">
-                                Excited to return? Let's go!
+                            <h3 className="text-lg max-w- text-gray-500">
+                                First time? We hope you enjoy your stay.
                             </h3>
                         </div>
                     </section>
 
                     <section className="mt-10">
-                        <form className="flex flex-col max-w-xl" onSubmit={handleSubmit}>
+                        <form className="flex flex-col" onSubmit={handleSubmit}>
                             <div className="pt-3">
-                                <label className="block text-gray-500 text-left ml-1">Email</label>
-                                <input type="email" id="email" className="bg-darker-dark rounded-full p-1 mt-1 px-3" required minLength={5} maxLength={82} onChange={(event) => {setEmail(event.target.value)}} />
+                                <label className="block text-gray-500 text-left ml-12">Username</label>
+                                <input type="text" id="username" className="bg-darker-dark rounded-full p-1 mt-1 px-5" required minLength={1} maxLength={32} onChange={(event) => {setUsername(event.target.value)}} />
                             </div>
                             <div className="pt-3">
-                                <label className="block text-gray-500 text-left ml-1">Password</label>
-                                <input type="password" id="password" className="bg-darker-dark rounded-full p-1 mt-1 px-3" required minLength={8} maxLength={82} onChange={(event) => {setPassword(event.target.value)}} />
+                                <label className="block text-gray-500 text-left ml-12">Email</label>
+                                <input type="email" id="email" className="bg-darker-dark rounded-full p-1 mt-1 px-5" required minLength={5} maxLength={82} onChange={(event) => {setEmail(event.target.value)}} />
                             </div>
-                            <div className='flex gap-3 justify-center items-center'>
-                                <button className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark px-4" type="submit">Log in</button>
-                                <a href="/register"><button className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark px-4">Register</button></a>
+                            <div className="pt-3">
+                                <label className="block text-gray-500 text-left ml-12">Password</label>
+                                <input type="password" id="password" className="bg-darker-dark rounded-full p-1 mt-1 px-5" required minLength={8} maxLength={82} onChange={(event) => {setPassword(event.target.value)}} />
                             </div>
+                            <button className="mt-10 rounded-full bg-verlp duration-700 py-2 hover:bg-darker-dark" type="submit">Register</button>
                         </form>
                     </section>
                 </main>
