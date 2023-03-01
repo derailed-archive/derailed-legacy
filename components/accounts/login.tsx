@@ -26,7 +26,6 @@ const Login = () => {
     }
 
     return (
-        // TODO: max lengths on inputs
         <div className="bg-login min-h-screen antialiased bg-cover bg-no-repeat flex flex-col justify-center h-screen">
             <div className='border border-dark bg-dark text-white text-center rounded-2xl max-w-lg m-auto shadow-2xl px-14 py-10'>
                 <main className="max-w-2xl mx-auto md:p-4">
