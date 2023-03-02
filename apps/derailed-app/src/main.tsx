@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Loading from './Loading'
 
 
 const App = React.lazy(() => import('./App'))
@@ -13,19 +14,19 @@ const Register = React.lazy(() => import('@derailed/accounts/register'))
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />
+    element: <Suspense fallback={<Loading />}><App /></Suspense>
   },
   {
     path: '/login',
-    element: <Login />
+    element: <Suspense fallback={<Loading />}><Login /></Suspense>
   },
   {
     path: '/register',
-    element: <Register />
+    element: <Suspense fallback={<Loading />}><Register /></Suspense>
   },
   {
     path: '/logout',
-    element: <Logout />
+    element: <Suspense fallback={<Loading />}><Logout /></Suspense>
   }
 ])
 
