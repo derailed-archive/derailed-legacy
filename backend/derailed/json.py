@@ -23,7 +23,7 @@ class Decoder:
         self.options = kwargs
 
     def decode(self, obj):
-        return msgspec.json.decode(obj, type=dict)
+        return msgspec.json.decode(obj)
 
 
 class Encoder:
@@ -32,5 +32,5 @@ class Encoder:
         self.options = kwargs
 
     def encode(self, obj):
-        # decode back to str, as orjson returns bytes
+        # decode back to str, as msgspec returns bytes
         return msgspec.json.encode(obj).decode('utf-8')
