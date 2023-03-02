@@ -1,4 +1,5 @@
 import { FormEvent } from 'react'
+// @ts-ignore
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
@@ -29,7 +30,7 @@ const Login = () => {
     return (
         <div className="bg-login min-h-screen antialiased bg-cover bg-no-repeat flex flex-col justify-center h-screen">
             <div className='border border-dark bg-dark text-white text-center rounded-2xl max-w-lg m-auto shadow-2xl px-14 py-10'>
-                <main className="max-w-2xl mx-auto md:p-4">
+                <main className="max-w-2xl mx-auto p-6">
                     <section>
                         <div>
                             <h1 className="text-2xl font-semibold">
