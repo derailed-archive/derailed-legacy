@@ -26,7 +26,7 @@ defmodule Derailed.Presence.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:manifold, "~> 1.5"},
+      {:manifold, "~> 1.6"},
       {:gen_registry, "~> 1.3.0"}
     ]
   end
