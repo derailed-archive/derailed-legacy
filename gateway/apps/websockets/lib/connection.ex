@@ -42,7 +42,7 @@ defmodule Derailed.WebSocket.Connection do
 
   @spec hb_timer(non_neg_integer()) :: reference()
   def hb_timer(time) do
-    :erlang.send_after(time + 1000, self(), :check_heartbeat)
+    :erlang.send_after(time + 2000, self(), :check_heartbeat)
   end
 
   def websocket_init(_req) do
