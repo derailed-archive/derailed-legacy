@@ -9,6 +9,7 @@ const App = React.lazy(() => import('./app'))
 const Logout = React.lazy(() => import('./logout'))
 const Login = React.lazy(() => import('@derailed/accounts/login'))
 const Register = React.lazy(() => import('@derailed/accounts/register'))
+import Message from '@derailed/channels/message'
 
 
 const router = createBrowserRouter([
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
   {
     path: '/logout',
     element: <Suspense fallback={<Loading />}><Logout /></Suspense>
+  },
+  {
+    path: '/message',
+    element: <Message author_name="VincentRPS" author_id="1234567890" timestamp="2023-03-03T11:21:38.492Z" content="Derailed is awesome!" />
   }
 ])
 

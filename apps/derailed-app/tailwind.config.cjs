@@ -13,7 +13,9 @@ module.exports = {
       colors: {
         'dark': '#232226',
         'darker-dark': '#1F1F22',
-        'verlp': '#807ef2'
+        'derailed-gray': '#5a5c5a',
+        'verlp': '#807ef2',
+        'verlp-dark': '#6664CD'
       }
     },
   },
