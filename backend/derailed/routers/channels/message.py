@@ -17,7 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import re
 
 from datetime import datetime
-from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
@@ -33,6 +32,7 @@ from ...powerbase import (
     abort_forb,
     prepare_channel,
     prepare_membership,
+    prepare_message,
     prepare_permissions,
     publish_to_guild,
     uses_auth,
@@ -71,7 +71,7 @@ async def get_messages(
 
     messages = await Message.sorted_channel(session, channel, limit)
 
-    return to_dict(messages)
+    return prepare_message(messages)
 
 
 @version('/channels/{channel_id}/messages/{message_id}', 1, router, 'GET')
@@ -97,7 +97,7 @@ async def get_message(
     if message is None:
         raise HTTPException(404, 'Message not found')
 
-    return to_dict(message)
+    return prepare_message(message)
 
 
 class CreateMessage(BaseModel):
@@ -146,7 +146,7 @@ async def create_message(
     if channel.guild_id is not None:
         publish_to_guild(channel.guild_id, 'MESSAGE_CREATE', to_dict(message))
 
-    return to_dict(message)
+    return prepare_message(message)
 
 
 class ModifyMessage(BaseModel):
@@ -180,7 +180,7 @@ async def edit_message(
     if channel.guild_id is not None:
         publish_to_guild(channel.guild_id, 'MESSAGE_EDIT', to_dict(message))
 
-    return to_dict(message)
+    return prepare_message(message)
 
 
 @version(

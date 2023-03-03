@@ -33,7 +33,7 @@ from .grpc.auth import auth_pb2_grpc
 from .grpc.auth.auth_pb2 import CreateToken, NewToken, Valid, ValidateToken
 from .grpc.derailed_pb2 import GetGuildInfo, Message, Publ, RepliedGuildInfo, UPubl
 from .identification import medium
-from .models import Channel, Guild, Member, User
+from .models import Channel, Guild, Member, User, Message as ChannelMessage
 from .models.channel import ChannelType
 from .permissions import (
     GuildPermission,
@@ -148,6 +148,21 @@ def abort_auth() -> NoReturn:
 def abort_forb() -> NoReturn:
     raise HTTPException(403, 'Forbidden')
 
+
+async def prepare_message(messages: ChannelMessage | list[ChannelMessage], session: AsyncSession) -> dict | list[dict]:
+    if isinstance(message, list):
+        new_prel = []
+        for message in messages:
+            new_prel.append(prepare_message(message))
+        return new_prel
+    else:
+        user = await User.get(session, messages.author_id)
+
+        message = to_dict(messages)
+        message.pop('author_id', None)
+        message['author'] = prepare_user(user)
+
+        return message
 
 user_stub = None
 guild_stub = None
