@@ -3,6 +3,9 @@ FROM elixir:slim as release
 WORKDIR /
 COPY . .
 
+RUN apt update && apt upgrade
+RUN apt install curl
+
 # required for mix release deps
 RUN mix local.hex --force
 RUN mix local.rebar --force
