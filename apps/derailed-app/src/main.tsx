@@ -35,8 +35,10 @@ const router = createBrowserRouter([
   }
 ])
 
+
 console.log("%cDerailed", "font-size: 48px;");
-console.log("%cDO NOT COPY OR PASTE ANY PIECE OF CODE HERE, IT MAY COMPROMISE YOUR ACCOUNT.", "font-size: 16px;");
+console.log("%cDO NOT COPY OR PASTE ANY PIECE OF CODE OR SCRIPTS HERE, IT MAY COMPROMISE YOUR ACCOUNT", "font-size: 16px;");
+
 
 ReactDOM.createRoot(document.getElementById('thunder') as HTMLElement).render(
   <React.StrictMode>

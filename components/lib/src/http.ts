@@ -1,10 +1,13 @@
+// @ts-ignore
+const BASE_URL = import.meta.env.VITE_API_URL
+
 class HTTPClient {
     private _token: string | null
     private _base_url: string
 
-    constructor(base_url: string) {
+    constructor() {
         this._token = localStorage.getItem("token")
-        this._base_url = base_url
+        this._base_url = BASE_URL
     }
 
     async request(route: string, method: string, data: object | null = null): Promise<object | string> {

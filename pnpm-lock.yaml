@@ -71,7 +71,10 @@ importers:
       tailwindcss: 3.2.7
 
   components/lib:
-    specifiers: {}
+    specifiers:
+      eventemitter3: ^5.0.0
+    dependencies:
+      eventemitter3: 5.0.0
 
   website:
     specifiers:
@@ -1470,6 +1473,10 @@ packages:
     resolution: {integrity: sha512-7RUKfXgSMMkzt6ZuXmqapOurLGPPfgj6l9uRZ7lRGolvk0y2yocc35LdcxKC5PQZdn2DMqioAQ2NoWcrTKmm6g==}
     dependencies:
       '@types/estree': 1.0.0
+    dev: false
+
+  /eventemitter3/5.0.0:
+    resolution: {integrity: sha512-riuVbElZZNXLeLEoprfNYoDSwTBRR44X3mnhdI1YcnENpWTCsTTVZ2zFuqQcpoyqPQIUXdiPEU0ECAq0KQRaHg==}
     dev: false
 
   /events/3.3.0:
