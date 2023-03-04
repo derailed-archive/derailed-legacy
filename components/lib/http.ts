@@ -40,3 +40,5 @@ class HTTPClient {
     }
 }
 
+
+export default HTTPClient

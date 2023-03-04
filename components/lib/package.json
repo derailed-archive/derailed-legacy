@@ -1,9 +1,15 @@
 {
   "name": "@derailed/library",
   "version": "0.0.0",
-  "main": "src/index.ts",
+  "main": "index.ts",
   "scripts": {},
   "dependencies": {
-    "eventemitter3": "^5.0.0"
+    "eventemitter3": "^5.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11"
   }
 }
