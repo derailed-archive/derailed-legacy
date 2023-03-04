@@ -5,3 +5,9 @@ status = [
 block_labels = [ "type/do-not-merge" ]
 cut_body_after = "<details>"
 timeout_sec = 36000
+use_squash_merge = true
+commit_title = "Auto merge of ${PR_REFS}"
+
+[committer]
+name = "Cassandara"
+email = "106465547+cassandara@users.noreply.github.com"
