@@ -4,7 +4,7 @@ WORKDIR /
 COPY . .
 
 RUN apt update && apt upgrade
-RUN apt install -y curl
+RUN apt install -y curl build-essential
 
 # required for mix release deps
 RUN mix local.hex --force
