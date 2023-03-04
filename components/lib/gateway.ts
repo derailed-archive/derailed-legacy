@@ -14,8 +14,10 @@ class Gateway {
     private _token: string | null
     private _ws: WebSocket | null
     private _sequence: number | null
+    // @ts-ignore
     private _interval_pinger: number
     // TODO: resume functionality
+    // @ts-ignore
     private _session_id: string
     public emitter: EventEmitter
 

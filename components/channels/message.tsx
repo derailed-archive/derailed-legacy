@@ -1,6 +1,7 @@
 import React from "react";
 
 // TODO: select author
+// @ts-ignore
 const Message = ({ author_name, author_id, timestamp, content }) => {
     const milliseconds_day = 86_400_000
     const milliseconds_yesterday = milliseconds_day + milliseconds_day

@@ -9,6 +9,7 @@ const App = React.lazy(() => import('./app'))
 const Logout = React.lazy(() => import('./logout'))
 const Login = React.lazy(() => import('@derailed/accounts/login'))
 const Register = React.lazy(() => import('@derailed/accounts/register'))
+const Open = React.lazy(() => import('./open'))
 import Message from '@derailed/channels/message'
 import TestWS from './test_ws'
 
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
   {
     path: '/test-ws',
     element: <TestWS />
+  },
+  {
+    path: '/channels/@self',
+    element: <Suspense fallback={<Loading />}><Open /></Suspense>
   }
 ])
 

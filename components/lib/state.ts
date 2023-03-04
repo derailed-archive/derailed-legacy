@@ -1,16 +1,26 @@
 import { createContext } from "react"
 import HTTPClient from "./http"
 import Gateway from "./gateway"
+import { Channel, ChannelMessage, Guild } from "./types"
+import { makeAutoObservable } from "mobx"
+
 
 export class State {
     public rest: HTTPClient | null
     public ws: Gateway | null
+    public channel_messages: Map<string, Array<ChannelMessage>>
+    public channels: Map<string, Channel>
+    public guilds: Array<Guild>
     private _started: boolean
 
     constructor() {
+        makeAutoObservable(this)
         this.rest = null
         this.ws = null
         this._started = false
+        this.channel_messages = new Map()
+        this.channels = new Map()
+        this.guilds = []
     }
 
     start() {
