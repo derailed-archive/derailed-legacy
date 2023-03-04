@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: cd gateway
       - name: Build Gateway
-        run: docker build .
+        run: |
+          cd gateway
+          docker build .
