@@ -2,7 +2,7 @@
 name: Feature request
 about: Suggest an idea for this project
 title: "(F): REPLACE ME"
-labels: enhancement
+labels: type/enhancement
 assignees: ''
 
 ---

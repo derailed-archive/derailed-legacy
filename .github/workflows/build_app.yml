@@ -1,0 +1,30 @@
+# test that the app can build
+
+name: Build App
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - trying
+  pull_request:
+
+
+jobs:
+  build-app:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
+      - name: Build App
+        run: |
+          pnpm i
+          cd apps/derailed-app
+          pnpm build

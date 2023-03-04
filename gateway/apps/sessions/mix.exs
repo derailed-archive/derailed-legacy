@@ -26,7 +26,7 @@ defmodule Derailed.Session.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:manifold, "~> 1.5"},
+      {:manifold, "~> 1.6"},
       {:guilds, in_umbrella: true},
       {:dotenv, "~> 3.1.0"},
       {:ex_hash_ring, "~> 6.0"},

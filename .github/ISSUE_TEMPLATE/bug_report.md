@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report to help us improve and fix bugs
 title: "(B): REPLACE ME"
-labels: bug
+labels: type/bug
 assignees: ''
 
 ---
