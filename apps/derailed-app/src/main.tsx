@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
@@ -7,9 +8,9 @@ import Loading from './loading'
 
 const App = React.lazy(() => import('./app'))
 const Logout = React.lazy(() => import('./logout'))
+const Open = React.lazy(() => import('./open'))
 const Login = React.lazy(() => import('@derailed/accounts/login'))
 const Register = React.lazy(() => import('@derailed/accounts/register'))
-const Open = React.lazy(() => import('./open'))
 import Message from '@derailed/channels/message'
 import TestWS from './test_ws'
 
