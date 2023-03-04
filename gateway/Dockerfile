@@ -1,9 +1,7 @@
-FROM elixir:alpine as release
+FROM elixir:slim-buster as release
 
 WORKDIR /
 COPY . .
-
-RUN apk add curl
 
 # required for mix release deps
 RUN mix local.hex --force
@@ -18,7 +16,7 @@ RUN mix deps.compile
 RUN mix release stack
 
 # recopy to open new build files
-FROM elixir:alpine
+FROM elixir:slim-buster
 
 COPY --from=release /_build/prod/rel/stack .
 
