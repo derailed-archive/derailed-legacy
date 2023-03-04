@@ -9,8 +9,8 @@ RUN apk add curl
 RUN mix local.hex --force
 RUN mix local.rebar --force
 # required for auth module
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain x86_64-unknown-linux-gnu
-ENV PATH="/root/.cargo/bin:${PATH}"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable-x86_64-unknown-linux-gnu
+ENV PATH="$HOME/.cargo/bin:${PATH}"
 # release a production version
 ENV MIX_ENV=prod
 RUN mix deps.get
