@@ -3,7 +3,7 @@ FROM elixir:alpine as release
 WORKDIR /
 COPY . .
 
-apk add curl
+RUN apk add curl
 
 # required for mix release deps
 RUN mix local.hex --force
