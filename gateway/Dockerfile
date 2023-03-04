@@ -1,4 +1,4 @@
-FROM elixir:slim-buster as release
+FROM elixir:slim as release
 
 WORKDIR /
 COPY . .
@@ -16,7 +16,7 @@ RUN mix deps.compile
 RUN mix release stack
 
 # recopy to open new build files
-FROM elixir:slim-buster
+FROM elixir:slim
 
 COPY --from=release /_build/prod/rel/stack .
 
