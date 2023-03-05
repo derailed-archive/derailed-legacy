@@ -1,6 +1,6 @@
 ![Derailedeon](./assets/derailedeon.png)
 
-Welcome to the free text & voice platform for Gamers.
+Welcome to the free text & voice platform for open and speedy distributed communication.
 
 This is the publicly available source code of Derailed and is used for issue tracking, 
 general project management, and more.
