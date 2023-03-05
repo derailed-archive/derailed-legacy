@@ -9,5 +9,5 @@ timeout_sec = 36000
 commit_title = "Auto merge of ${PR_REFS}"
 
 [committer]
-name = "Cassandara"
+name = "cassandara"
 email = "106465547+cassandara@users.noreply.github.com"
