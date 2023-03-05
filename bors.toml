@@ -1,6 +1,7 @@
 status = [
   "build-app",
-  "build-website"
+  "build-website",
+  "build-gateway"
 ]
 block_labels = [ "type/do-not-merge" ]
 cut_body_after = "<details>"
