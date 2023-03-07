@@ -90,7 +90,7 @@ defmodule Derailed.Session do
       Derailed.Guild.subscribe(guild_pid, self(), state.id)
 
       {:ok, guild_presences_pid} =
-        GenRegistry.lookup_or_start(Derailed.Presence.Guild, guild_object.id)
+        GenRegistry.lookup_or_start(Derailed.Presence.Guild, guild_object.id, [guild_object.id])
 
       if settings.status != "offline" do
         Derailed.Presence.Guild.publish(
@@ -137,11 +137,15 @@ defmodule Derailed.Session do
 
       GenRegistry.stop(Derailed.Session, state.id)
     end
+
+    {:noreply, state}
   end
 
   def handle_info({:publish, message}, state) do
     # TODO: handle ws_pid being nil
     Logger.debug "Publishing message #{inspect(message)} to ws_pid"
-    Manifold.send(state.pid, {:i1_s, message})
+    Manifold.send(state.ws_pid, {:i1_s, message})
+
+    {:noreply, state}
   end
 end
