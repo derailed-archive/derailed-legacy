@@ -92,10 +92,10 @@ defmodule Derailed.WebSocket.Connection do
   def websocket_info({:i1_s, message}, state) do
     Logger.debug "Received event: #{inspect(message)}"
     if state.sequence != nil do
-      {:reply, {:text, encode(0, state.sequence + 1, message)},
+      {:reply, {:text, encode(0, state.sequence + 1, message.d, message.t)},
        %{state | sequence: state.sequence + 1}}
     else
-      {:reply, {:text, encode(0, 1, message)}, %{state | sequence: 0}}
+      {:reply, {:text, encode(0, 1, message.d, message.t)}, %{state | sequence: 0}}
     end
   end
 

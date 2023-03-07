@@ -82,9 +82,20 @@ defmodule Derailed.Session do
           where: g.id == ^guild_id,
           select: g
         )
+      get_channels_query =
+        from(c in Derailed.Database.Channel,
+          where: c.guild_id == ^guild_id,
+          select: c
+        )
+
+      chobjs = Derailed.Database.Repo.all(get_channels_query)
+      channel_objects = Enum.map(chobjs, fn channel ->
+        Map.delete(Map.from_struct(channel), :__meta__)
+      end)
 
       guild_object =
         Map.delete(Map.from_struct(Derailed.Database.Repo.one(get_guild_query)), :__meta__)
+      guild_object = Map.put(guild_object, "channels", channel_objects)
 
       {:ok, guild_pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id, [guild_object.id])
       Derailed.Guild.subscribe(guild_pid, self(), state.id)

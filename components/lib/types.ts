@@ -10,7 +10,7 @@ export interface User {
 
 export interface Channel {
     id: string,
-    type: number,
+    type: string,
     name: string | null,
     last_message_id: string | null,
     parent_id: string | null,
@@ -32,5 +32,6 @@ export interface Guild {
     name: string,
     flags: number,
     owner_id: string,
-    permissions: number
+    permissions: number,
+    channels?: Channel[]
 }

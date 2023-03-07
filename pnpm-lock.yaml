@@ -10,6 +10,7 @@ importers:
       '@derailed/accounts': workspace:^0.0.0
       '@derailed/channels': workspace:^0.0.0
       '@derailed/library': workspace:^0.0.0
+      '@iconify/react': ^4.1.0
       '@types/react': ^18.0.28
       '@types/react-dom': ^18.0.11
       '@vitejs/plugin-react-swc': ^3.2.0
@@ -26,6 +27,7 @@ importers:
       '@derailed/accounts': link:../../components/accounts
       '@derailed/channels': link:../../components/channels
       '@derailed/library': link:../../components/lib
+      '@iconify/react': 4.1.0_react@18.2.0
       mobx-react-lite: 3.4.1_biqbaboplfbrettd7655fr4n2y
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -61,6 +63,7 @@ importers:
   components/channels:
     specifiers:
       '@derailed/library': workspace:^0.0.0
+      '@iconify/react': ^4.1.0
       '@types/react': ^18.0.27
       '@types/react-dom': ^18.0.10
       '@types/react-router-dom': ^5.3.3
@@ -71,6 +74,7 @@ importers:
       tailwindcss: ^3.2.7
     dependencies:
       '@derailed/library': link:../lib
+      '@iconify/react': 4.1.0_react@18.2.0
       '@types/react': 18.0.28
       '@types/react-dom': 18.0.11
       '@types/react-router-dom': 5.3.3
@@ -637,6 +641,19 @@ packages:
     os: [win32]
     requiresBuild: true
     optional: true
+
+  /@iconify/react/4.1.0_react@18.2.0:
+    resolution: {integrity: sha512-Mf72i3TNNKpKCKxmo7kzqyrUdCgaoljpqtWmtqpqwyxoV4ukhnDsSRNLhf2yBnqGr3cVZsdj/i0FMpXIY0Qk0g==}
+    peerDependencies:
+      react: '>=16'
+    dependencies:
+      '@iconify/types': 2.0.0
+      react: 18.2.0
+    dev: false
+
+  /@iconify/types/2.0.0:
+    resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
+    dev: false
 
   /@jridgewell/gen-mapping/0.1.1:
     resolution: {integrity: sha512-sQXCasFk+U8lWYEe66WxRDOE9PjVz4vSM51fTu3Hw+ClTpUSQb718772vH3pyS5pShp6lvQM7SxgIDXXXmOX7w==}

@@ -1,27 +1,13 @@
-import React, { useState } from "react";
+import { state } from "@derailed/library/state";
 import { observer } from "mobx-react-lite";
-import { Guild } from "@derailed/library/types";
 import { useNavigate } from "react-router-dom"
 
 
-interface Props {
-    guilds: Array<Guild>
-}
-
-
-const GuildSidebar = observer((props: Props) => {
+const GuildSidebar = observer(() => {
     const navigate = useNavigate()
-    const [currentGuild, setCurrentGuild] = useState<string | null>(null)
-    const enter_guild = (_: any) => {
-        if (currentGuild !== null) {
-            navigate(`/guilds/${currentGuild}`)
-        }
-    }
-    const mouse_over = (event: any) => {
-        setCurrentGuild(event.id)
-    }
-    const mouse_out = (_: any) => {
-        setCurrentGuild(null)
+    const enter_guild = (event: any) => {
+        console.log(event)
+        navigate(`/guilds/${event.target.id}`)
     }
 
     return (
@@ -36,10 +22,10 @@ const GuildSidebar = observer((props: Props) => {
                     <hr className="bg-derailed-gray rounded-full h-[2px] border-none" />
                 </div>
                 <div aria-label="Guilds">
-                    {props.guilds.map(guild => {
+                    {state.guilds.map(guild => {
                         return (
-                            <li className="bg-derailed-gray transition duration-300 rounded-full hover:rounded-xl" style={{listStyleType: "none"}} onClick={enter_guild} onMouseEnter={mouse_over} onMouseLeave={mouse_out}>
-                                <div id={guild.id} className="bg-gray-600 rounded-full w-10 h-10" role="treeitem" aria-label={guild.name}>
+                            <li key={guild.id} className="text-white max-w-[45px] py-2 text-center bg-derailed-gray mb-2 ease-in-out text-xl transition duration-800 rounded-full hover:rounded-xl hover:bg-verlp hover:text-white m-auto" style={{listStyleType: "none"}} onClick={enter_guild}>
+                                <div id={guild.id} role="treeitem" aria-label={guild.name}>
                                     {guild.name.replace(/[^A-Z]+/g, "").slice(0, 3)}
                                 </div>
                             </li>

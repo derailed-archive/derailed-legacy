@@ -8,6 +8,7 @@ import Loading from './Loading'
 const App = React.lazy(() => import('./App'))
 const Logout = React.lazy(() => import('./Logout'))
 const Open = React.lazy(() => import('./open'))
+const Guild = React.lazy(() => import('./guild'))
 const Login = React.lazy(() => import('@derailed/accounts/login'))
 const Register = React.lazy(() => import('@derailed/accounts/register'))
 import Message from '@derailed/channels/message'
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
   {
     path: '/channels/@self',
     element: <Suspense fallback={<Loading />}><Open /></Suspense>
+  },
+  {
+    path: '/guilds/:guild_id',
+    element: <Suspense fallback={<Loading />}><Guild /></Suspense>
   }
 ])
 
