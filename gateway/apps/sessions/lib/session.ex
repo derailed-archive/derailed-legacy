@@ -86,8 +86,8 @@ defmodule Derailed.Session do
       guild_object =
         Map.delete(Map.from_struct(Derailed.Database.Repo.one(get_guild_query)), :__meta__)
 
-      Manifold.send(state.ws_pid, {:publish, %{t: "GUILD_CREATE", d: guild_object}})
-      {:ok, _pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id)
+      {:ok, guild_pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id, [guild_object.id])
+      Derailed.Guild.subscribe(guild_pid, self(), state.id)
 
       {:ok, guild_presences_pid} =
         GenRegistry.lookup_or_start(Derailed.Presence.Guild, guild_object.id)
@@ -100,6 +100,8 @@ defmodule Derailed.Session do
           activities
         )
       end
+
+      Manifold.send(state.ws_pid, {:i1_s, %{t: "GUILD_CREATE", d: guild_object}})
 
       Derailed.Presence.Guild.get_presences(guild_presences_pid, self())
     end)

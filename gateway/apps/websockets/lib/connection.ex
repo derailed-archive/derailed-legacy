@@ -123,7 +123,7 @@ defmodule Derailed.WebSocket.Connection do
 
     case Derailed.Ready.verify_token(token) do
       {:ok, user} ->
-        {:ok, session_pid, session_id} = Derailed.Ready.make(user, self())
+        {:ok, session_pid, session_id, _registry_pid} = Derailed.Ready.make(user, self())
 
         {:reply, {:text, encode(1, nil, %{"user" => user, "session_id" => session_id})},
          %{state | session_pid: session_pid}}

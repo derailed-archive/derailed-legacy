@@ -30,7 +30,12 @@ export class State {
             this.ws.connect()
             this.ws.emitter.on("HELLO", () => this.ws?.identify())
             this._started = true
+            this.ws.emitter.on('GUILD_CREATE', this.on_guild_create)
         }
+    }
+
+    on_guild_create(guild: Guild) {
+        this.guilds.push(guild)
     }
 }
 

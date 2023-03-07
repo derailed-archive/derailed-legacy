@@ -47,7 +47,7 @@ async def create_guild(
     session: AsyncSession = Depends(uses_db),
     user: User = Depends(uses_auth),
 ) -> None:
-    new_guild_position = GuildPosition.for_new(session, user.id)
+    new_guild_position = await GuildPosition.for_new(session, user.id)
 
     guild = Guild(
         id=medium.snowflake(),
