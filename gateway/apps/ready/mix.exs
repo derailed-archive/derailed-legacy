@@ -31,7 +31,9 @@ defmodule Derailed.Ready.MixProject do
       {:sessions, in_umbrella: true},
       {:auth, in_umbrella: true},
       {:fastglobal, "~> 1.0"},
-      {:grpc, "~> 0.5"}
+      {:grpc, "~> 0.5"},
+      {:guilds, in_umbrella: true},
+      {:presences, in_umbrella: true}
     ]
   end
 end

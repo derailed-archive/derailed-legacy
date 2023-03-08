@@ -11,6 +11,7 @@ module.exports = {
         'login': "url('/imgs/bg-media.jpg')"
       },
       colors: {
+        'light-dark': '#323036',
         'dark': '#232226',
         'darker-dark': '#1F1F22',
         'derailed-gray': '#5a5c5a',

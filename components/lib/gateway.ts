@@ -43,8 +43,6 @@ class Gateway {
         }
 
         this._ws.onmessage = (event) => {
-            console.log(`>> [WS] -: RECEIVED MESSAGE (${event.data})`)
-
             const message: GatewayMessage = JSON.parse(event.data)
 
             if (message.s !== undefined) {

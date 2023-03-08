@@ -91,3 +91,19 @@ defmodule Derailed.Database.MemberRole do
     field(:guild_id, :integer, primary_key: true)
   end
 end
+
+defmodule Derailed.Database.Channel do
+  use Ecto.Schema
+
+  @primary_key false
+
+  schema "channels" do
+    field(:id, :integer, primary_key: true)
+    field(:type, :string)
+    field(:name, :string)
+    field(:last_message_id, :integer)
+    field(:parent_id, :integer)
+    field(:guild_id, :integer)
+    field(:position, :integer)
+  end
+end

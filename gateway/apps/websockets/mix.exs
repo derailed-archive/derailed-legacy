@@ -30,7 +30,9 @@ defmodule Derailed.WebSocket.MixProject do
       {:ready, in_umbrella: true},
       {:cowboy, "~> 2.9"},
       {:jsonrs, "~> 0.2.1"},
-      {:ex_json_schema, "~> 0.9.2"}
+      {:ex_json_schema, "~> 0.9.2"},
+      {:guilds, in_umbrella: true},
+      {:presences, in_umbrella: true}
     ]
   end
 end

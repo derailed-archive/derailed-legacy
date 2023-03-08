@@ -82,15 +82,26 @@ defmodule Derailed.Session do
           where: g.id == ^guild_id,
           select: g
         )
+      get_channels_query =
+        from(c in Derailed.Database.Channel,
+          where: c.guild_id == ^guild_id,
+          select: c
+        )
+
+      chobjs = Derailed.Database.Repo.all(get_channels_query)
+      channel_objects = Enum.map(chobjs, fn channel ->
+        Map.delete(Map.from_struct(channel), :__meta__)
+      end)
 
       guild_object =
         Map.delete(Map.from_struct(Derailed.Database.Repo.one(get_guild_query)), :__meta__)
+      guild_object = Map.put(guild_object, "channels", channel_objects)
 
-      Manifold.send(state.ws_pid, {:publish, %{t: "GUILD_CREATE", d: guild_object}})
-      {:ok, _pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id)
+      {:ok, guild_pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id, [guild_object.id])
+      Derailed.Guild.subscribe(guild_pid, self(), state.id)
 
       {:ok, guild_presences_pid} =
-        GenRegistry.lookup_or_start(Derailed.Presence.Guild, guild_object.id)
+        GenRegistry.lookup_or_start(Derailed.Presence.Guild, guild_object.id, [guild_object.id])
 
       if settings.status != "offline" do
         Derailed.Presence.Guild.publish(
@@ -100,6 +111,8 @@ defmodule Derailed.Session do
           activities
         )
       end
+
+      Manifold.send(state.ws_pid, {:i1_s, %{t: "GUILD_CREATE", d: guild_object}})
 
       Derailed.Presence.Guild.get_presences(guild_presences_pid, self())
     end)
@@ -135,11 +148,15 @@ defmodule Derailed.Session do
 
       GenRegistry.stop(Derailed.Session, state.id)
     end
+
+    {:noreply, state}
   end
 
   def handle_info({:publish, message}, state) do
     # TODO: handle ws_pid being nil
     Logger.debug "Publishing message #{inspect(message)} to ws_pid"
-    Manifold.send(state.pid, {:i1_s, message})
+    Manifold.send(state.ws_pid, {:i1_s, message})
+
+    {:noreply, state}
   end
 end

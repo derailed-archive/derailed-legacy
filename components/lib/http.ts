@@ -38,6 +38,12 @@ class HTTPClient {
     ) {
         return await this.request('/register', 'POST', { 'username': username, 'email': email, 'password': password })
     }
+
+    async get_guild(
+        guild_id: string
+    ) {
+        return await this.request(`/guilds/${guild_id}`, 'GET')
+    }
 }
 
 

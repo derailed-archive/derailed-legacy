@@ -40,7 +40,8 @@ defmodule Derailed.Guild.MixProject do
       {:dotenv, "~> 3.1.0"},
       {:manifold, "~> 1.6"},
       {:zen_monitor, "~> 2.0.2"},
-      {:database, in_umbrella: true}
+      {:database, in_umbrella: true},
+      {:presences, in_umbrella: true}
     ]
   end
 end
