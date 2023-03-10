@@ -12,7 +12,7 @@ interface Props {
 
 const Channel = observer((props: Props) => {
     return (
-        <div>
+        <div className="bg-light-dark">
             <ChannelHeader channel_id={props.channel_id} />
             <MessageList messages={state.channel_messages.get(String(props.channel_id)) ?? []} />
         </div>

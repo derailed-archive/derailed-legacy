@@ -98,7 +98,7 @@ defmodule Derailed.Database.Channel do
   @primary_key false
 
   schema "channels" do
-    field(:id, :integer, primary_key: true)
+    field(:id, :integer)
     field(:type, :string)
     field(:name, :string)
     field(:last_message_id, :integer)

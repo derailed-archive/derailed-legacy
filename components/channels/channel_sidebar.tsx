@@ -34,7 +34,7 @@ const ChannelSidebar = observer((props: Props) => {
                             )
                         } else if (channel.id === state.current_channel) {
                             return (
-                                <li id={channel.id} key={String(channel.id).concat("-", channel.name ?? "unknown")} className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 bg-light-dark" onClick={enter_channel}>
+                                <li id={channel.id} key={channel.id} className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 bg-light-dark" onClick={enter_channel}>
                                     <div className="w-20 mt-10 hidden">
                                         <Icon icon="fluent:channel-24-regular" color="#5a5c5a" />
                                     </div>
@@ -45,7 +45,7 @@ const ChannelSidebar = observer((props: Props) => {
                             )
                         } else {
                             return (
-                                <li id={channel.id} key={String(channel.id).concat("-", channel.name ?? "unknown")} className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 hover:bg-light-dark" onClick={enter_channel}>
+                                <li id={channel.id} key={channel.id} className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 hover:bg-light-dark" onClick={enter_channel}>
                                     <div className="w-20 mt-10 hidden">
                                         <Icon icon="fluent:channel-24-regular" color="#5a5c5a" />
                                     </div>

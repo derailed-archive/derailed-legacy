@@ -1,19 +1,31 @@
 import { state } from "@derailed/library/state"
 import { observer } from "mobx-react-lite"
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
     setExit: any
 }
 
 const GuildCreateModal = observer((props: Props) => {
+    const navigate = useNavigate()
     const [guildName, setGuildName] = useState()
 
     const handleCreate = async (event: any) => {
+        event.preventDefault()
+        console.log('h')
         // this doesn't need to be cached as it is gonna be sent from the Gateway
         // @ts-ignore
-        await state.rest.create_guild(guildName)
-        props.setExit(false)
+        const guild = await state.rest.create_guild(guildName)
+
+        // @ts-ignore
+        if (guild.id !== undefined) {
+            props.setExit(false)
+            // @ts-ignore
+            navigate(`/channels/${guild.id}`)
+        } else {
+            navigate('/errors/500')
+        }
     }
 
     return (
@@ -31,7 +43,7 @@ const GuildCreateModal = observer((props: Props) => {
                         Make a new shiny Guild for your friends, or a bustling community!
                     </h3>
                     <div id="input" className="mt-10 flex flex-col items-center justify-center max-w-xl">
-                        <form>
+                        <form onSubmit={handleCreate} onReset={(event) => {event.preventDefault();props.setExit(false)}}>
                             <div className="flex gap-2">
                                 <label className="font-bold text-white text-sm text-derailed-gray">GUILD NAME</label>
                                 <input className="rounded-lg bg-darker-dark m-auto text-white" required minLength={1} maxLength={32} onChange={(event) => {
@@ -39,8 +51,8 @@ const GuildCreateModal = observer((props: Props) => {
                                     setGuildName(event.target.value)}} />
                             </div>
                             <div className="flex gap-10 items-center justify-center mt-10">
-                                <button className="text-white rounded-xl bg-verlp px-3 py-1" onSubmit={handleCreate}>Create</button>
-                                <button type="submit" className="text-white" onSubmit={(event) => {event.preventDefault();props.setExit(false)}}>Exit</button>
+                                <button type="submit" className="text-white rounded-xl bg-verlp px-3 py-1">Create</button>
+                                <button type="reset" className="text-white">Exit</button>
                             </div>
                         </form>
                     </div>

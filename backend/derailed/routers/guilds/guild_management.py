@@ -65,9 +65,7 @@ async def create_guild(
 
     await session.commit()
 
-    prepare_default_channels(guild, session)
-
-    await session.commit()
+    await prepare_default_channels(guild, session)
 
     publish_to_user(user_id=user.id, event='GUILD_CREATE', data=to_dict(guild))
 

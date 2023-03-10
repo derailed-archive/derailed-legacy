@@ -83,7 +83,13 @@ def version(
             )
 
             if minimum_version == default_version:
-                router.add_api_route(f'/{path}', func, methods=[method], **kwargs)
+                router.add_api_route(f'{path}', func, methods=[method], **kwargs)
         return func
 
     return wrapper
+
+if __name__ == '__main__':
+    while True:
+        print(medium.snowflake())
+        print(medium.snowflake())
+        print(medium.snowflake())
