@@ -1,5 +1,13 @@
 ---
-import '../Inter.ttf'
+import '@fontsource/inter/100.css'
+import '@fontsource/inter/200.css'
+import '@fontsource/inter/300.css'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
+import '@fontsource/inter/800.css'
+import '@fontsource/inter/900.css'
 import { Icon } from 'astro-icon'
 import Header from '../components/header.astro';
 import Feature from '../components/feature.astro';
@@ -15,30 +23,30 @@ import FeatureRight from '../components/feature_right.astro';
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://derailed.one/" />
 		<meta property="og:site_name" content="Derailed" />
-		<meta property="og:keywords" content="Free chat,Communications,Chat app,Derailed,Voice,Free voice,Chat,Discord alternatives,Open source chat" />
+		<meta property="og:keywords" content="Free chat,Communications,Chat app,Derailed,Voice,Free voice,Chat,Discord alternatives,Open source chat,Open Communications, Free chat" />
 		<meta property="og:description" content="The new open free voice & text communications platform for chat. Play games, talk to your friends, and hang out all in a safe and open environment." />
 		<meta property="description" content="The new open free voice & text communications platform for chat. Play games, talk to your friends, and hang out all in a safe and open environment." />
 	</head>
 	<body>
-		<div class="bg-white pb-10">
+		<div class="bg-[#2D2C30] pb-10 sm:px-2">
 			<Header />
 			<div>
-				<div class="bg-gray-200 rounded-3xl rounded-t-none font-header max-w-7xl m-auto">
+				<div class="bg-texty rounded-3xl rounded-t-none font-header max-w-7xl m-auto">
 					<div class="flex px-10 py-10">
-						<div class="block pl-4">
-							<h1 class="font-bold text-texty text-7xl max-w-xl pt-20">
+						<div class="block pl-7">
+							<h1 class="font-bold text-white text-7xl max-w-lg pt-20">
 								Communication should be in
 							</h1>
-							<h1 class="font-bold text-[#706FE3] text-7xl max-w-xs py-2 border rounded-xl border-texty mb-10">
+							<h1 class="font-bold text-texty text-7xl max-w-xs py-2 border rounded-xl border-almost-black-but-not bg-gradient-to-r from-[#706FE3] to-[#e65fed] mb-10">
 								your control.
 							</h1>
-							<a class="mt-10" href="/register">
+							<a class="mt-10 ml-5" href="/register">
 								<button class="text-gray-200 text-xl rounded-xl border border-[#706FE3] bg-[#706FE3] transition duration-500 hover:bg-almost-dark-blue px-5 py-2">
 									Try for free
 								</button>
 							</a>
 						</div>
-						<div class="w-80 max-md:hidden mt-20 ml-32">
+						<div class="w-80 max-lg:hidden mt-20 ml-56">
 							<Icon name="mascot" />
 						</div>
 					</div>
@@ -52,24 +60,24 @@ import FeatureRight from '../components/feature_right.astro';
 			<FeatureRight fname="open-source" header="Open for the People." svg="source-repository-multiple" description="Derailed is completely open source to give benefit to people wanting to use their own specialized Derailed. You can easily open up your computer and host Derailed any time!" />
 			<div class="pt-36" />
 			<div>
-				<div class="bg-gray-200 rounded-3xl font-header max-w-7xl m-auto">
+				<div class="bg-texty rounded-3xl font-header max-w-7xl m-auto pb-20">
 					<div class="flex px-10 py-10">
-						<div class="block pl-4">
+						<div class="block pl-10">
 							<h1 class="font-bold text-right text-[#706FE3] text-7xl max-w-xl pt-20">
 								What are you waiting for?
 							</h1>
-							<h3 class="font-normal text-right text-[#232226] text-xl max-w-lg pl-3 mt-10 pb-10">
+							<h3 class="font-normal text-right text-white text-xl max-w-lg pl-3 mt-10 pb-10">
 								Derailed is completely free, and is out now! Don't be scared to try is just because it's new,
 								give yourself a feel first.
 							</h3>
 							<a class="pl-40" href="/register">
-								<button class="text-gray-200 text-lg rounded-xl border border-[#706FE3] bg-[#706FE3] ml-10 transition duration-500 hover:bg-almost-dark-blue px-5 py-2">
+								<button class="text-gray-200 font-semibold text-lg rounded-xl border border-[#706FE3] bg-[#706FE3] ml-10 transition duration-300 hover:bg-gradient-to-r from-[#706FE3] to-[#e65fed] px-5 py-2">
 									Don't miss the new platform
 								</button>
 							</a>
 						</div>
-						<div class="w-80 max-md:hidden mt-20 ml-32">
-							<Icon name="mdi:open-source-initiative" style="color: #23272a;" />
+						<div class="w-80 max-lg:hidden mt-20 ml-32">
+							<Icon name="mdi:open-source-initiative" style="color: #706FE3;" />
 						</div>
 					</div>
 				</div>

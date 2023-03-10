@@ -10,6 +10,7 @@ interface GatewayMessage {
     d: object | undefined
 }
 
+
 class Gateway {
     private _token: string | null
     private _ws: WebSocket | null
@@ -39,6 +40,7 @@ class Gateway {
         this._ws.onclose = (event) => {
             console.log(`>> [WS] -: CLOSED (${event.code})`)
             clearInterval(this._interval_pinger)
+            this.emitter.emit("CLOSE")
             this.connect()
         }
 

@@ -12,6 +12,7 @@ export class State {
     public guilds: Array<Guild>
     public guilds_map: Map<string, Guild>
     public guild_channels: Map<string, Array<Channel>>
+    public current_channel: string | null
     private _started: boolean
 
     constructor() {
@@ -30,6 +31,12 @@ export class State {
         this.guild_channels = new Map()
         this.guilds = new Array()
         this.guilds_map = new Map()
+
+        this.current_channel = null
+    }
+
+    setChannel(channel_id: string) {
+        this.current_channel = channel_id
     }
 
     start() {
@@ -38,6 +45,7 @@ export class State {
             this.ws.emitter.on("HELLO", () => this.ws?.identify())
             this._started = true
             this.ws.emitter.on('GUILD_CREATE', this.on_guild_create, this)
+            this.ws.emitter.on("CLOSE", this.on_close, this)
         }
     }
 
@@ -54,6 +62,17 @@ export class State {
 
         // @ts-ignore
         this.guild_channels.set(String(guild.id), channels)
+        channels?.forEach((v, _idx, _arr) => { this.channels.set(v.id, v) })
+    }
+
+    on_close() {
+        // this follows our API principle:
+        // Data shouldn't be cached after disconnection
+        this.guilds = []
+        this.guild_channels.clear()
+        this.channels.clear()
+        this.channel_messages.clear()
+        this.guilds_map.clear()
     }
 }
 

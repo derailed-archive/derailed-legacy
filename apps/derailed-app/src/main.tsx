@@ -9,6 +9,7 @@ const App = React.lazy(() => import('./App'))
 const Logout = React.lazy(() => import('./Logout'))
 const Open = React.lazy(() => import('./open'))
 const Guild = React.lazy(() => import('./guild'))
+const Channel = React.lazy(() => import('./channel'))
 const Login = React.lazy(() => import('@derailed/accounts/login'))
 const Register = React.lazy(() => import('@derailed/accounts/register'))
 import Message from '@derailed/channels/message'
@@ -45,8 +46,12 @@ const router = createBrowserRouter([
     element: <Suspense fallback={<Loading />}><Open /></Suspense>
   },
   {
-    path: '/guilds/:guild_id',
+    path: '/channels/:guild_id',
     element: <Suspense fallback={<Loading />}><Guild /></Suspense>
+  },
+  {
+    path: '/channels/:guild_id/:channel_id',
+    element: <Suspense fallback={<Loading />}><Channel /></Suspense>
   }
 ])
 

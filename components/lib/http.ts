@@ -44,6 +44,10 @@ class HTTPClient {
     ) {
         return await this.request(`/guilds/${guild_id}`, 'GET')
     }
+
+    async create_guild(name: string) {
+        return await this.request('/guilds', 'POST', { 'name': name })
+    }
 }
 
 

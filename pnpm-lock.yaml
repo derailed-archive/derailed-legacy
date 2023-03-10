@@ -15,6 +15,7 @@ importers:
       '@types/react-dom': ^18.0.11
       '@vitejs/plugin-react-swc': ^3.2.0
       autoprefixer: ^10.4.13
+      mobx: ^6.8.0
       mobx-react-lite: ^3.4.1
       postcss: ^8.4.21
       react: ^18.2.0
@@ -28,7 +29,8 @@ importers:
       '@derailed/channels': link:../../components/channels
       '@derailed/library': link:../../components/lib
       '@iconify/react': 4.1.0_react@18.2.0
-      mobx-react-lite: 3.4.1_biqbaboplfbrettd7655fr4n2y
+      mobx: 6.8.0
+      mobx-react-lite: 3.4.1_woojb62cqeyk443mbl7msrwu2e
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-router-dom: 6.8.2_biqbaboplfbrettd7655fr4n2y
@@ -106,11 +108,13 @@ importers:
   website:
     specifiers:
       '@astrojs/tailwind': ^3.0.1
+      '@fontsource/inter': ^4.5.15
       astro: ^2.0.17
       astro-icon: ^0.8.0
       tailwindcss: ^3.2.7
     dependencies:
       '@astrojs/tailwind': 3.0.1_o7rlocdsudmdrstqcqbafrcodq
+      '@fontsource/inter': 4.5.15
       astro: 2.0.17
       astro-icon: 0.8.0
       tailwindcss: 3.2.7
@@ -641,6 +645,10 @@ packages:
     os: [win32]
     requiresBuild: true
     optional: true
+
+  /@fontsource/inter/4.5.15:
+    resolution: {integrity: sha512-FzleM9AxZQK2nqsTDtBiY0PMEVWvnKnuu2i09+p6DHvrHsuucoV2j0tmw+kAT3L4hvsLdAIDv6MdGehsPIdT+Q==}
+    dev: false
 
   /@iconify/react/4.1.0_react@18.2.0:
     resolution: {integrity: sha512-Mf72i3TNNKpKCKxmo7kzqyrUdCgaoljpqtWmtqpqwyxoV4ukhnDsSRNLhf2yBnqGr3cVZsdj/i0FMpXIY0Qk0g==}
@@ -2545,7 +2553,7 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /mobx-react-lite/3.4.1_biqbaboplfbrettd7655fr4n2y:
+  /mobx-react-lite/3.4.1_woojb62cqeyk443mbl7msrwu2e:
     resolution: {integrity: sha512-K3eypcF+Lngv7nPqCz5IZb+6DQ4EiFBbE3fisgUSekRtiYmyNBa0E9P1dfnXDXqVC5Td7BUc/eq8R2Z1JEiJVQ==}
     peerDependencies:
       mobx: ^6.1.0
@@ -2558,6 +2566,7 @@ packages:
       react-native:
         optional: true
     dependencies:
+      mobx: 6.8.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false

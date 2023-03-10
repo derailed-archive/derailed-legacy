@@ -2,9 +2,14 @@ import GuildSidebar from '@derailed/channels/guild_sidebar'
 import { state } from '@derailed/library/state'
 import { observer } from 'mobx-react-lite'
 import './arbitrary.css'
+import { Navigate } from 'react-router-dom'
 
 
 const Open = observer(() => {
+    if (localStorage.getItem("token") === null) {
+        return <Navigate to="/login" />
+    }
+
     state.start()
 
     return (

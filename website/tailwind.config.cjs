@@ -9,6 +9,7 @@ module.exports = {
 				'almost-blue': '#807ef2',
 				'almost-dark-blue': '#6b69c7',
 				'texty': '#23272A',
+				'derailed-gray': '#6b6b6b',
 			},
 			fontFamily: {
 				'header': ['Inter'],
