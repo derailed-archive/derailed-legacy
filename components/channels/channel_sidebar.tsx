@@ -14,9 +14,9 @@ const ChannelSidebar = observer((props: Props) => {
     const enter_channel = (event: any) => {
         console.log(event)
         if (state.current_channel !== event.target.key) {
-            navigate(`/channels/${props.guild_id}/${event.target.parentElement.id}`)
+            navigate(`/channels/${props.guild_id}/${event.target.parentElement.key}`)
         } else if (state.current_channel === undefined) {
-            navigate(`/channels/${props.guild_id}/${event.target.parentElement.id}`)
+            navigate(`/channels/${props.guild_id}/${event.target.parentElement.key}`)
         }
     }
 
