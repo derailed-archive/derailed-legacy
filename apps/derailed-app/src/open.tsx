@@ -18,7 +18,7 @@ const Open = observer(() => {
             <nav>
                 <GuildSidebar />
             </nav>
-            <div className='bg-dark w-full'>
+            <div className='bg-dark w-full select-none'>
                 <h1 className="text-center text-white text-4xl mt-32">
                     Welcome to back to Derailed!
                 </h1>

@@ -1,7 +1,6 @@
 import { state } from "@derailed/library/state"
 import { observer } from "mobx-react-lite"
 import { Icon } from '@iconify/react'
-import { Channel } from "@derailed/library/types"
 import { useNavigate } from "react-router-dom"
 
 interface Props {
@@ -13,7 +12,12 @@ const ChannelSidebar = observer((props: Props) => {
     const navigate = useNavigate()
 
     const enter_channel = (event: any) => {
-        navigate(`/channels/${props.guild_id}/${event.target.id}`)
+        console.log(event)
+        if (state.current_channel !== event.target.key) {
+            navigate(`/channels/${props.guild_id}/${event.target.parentElement.id}`)
+        } else if (state.current_channel === undefined) {
+            navigate(`/channels/${props.guild_id}/${event.target.parentElement.id}`)
+        }
     }
 
     return (
@@ -34,7 +38,7 @@ const ChannelSidebar = observer((props: Props) => {
                             )
                         } else if (channel.id === state.current_channel) {
                             return (
-                                <li id={channel.id} key={channel.id} className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 bg-light-dark" onClick={enter_channel}>
+                                <li id={channel.id} key={channel.id} className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 bg-light-dark">
                                     <div className="w-20 mt-10 hidden">
                                         <Icon icon="fluent:channel-24-regular" color="#5a5c5a" />
                                     </div>
@@ -45,13 +49,15 @@ const ChannelSidebar = observer((props: Props) => {
                             )
                         } else {
                             return (
-                                <li id={channel.id} key={channel.id} className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 hover:bg-light-dark" onClick={enter_channel}>
-                                    <div className="w-20 mt-10 hidden">
-                                        <Icon icon="fluent:channel-24-regular" color="#5a5c5a" />
+                                <li id={channel.id} key={channel.id} onClick={enter_channel}>
+                                    <div className="pt-2 pb-2 m-auto text-center select-none flex transition duration-100 hover:bg-light-dark">
+                                        <div className="w-20 mt-10 hidden">
+                                            <Icon icon="fluent:channel-24-regular" color="#5a5c5a" />
+                                        </div>
+                                        <h4 className="text-center m-auto">
+                                            {channel.name}
+                                        </h4>
                                     </div>
-                                    <h4 className="text-center m-auto">
-                                        {channel.name}
-                                    </h4>
                                 </li>
                             )
                         }

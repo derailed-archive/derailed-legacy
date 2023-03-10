@@ -32,10 +32,7 @@ const ChannelComponent = observer(() => {
 
     state.start()
 
-    action(() => {
-        // @ts-ignore
-        state.current_channel = channel_id
-    })
+    state.setChannel(channel_id)
 
     return (
         // @ts-ignore
