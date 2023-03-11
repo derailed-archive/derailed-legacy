@@ -11,6 +11,7 @@ const Open = observer(() => {
     }
 
     state.start()
+    state.setChannel(null)
 
     return (
         // @ts-ignore

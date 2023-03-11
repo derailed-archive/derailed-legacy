@@ -3,6 +3,7 @@ import ChannelHeader from "./channel_header";
 import MessageList from "./message_list";
 import { observer } from "mobx-react-lite"
 import { state } from "@derailed/library/state"
+import MessageInput from './message_input'
 
 
 interface Props {
@@ -12,9 +13,11 @@ interface Props {
 
 const Channel = observer((props: Props) => {
     return (
-        <div className="bg-light-dark">
-            <ChannelHeader channel_id={props.channel_id} />
-            <MessageList messages={state.channel_messages.get(String(props.channel_id)) ?? []} />
+        <div className="bg-light-dark select-none w-full">
+            <div>
+                <ChannelHeader channel_id={props.channel_id} />
+                <MessageList channel_id={props.channel_id} />
+            </div>
         </div>
     )
 })

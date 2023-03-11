@@ -12,7 +12,6 @@ interface GatewayMessage {
 
 
 class Gateway {
-    private _token: string | null
     private _ws: WebSocket | null
     private _sequence: number | null
     // @ts-ignore
@@ -23,7 +22,6 @@ class Gateway {
     public emitter: EventEmitter
 
     constructor() {
-        this._token = localStorage.getItem("token")
         this._ws = null
         this._sequence = null
         this.emitter = new EventEmitter()
@@ -53,6 +51,7 @@ class Gateway {
 
             if (message.op === 4) {
                 console.log(">> [WS] -: GIVEN HELLO")
+                // @ts-ignore
                 this._interval_pinger = setInterval(() => {
                     this._ws?.send(JSON.stringify({'op': 3, 'd': {'s': this._sequence}}))
                     console.log(`>> [WS] -: HEARTBEAT SEQUENCE ${this._sequence} FINISHED`)
@@ -75,7 +74,7 @@ class Gateway {
     }
 
     identify() {
-        this._ws?.send(JSON.stringify({'op': 1, 'd': {'token': this._token}}))
+        this._ws?.send(JSON.stringify({'op': 1, 'd': {'token': String(localStorage.getItem('token'))}}))
     }
 }
 

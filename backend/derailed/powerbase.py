@@ -150,10 +150,10 @@ def abort_forb() -> NoReturn:
 
 
 async def prepare_message(messages: ChannelMessage | list[ChannelMessage], session: AsyncSession) -> dict | list[dict]:
-    if isinstance(message, list):
+    if isinstance(messages, list):
         new_prel = []
         for message in messages:
-            new_prel.append(prepare_message(message))
+            new_prel.append(await prepare_message(message, session))
         return new_prel
     else:
         user = await User.get(session, messages.author_id)

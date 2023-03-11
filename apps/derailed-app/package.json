@@ -13,6 +13,7 @@
     "@derailed/channels": "workspace:^0.0.0",
     "@derailed/library": "workspace:^0.0.0",
     "@iconify/react": "^4.1.0",
+    "@types/node": "^18.15.0",
     "mobx": "^6.8.0",
     "mobx-react-lite": "^3.4.1",
     "react": "^18.2.0",
@@ -20,6 +21,7 @@
     "react-router-dom": "^6.8.2"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^1.2.3",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@vitejs/plugin-react-swc": "^3.2.0",

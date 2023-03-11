@@ -71,7 +71,7 @@ async def get_messages(
 
     messages = await Message.sorted_channel(session, channel, limit)
 
-    return prepare_message(messages)
+    return await prepare_message(messages, session)
 
 
 @version('/channels/{channel_id}/messages/{message_id}', 1, router, 'GET')
@@ -97,7 +97,7 @@ async def get_message(
     if message is None:
         raise HTTPException(404, 'Message not found')
 
-    return prepare_message(message)
+    return await prepare_message(message, session)
 
 
 class CreateMessage(BaseModel):
@@ -112,8 +112,8 @@ async def create_message(
     session: AsyncSession = Depends(uses_db),
     user: User = Depends(uses_auth),
 ) -> None:
-    if length_message(data) > 1024:
-        raise HTTPException(400, 'Message content must be or must be under 1024')
+    if length_message(data.content) > 2024:
+        raise HTTPException(400, 'Message content must be or must be under 2024')
 
     channel = await prepare_channel(session, channel_id)
 
@@ -146,7 +146,7 @@ async def create_message(
     if channel.guild_id is not None:
         publish_to_guild(channel.guild_id, 'MESSAGE_CREATE', to_dict(message))
 
-    return prepare_message(message)
+    return await prepare_message(message, session)
 
 
 class ModifyMessage(BaseModel):
@@ -180,7 +180,7 @@ async def edit_message(
     if channel.guild_id is not None:
         publish_to_guild(channel.guild_id, 'MESSAGE_EDIT', to_dict(message))
 
-    return prepare_message(message)
+    return await prepare_message(message, session)
 
 
 @version(

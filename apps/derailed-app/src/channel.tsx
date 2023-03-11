@@ -35,8 +35,7 @@ const ChannelComponent = observer(() => {
     state.setChannel(channel_id)
 
     return (
-        // @ts-ignore
-        <div className="flex bg-darker-dark" style={{msOverflowStyle: 'none', scrollbarWidth: 'none'}}>
+        <div className="flex bg-darker-dark flex-1">
             <nav>
                 <GuildSidebar />
             </nav>

@@ -35,17 +35,35 @@ export class State {
         this.current_channel = null
     }
 
-    setChannel(channel_id: string) {
+    setChannel(channel_id: string | null) {
         this.current_channel = channel_id
+    }
+
+    appendMessages(channel_id: string, messages: ChannelMessage[]) {
+        var channel_messages = this.channel_messages.get(channel_id)
+        messages.forEach((message, _idx, _arr) => {
+            if (channel_messages !== undefined) {
+                channel_messages.push(message)
+            } else {
+                channel_messages = new Array()
+            }
+        })
+
+        if (channel_messages === undefined) {
+            channel_messages = new Array()
+        }
+
+        this.channel_messages.set(channel_id, channel_messages)
     }
 
     start() {
         if (this._started === false) {
             this.ws.connect()
-            this.ws.emitter.on("HELLO", () => this.ws?.identify())
+            this.ws.emitter.on("HELLO", () => this.ws?.identify(), this)
             this._started = true
             this.ws.emitter.on('GUILD_CREATE', this.on_guild_create, this)
             this.ws.emitter.on("CLOSE", this.on_close, this)
+            this.ws.emitter.on("MESSAGE_CREATE", this.on_message_create, this)
         }
     }
 
@@ -73,6 +91,17 @@ export class State {
         this.channels.clear()
         this.channel_messages.clear()
         this.guilds_map.clear()
+    }
+
+    on_message_create(message: ChannelMessage) {
+        var channel_messages = this.channel_messages.get(message.channel_id)
+        if (channel_messages !== undefined) {
+            channel_messages.push(message)
+        } else {
+            channel_messages = new Array()
+        }
+
+        this.channel_messages.set(message.channel_id, channel_messages)
     }
 }
 
