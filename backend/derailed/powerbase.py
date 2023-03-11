@@ -150,10 +150,10 @@ def abort_forb() -> NoReturn:
 
 
 async def prepare_message(messages: ChannelMessage | list[ChannelMessage], session: AsyncSession) -> dict | list[dict]:
-    if isinstance(message, list):
+    if isinstance(messages, list):
         new_prel = []
         for message in messages:
-            new_prel.append(prepare_message(message))
+            new_prel.append(await prepare_message(message, session))
         return new_prel
     else:
         user = await User.get(session, messages.author_id)
@@ -354,9 +354,12 @@ async def prepare_channel(session: AsyncSession, channel_id: int) -> Channel:
     return channel
 
 
-def prepare_default_channels(guild: Guild, session: AsyncSession) -> None:
+async def prepare_default_channels(guild: Guild, session: AsyncSession) -> None:
+    cat_id = medium.snowflake()
+    general_id = medium.snowflake()
+    print(cat_id, general_id)
     cat = Channel(
-        id=medium.snowflake(),
+        id=cat_id,
         name='general',
         parent_id=None,
         type=ChannelType.CATEGORY,
@@ -364,9 +367,9 @@ def prepare_default_channels(guild: Guild, session: AsyncSession) -> None:
         position=1,
     )
     general = Channel(
-        id=medium.snowflake(),
+        id=general_id,
         name='general',
-        parent_id=cat.id,
+        parent_id=cat_id,
         type=ChannelType.TEXT,
         last_message_id=None,
         guild_id=guild.id,
@@ -374,3 +377,4 @@ def prepare_default_channels(guild: Guild, session: AsyncSession) -> None:
     )
 
     session.add_all([cat, general])
+    await session.commit()

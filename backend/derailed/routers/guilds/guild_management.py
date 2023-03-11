@@ -47,7 +47,7 @@ async def create_guild(
     session: AsyncSession = Depends(uses_db),
     user: User = Depends(uses_auth),
 ) -> None:
-    new_guild_position = GuildPosition.for_new(session, user.id)
+    new_guild_position = await GuildPosition.for_new(session, user.id)
 
     guild = Guild(
         id=medium.snowflake(),
@@ -65,9 +65,7 @@ async def create_guild(
 
     await session.commit()
 
-    prepare_default_channels(guild, session)
-
-    await session.commit()
+    await prepare_default_channels(guild, session)
 
     publish_to_user(user_id=user.id, event='GUILD_CREATE', data=to_dict(guild))
 

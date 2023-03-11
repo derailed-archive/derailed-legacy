@@ -27,7 +27,8 @@ defmodule Derailed.Database.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.9"},
-      {:postgrex, ">= 0.16.5"}
+      {:postgrex, ">= 0.16.5"},
+      {:presences, in_umbrella: true}
     ]
   end
 end

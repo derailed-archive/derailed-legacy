@@ -10,7 +10,6 @@ defmodule Derailed.Session.Application do
     children = [
       {GenRegistry, worker_module: Derailed.Session.Registry},
       {GenRegistry, worker_module: Derailed.Session},
-      {Task.Supervisor, name: Derailed.Session.AsyncIO}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

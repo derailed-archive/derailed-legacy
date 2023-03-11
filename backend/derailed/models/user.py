@@ -114,7 +114,7 @@ class GuildPosition(Base):
         if scalar is None:
             return 0
         else:
-            return scalar.position + 1
+            return scalar + 1
 
 
 class DefaultStatus(Enum):

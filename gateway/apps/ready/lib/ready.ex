@@ -28,7 +28,7 @@ defmodule Derailed.Ready do
     Derailed.Session.Registry.add_session(session_registry_pid, session_pid, session_id)
     Derailed.Ready.handle_for(session_pid)
 
-    {:ok, session_pid, session_id}
+    {:ok, session_pid, session_id, session_registry_pid}
   end
 
   @spec verify_token(String.t()) :: {:ok, map()} | {:error, :invalid_authorization}

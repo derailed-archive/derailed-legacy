@@ -1,23 +1,27 @@
 import GuildSidebar from '@derailed/channels/guild_sidebar'
-import { state as state_ctx } from '@derailed/library/state'
-import { useContext } from 'react'
+import { state } from '@derailed/library/state'
 import { observer } from 'mobx-react-lite'
 import './arbitrary.css'
+import { Navigate } from 'react-router-dom'
 
 
 const Open = observer(() => {
-    const state = useContext(state_ctx)
+    if (localStorage.getItem("token") === null) {
+        return <Navigate to="/login" />
+    }
+
     state.start()
+    state.setChannel(null)
 
     return (
         // @ts-ignore
         <div className="flex" style={{msOverflowStyle: 'none', scrollbarWidth: 'none'}}>
             <nav>
-                <GuildSidebar guilds={state.guilds} />
+                <GuildSidebar />
             </nav>
-            <div>
-                <h1 className="text-center text-white text-xl">
-                    Welcome to Derailed!
+            <div className='bg-dark w-full select-none'>
+                <h1 className="text-center text-white text-4xl mt-32">
+                    Welcome to back to Derailed!
                 </h1>
             </div>
         </div>

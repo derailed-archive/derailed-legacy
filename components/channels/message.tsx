@@ -2,7 +2,7 @@ import React from "react";
 
 // TODO: select author
 // @ts-ignore
-const Message = ({ author_name, author_id, timestamp, content }) => {
+const Message = ({ author_name, author_id, timestamp, message_id, content }) => {
     const milliseconds_day = 86_400_000
     const milliseconds_yesterday = milliseconds_day + milliseconds_day
     const messageTimestamp = new Date(timestamp)
@@ -17,7 +17,7 @@ const Message = ({ author_name, author_id, timestamp, content }) => {
     }
 
     return (
-        <li className="bg-dark hover:bg-darker-dark pb-5 pt-5 pl-4" style={{listStyleType: "none"}}>
+        <li className="bg-light-dark hover:bg-dark pb-5 pt-5 pl-4" key={message_id} style={{listStyleType: "none"}}>
             <div id="head" className="flex gap-3">
                 <div className="bg-gray-700 rounded-full w-10 h-10">
 

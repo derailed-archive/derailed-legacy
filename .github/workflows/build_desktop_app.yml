@@ -1,0 +1,35 @@
+# test that the desktop app can build
+
+name: Build Desktop App
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - trying
+  pull_request:
+
+
+jobs:
+  build-desktop-app:
+    runs-on: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17
+      - name: Setup Rust Toolchain
+        uses: actions-rs/toolchain@v1.0.6
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7.28.0
+      - name: Build App
+        run: |
+          pnpm i
+          cd apps/derailed-app
+          pnpm build
+      - name: Build Tauri
+        run: |
+          pnpm tauri build

@@ -53,7 +53,7 @@ defmodule Derailed.Presence.Guild do
     {:reply, :ok, state}
   end
 
-  def handle_call({:publish, user_id, status, activities}, _from, state) do
+  def handle_call({:publish, user_id, status, activities}, _from, %{sessions: sessions} = state) do
     data = %{
       "guild_id" => state.id,
       "user_id" => user_id,
@@ -61,7 +61,11 @@ defmodule Derailed.Presence.Guild do
       "activities" => activities
     }
 
-    Derailed.Presence.Guild.send(self(), data)
+    Enum.each(
+      sessions,
+      &Manifold.send(&1, {:publish, %{"t" => "PRESENCE_UPDATE", "d" => data}})
+    )
+
     {:reply, :ok, %{state | presences: Map.put(state.presences, user_id, data)}}
   end
 

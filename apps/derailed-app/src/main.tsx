@@ -8,10 +8,10 @@ import Loading from './Loading'
 const App = React.lazy(() => import('./App'))
 const Logout = React.lazy(() => import('./Logout'))
 const Open = React.lazy(() => import('./open'))
+const Guild = React.lazy(() => import('./guild'))
+const Channel = React.lazy(() => import('./channel'))
 const Login = React.lazy(() => import('@derailed/accounts/login'))
 const Register = React.lazy(() => import('@derailed/accounts/register'))
-import Message from '@derailed/channels/message'
-import TestWS from './test_ws'
 
 
 const router = createBrowserRouter([
@@ -32,16 +32,16 @@ const router = createBrowserRouter([
     element: <Suspense fallback={<Loading />}><Logout /></Suspense>
   },
   {
-    path: '/message',
-    element: <Message author_name="VincentRPS" author_id="1234567890" timestamp="2023-03-03T11:21:38.492Z" content="Derailed is awesome!" />
-  },
-  {
-    path: '/test-ws',
-    element: <TestWS />
-  },
-  {
     path: '/channels/@self',
     element: <Suspense fallback={<Loading />}><Open /></Suspense>
+  },
+  {
+    path: '/channels/:guild_id',
+    element: <Suspense fallback={<Loading />}><Guild /></Suspense>
+  },
+  {
+    path: '/channels/:guild_id/:channel_id',
+    element: <Suspense fallback={<Loading />}><Channel /></Suspense>
   }
 ])
 

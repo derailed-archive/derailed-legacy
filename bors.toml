@@ -7,6 +7,7 @@ block_labels = [ "type/do-not-merge" ]
 cut_body_after = "<details>"
 timeout_sec = 36000
 commit_title = "Auto merge of ${PR_REFS}"
+delete_merged_branches = true
 
 [committer]
 name = "cassandara"
