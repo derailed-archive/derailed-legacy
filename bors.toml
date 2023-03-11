@@ -1,5 +1,6 @@
 status = [
   "build-app",
+  "build-desktop-app",
   "build-website",
   "build-gateway"
 ]
