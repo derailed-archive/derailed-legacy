@@ -18,13 +18,6 @@ So you'll have to install on bare metal and conform to those special standards.
 In the future, we plan to completely allow the deployment of the entire Derailed stack with Docker
 to make deployment, testing, and other such categories easier to do.
 
-### Auth
-
-The authentication portion of our API (only.)
-
-- Install [Rust](https://rust-lang.org)
-- Run `cargo run --release` to directly run, or just `cargo build --release` to build
-
 ### API
 
 The API by far is the simplist.

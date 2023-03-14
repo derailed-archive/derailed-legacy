@@ -86,7 +86,7 @@ async def register_user(
     session.add(settings)
     await session.commit()
 
-    token = await create_token(str(user_id), password)
+    token = create_token(str(user_id), password)
     usr['token'] = token
 
     return usr
@@ -180,6 +180,6 @@ async def login(
         raise HTTPException(401, 'Invalid password')
 
     usr = prepare_user(user, own=True)
-    usr['token'] = await create_token(user.id, user.password)
+    usr['token'] = create_token(user.id, user.password)
 
     return usr
