@@ -25,12 +25,11 @@ from typing import Any, NoReturn
 
 import grpc.aio as grpc
 from fastapi import Depends, HTTPException, Path, Request, Response
+import itsdangerous
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .database import get_db, to_dict, uses_db
 from .grpc import derailed_pb2_grpc
-from .grpc.auth import auth_pb2_grpc
-from .grpc.auth.auth_pb2 import CreateToken, NewToken, Valid, ValidateToken
 from .grpc.derailed_pb2 import GetGuildInfo, Message, Publ, RepliedGuildInfo, UPubl
 from .identification import medium
 from .models import Channel, Guild, Member, User, Message as ChannelMessage
@@ -65,7 +64,7 @@ async def uses_auth(request: Request, session: AsyncSession = Depends(uses_db)) 
     if user is None:
         abort_auth()
 
-    is_valid = await valid_authorization(user_id, user.password, token)
+    is_valid = valid_authorization(user_id, user.password, token)
 
     if is_valid is False:
         abort_auth()
@@ -94,7 +93,7 @@ async def uses_no_raises_auth(
     if user is None:
         return None
 
-    is_valid = await valid_authorization(user_id, user.password, token)
+    is_valid = valid_authorization(user_id, user.password, token)
 
     if is_valid is False:
         return None
@@ -166,7 +165,6 @@ async def prepare_message(messages: ChannelMessage | list[ChannelMessage], sessi
 
 user_stub = None
 guild_stub = None
-auth_stub = None
 
 
 def _init_stubs() -> None:
@@ -177,8 +175,6 @@ def _init_stubs() -> None:
     user_stub = derailed_pb2_grpc.UserStub(user_channel)
     guild_channel = grpc.insecure_channel(os.environ['GUILD_CHANNEL'])
     guild_stub = derailed_pb2_grpc.GuildStub(guild_channel)
-    auth_channel = grpc.insecure_channel(os.environ['AUTH_CHANNEL'])
-    auth_stub = auth_pb2_grpc.AuthorizationStub(auth_channel)
 
 
 def publish_to_user(user_id: Any, event: str, data: dict[str, Any]) -> None:
@@ -220,28 +216,35 @@ async def get_guild_info(guild_id: int) -> RepliedGuildInfo:
     return await guild_stub.get_guild_info(GetGuildInfo(guild_id=str(guild_id)))
 
 
-async def create_token(user_id: str | int, password: str) -> str:
-    if auth_stub is None:
-        _init_stubs()
+def create_token(user_id: str | int, password: str) -> str:
+    user_id = base64.urlsafe_b64encode(user_id.encode())
 
-    # stringify user_id just in case it isn't already
-    req: NewToken = await auth_stub.create(
-        CreateToken(user_id=str(user_id), password=password)
-    )
+    signer = itsdangerous.TimestampSigner(password)
+    return signer.sign(user_id).decode()
 
-    return req.token
+def get_token_value(token: str) -> str:
+    fragmented = token.split('.')
+    encoded_id = fragmented[0]
 
+    return base64.b64decode(encoded_id.encode()).decode()
 
-async def valid_authorization(user_id: str, password: str, token: str) -> bool:
-    if auth_stub is None:
-        _init_stubs()
+def valid_authorization(user_id: str, password: str, token: str) -> bool:
+    try:
+        token_value = get_token_value(token)
 
-    req: Valid = await auth_stub.validate(
-        ValidateToken(user_id=user_id, password=password, token=token)
-    )
+        if token_value != str(user_id):
+            return False
+    # handle all possible errors
+    except(IndexError, binascii.Error, UnicodeDecodeError):
+        return False
 
-    return req.valid
+    signer = itsdangerous.TimestampSigner(password)
 
+    try:
+        signer.unsign(token)
+        return True
+    except itsdangerous.BadSignature:
+        return False
 
 async def prepare_guild(session: AsyncSession, guild_id: int) -> Guild:
     guild = await Guild.get(session, guild_id)
