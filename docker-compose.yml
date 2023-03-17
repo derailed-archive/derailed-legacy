@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  api:
+    container_name: derailed-api
+    restart: unless-stopped
+    depends_on: [ "gateway", "postgres" ]
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      - PG_URI=postgresql+asyncpg://postgres:abcefghijklmnopqrswxyz1234567890@localhost:5432
+      - GUILD_CHANNEL=gateway:50051
+      - USER_CHANNEL=gateway:50052
+
+  gateway:
+    container_name: derailed-gateway
+    restart: unless-stopped
+    depends_on: [ "postgres" ]
+    ports:
+      - "10000:10000"
+      - "50051:50051"
+      - "50052:50052"
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    environment:
+      - PG_URI=postgresql://postgres:abcefghijklmnopqrswxyz1234567890@localhost:5432
+
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: abcefghijklmnopqrswxyz1234567890
