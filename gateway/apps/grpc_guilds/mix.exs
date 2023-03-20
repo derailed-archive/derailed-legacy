@@ -27,7 +27,7 @@ defmodule Derailed.GRPC.Guild.MixProject do
   defp deps do
     [
       {:gen_registry, "~> 1.3"},
-      {:jsonrs, "~> 0.2.1"},
+      {:jsonrs, "~> 0.3.0"},
       {:grpc_protos, in_umbrella: true},
       {:guilds, in_umbrella: true},
       {:presences, in_umbrella: true},
