@@ -2,8 +2,6 @@ import React from "react";
 import ChannelHeader from "./channel_header";
 import MessageList from "./message_list";
 import { observer } from "mobx-react-lite"
-import { state } from "@derailed/library/state"
-import MessageInput from './message_input'
 
 
 interface Props {

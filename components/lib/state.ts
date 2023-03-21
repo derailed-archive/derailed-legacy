@@ -37,6 +37,19 @@ export class State {
 
     setChannel(channel_id: string | null) {
         this.current_channel = channel_id
+        if (channel_id !== null) {
+            this.fill_messages(channel_id)
+        }
+    }
+
+    fill_messages(channel_id: string) {
+        console.log('filling up messages')
+        // @ts-ignore
+        this.rest.get_messages(channel_id).then(
+            // @ts-ignore
+            ((messages) => { this.appendMessages(channel_id, messages)}),
+            ((reason) => {console.error(reason)})
+        )
     }
 
     appendMessages(channel_id: string, messages: ChannelMessage[]) {
@@ -48,12 +61,21 @@ export class State {
                 channel_messages = new Array()
             }
         })
+        const message_ids: Array<string> = []
+        channel_messages = channel_messages?.filter((v, _i, _arr) => {
+            if (message_ids.includes(v.id) === true) {
+                return false
+            } else {
+                message_ids.push(v.id)
+                return true
+            }
+        })
 
         if (channel_messages === undefined) {
             channel_messages = new Array()
         }
 
-        this.channel_messages.set(channel_id, channel_messages)
+        this.channel_messages.set(channel_id, channel_messages.sort((a, b) => { return Number(BigInt(a.id) - BigInt(b.id)) }))
     }
 
     start() {
@@ -101,7 +123,7 @@ export class State {
             channel_messages = new Array()
         }
 
-        this.channel_messages.set(message.channel_id, channel_messages)
+        this.channel_messages.set(message.channel_id, channel_messages.sort((a, b) => { return Number(BigInt(a.id) - BigInt(b.id)) }))
     }
 }
 

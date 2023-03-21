@@ -107,16 +107,12 @@ defmodule Derailed.Session do
                   else
                     new_map
                   end
-        Logger.debug(inspect(new_map))
         if channel_last_message != nil do
           Map.put(new_map, "last_message_id", Integer.to_string(channel_last_message))
         else
           new_map
         end
       end)
-      Logger.debug(inspect(chobjs))
-      Logger.debug(inspect(channel_objects))
-
       guild_object =
         Map.delete(Map.from_struct(Derailed.Database.Repo.one(get_guild_query)), :__meta__)
       guild_id = Map.get(guild_object, :id)
@@ -124,7 +120,6 @@ defmodule Derailed.Session do
       guild_object = Map.put(guild_object, "id", Integer.to_string(guild_id))
       guild_object = Map.put(guild_object, "owner_id", Integer.to_string(owner_id))
       guild_object = Map.put(guild_object, "channels", channel_objects)
-      Logger.debug(inspect(guild_object))
 
       {:ok, guild_pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id, [guild_object.id])
       Derailed.Guild.subscribe(guild_pid, self(), state.id)

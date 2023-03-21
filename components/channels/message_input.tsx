@@ -31,7 +31,7 @@ const MessageInput = (props: Props) => {
     }
 
     return (
-        <div className="bg-light-dark text-white fixed bottom-0 flex pl-5 pb-5">
+        <div className="bg-transparent text-white fixed bottom-0 flex pl-5 pb-5">
             <form className="flex-1 max-h-10 max-w-xl mt-5 m-auto">
                 <textarea
                     onChange={(event) => {

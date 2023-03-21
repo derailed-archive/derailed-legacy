@@ -143,10 +143,12 @@ async def create_message(
     session.add(channel)
     await session.commit()
 
-    if channel.guild_id is not None:
-        publish_to_guild(channel.guild_id, 'MESSAGE_CREATE', to_dict(message))
+    prep = await prepare_message(message, session)
 
-    return await prepare_message(message, session)
+    if channel.guild_id is not None:
+        publish_to_guild(channel.guild_id, 'MESSAGE_CREATE', prep)
+
+    return prep
 
 
 class ModifyMessage(BaseModel):
@@ -176,11 +178,12 @@ async def edit_message(
 
     session.add(message)
     await session.commit()
+    prep = await prepare_message(message, session)
 
     if channel.guild_id is not None:
-        publish_to_guild(channel.guild_id, 'MESSAGE_EDIT', to_dict(message))
+        publish_to_guild(channel.guild_id, 'MESSAGE_EDIT', prep)
 
-    return await prepare_message(message, session)
+    return prep
 
 
 @version(

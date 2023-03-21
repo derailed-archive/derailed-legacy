@@ -32,7 +32,9 @@ const ChannelComponent = observer(() => {
 
     state.start()
 
-    state.setChannel(channel_id)
+    action(() => {
+        state.setChannel(channel_id!)
+    })
 
     return (
         <div className="flex bg-darker-dark flex-1">

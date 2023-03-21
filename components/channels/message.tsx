@@ -29,7 +29,7 @@ const Message = ({ author_name, author_id, timestamp, message_id, content }) => 
                     {displayedTimestamp}
                 </h4>
             </div>
-            <div id="content" className="max-w-lg text-white ml-14">
+            <div id="content" className="max-w-lg text-white ml-14 select-text">
                 {content}
             </div>
         </li>

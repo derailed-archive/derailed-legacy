@@ -15,7 +15,7 @@ const GuildSidebar = observer(() => {
     return (
         <div className="h-screen">
             {guildCreate && <GuildCreateModal setExit={setGuildCreate} />}
-            <ul role="tree" className="flex pt-2 justify-between gap-5 bg-darker-dark px-3" >
+            <ul role="tree" className="flex pt-2 justify-between gap-5 bg-darker-dark px-3 h-screen" >
                 <div>
                     <div className="pb-2">
                         <Link to="/channels/@self">
