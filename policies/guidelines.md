@@ -14,11 +14,11 @@ At points, we may change these guidelines.
 
 If that happens, once the changes go into effect, you will automatically agree to the new version of the guidelines.
 
-It matters not to what the punishment here. However, what is punishable does.
-
 ## Violating these Guidelines
 
 Based on the severity of a violation, you may get anywhere from a one week suspension to a termination.
+
+It matters not to what the punishment here. However, what is punishable does.
 
 ## Banned Content
 
