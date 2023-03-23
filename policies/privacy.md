@@ -33,7 +33,7 @@ After these 90 days we will delete sensitive information and give anonymity to n
 
 ### 2.2: Deletion Limitations
 
-While the option for deletion of your account is always present, you may have to do some changes or other such before being able to delete your account. We are hereby allowed to impose these non-permanent limitations under jurisdiction as they can be easily changed and effortlessly contorted.
+While the option for deletion of your account is always present, you may have to do some changes or other such before being able to delete your account. We are hereby allowed to impose these limitations since they are non-permanent and may be done without locks.
 
 Firstly, we may not allow a user to delete their account if they own any Guilds, so the user may have to transfer ownership or delete the Guild before account deletion.
 
