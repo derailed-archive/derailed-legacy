@@ -18,7 +18,7 @@ If that happens, once the changes go into effect, you will automatically agree t
 
 Based on the severity of a violation, you may get anywhere from a one week suspension to a termination.
 
-It matters not to what the punishment here. However, what is punishable does.
+It matters not, in most cases, to what the punishment is here. However, what is punishable does.
 
 ## Banned Content
 
