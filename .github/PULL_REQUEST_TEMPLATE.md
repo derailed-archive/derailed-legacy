@@ -11,6 +11,9 @@
 - [ ] Gateway (NIF)
 - [ ] Frontend
   - [ ] Website
+  - [ ] Web App
+  - [ ] Desktop App
+  - [ ] Mobile App
 
 ## Checklist
 
