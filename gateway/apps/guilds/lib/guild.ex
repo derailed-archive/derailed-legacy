@@ -113,7 +113,7 @@ defmodule Derailed.Guild do
   end
 
   def handle_call({:publish, message}, _from, %{sessions: sessions} = state) do
-    Enum.each(sessions, &Manifold.send(&1.pid, {:publish, message}))
+    Enum.each(Map.values(sessions), &Manifold.send(&1.pid, {:publish, message}))
     {:reply, :ok, state}
   end
 

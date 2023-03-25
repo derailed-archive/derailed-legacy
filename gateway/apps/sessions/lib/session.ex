@@ -121,7 +121,7 @@ defmodule Derailed.Session do
       guild_object = Map.put(guild_object, "owner_id", Integer.to_string(owner_id))
       guild_object = Map.put(guild_object, "channels", channel_objects)
 
-      {:ok, guild_pid} = GenRegistry.lookup_or_start(Derailed.Guild, guild_object.id, [guild_object.id])
+      {:ok, guild_pid} = GenRegistry.lookup_or_start(Derailed.Guild, to_string(guild_object.id), [to_string(guild_object.id)])
       Derailed.Guild.subscribe(guild_pid, self(), state.id)
 
       {:ok, guild_presences_pid} =

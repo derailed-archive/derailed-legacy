@@ -5,6 +5,7 @@ defmodule Derailed.WebSocket.Connection do
 
   @behaviour :cowboy_websocket
   require Logger
+  import Ecto.Query
 
   def init(req, state) do
     {:cowboy_websocket, req, state}
@@ -124,8 +125,17 @@ defmodule Derailed.WebSocket.Connection do
     case Derailed.Ready.verify_token(token) do
       {:ok, user} ->
         {:ok, session_pid, session_id, _registry_pid} = Derailed.Ready.make(user, self())
+        settings_query =
+          from(st in Derailed.Database.Settings,
+            where: st.user_id == ^user.id,
+            select: st
+          )
+        settings =
+          Map.delete(Map.from_struct(Derailed.Database.Repo.one(settings_query)), :__meta__)
+        settings = Map.put(settings, "user_id", to_string(settings.user_id))
+        user = Map.put(user, "id", to_string(user.id))
 
-        {:reply, {:text, encode(1, nil, %{"user" => user, "session_id" => session_id})},
+        {:reply, {:text, encode(1, nil, %{"user" => user, "settings" => settings, "session_id" => session_id})},
          %{state | session_pid: session_pid}}
 
       {:error, :invalid_authorization} ->
