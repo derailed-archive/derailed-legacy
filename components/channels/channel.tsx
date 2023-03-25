@@ -11,7 +11,7 @@ interface Props {
 
 const Channel = observer((props: Props) => {
     return (
-        <div className="bg-light-dark select-none w-full">
+        <div className="bg-dark select-none w-screen">
             <div>
                 <ChannelHeader channel_id={props.channel_id} />
                 <MessageList channel_id={props.channel_id} />

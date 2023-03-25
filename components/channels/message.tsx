@@ -26,11 +26,11 @@ const Message = ({ author_name, author_id, timestamp, message_id, content }) => 
                     <h3 className="text-verlp font-bold hover:underline">
                         {author_name}
                     </h3>
-                    <h4 className="text-derailed-gray">
+                    <h4 className="text-slate-500">
                         {displayedTimestamp}
                     </h4>
                 </div>
-                <div id="content" className="max-w-lg text-white ml-14 select-text">
+                <div id="content" className="max-w-lg text-white ml-14 font-light select-text">
                     {content}
                 </div>
             </div>

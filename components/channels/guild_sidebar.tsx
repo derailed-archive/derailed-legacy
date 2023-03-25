@@ -15,11 +15,11 @@ const GuildSidebar = observer(() => {
     return (
         <div className="h-screen">
             {guildCreate && <GuildCreateModal setExit={setGuildCreate} />}
-            <ul role="tree" className="flex pt-2 justify-between gap-5 bg-darker-dark px-3 h-screen" >
+            <ul role="tree" className="flex pt-2 justify-between gap-5 bg-dark px-3 h-screen border-r border-r-derailed-gray" >
                 <div>
                     <div className="pb-2">
                         <Link to="/channels/@self">
-                            <div aria-label="Derailed Logo" className="select-none px-4 bg-gray-700 text-verlp max-w-[45px] py-2 text-center ease-in-out text-xl transition duration-500 rounded-full hover:rounded-xl hover:bg-verlp hover:text-white m-auto">
+                            <div aria-label="Derailed Logo" className="select-none px-4 bg-verlp text-white max-w-[45px] py-2 text-center ease-in-out text-xl transition duration-800 rounded-full hover:rounded-xl hover:bg-verlp hover:text-white m-auto">
                                 D
                             </div>
                         </Link>
@@ -40,7 +40,7 @@ const GuildSidebar = observer(() => {
                             )
                         })}
                     </div>
-                    <div aria-label="Add Server" onClick={set_guild_create} className="select-none bg-gray-700 text-verlp max-w-[45px] py-2 text-center ease-in-out text-xl transition duration-500 rounded-full hover:rounded-xl hover:bg-verlp hover:text-white m-auto">
+                    <div aria-label="Add Server" onClick={set_guild_create} className="select-none bg-derailed-gray text-verlp max-w-[45px] py-2 text-center ease-in-out text-xl transition duration-500 rounded-full hover:rounded-xl hover:bg-verlp hover:text-white m-auto">
                             +
                     </div>
                 </div>

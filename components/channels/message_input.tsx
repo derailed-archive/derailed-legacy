@@ -1,7 +1,5 @@
 import { state } from "@derailed/library/state";
-import React from "react";
 import { useState } from "react";
-import Message from "./message";
 
 
 interface Props {
@@ -34,14 +32,15 @@ const MessageInput = (props: Props) => {
         <div className="bg-transparent text-white fixed bottom-0 flex pl-5 pb-5">
             <form className="flex-1 max-h-10 max-w-xl mt-5 m-auto">
                 <textarea
+                    value={content}
                     onChange={(event) => {
                         setContent(event.target.value)
                     }}
                     autoComplete="off"
                     spellCheck="true"
                     onKeyDown={submitKey}
-                    className="form-textarea w-[50rem] px-2 py-2 rounded-lg bg-dark text-gray-300 break-words resize-none whitespace-pre-wrap outline-none"
-                    placeholder="Oye lads, I went to the pub today and..."
+                    className="form-textarea w-[48rem] p-1 resize-none shadow-sm h-auto overflow-y-auto scroll-none rounded-md bg-derailed-gray m-auto text-gray-300 break-words whitespace-pre-wrap outline-none"
+                    placeholder="Heyo! What's going on right now?"
                     maxLength={2024}
                     />
             </form>

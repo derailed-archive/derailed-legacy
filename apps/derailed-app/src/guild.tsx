@@ -27,7 +27,7 @@ const Guild = observer(() => {
 
     return (
         // @ts-ignore
-        <div className="flex bg-darker-dark select-none" style={{msOverflowStyle: 'none', scrollbarWidth: 'none'}}>
+        <div className="flex bg-dark select-none" style={{msOverflowStyle: 'none', scrollbarWidth: 'none'}}>
             <GuildSidebar />
             <ChannelSidebar guild_id={guild_id} />
         </div>

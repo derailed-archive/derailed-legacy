@@ -8,9 +8,9 @@ interface Props {
 const ChannelHeader = observer((props: Props) => {
     return (
         <div>
-            <h2 className="text-lg text-white border-b-2 border-b-darker-dark">
+            <h2 className="text-lg text-white border-b border-b-derailed-gray">
                 <div className="ml-10 mt-5 mb-5 text-xl">
-                    {state.channels.get(props.channel_id)?.name ?? ""}
+                    <b>#</b>{state.channels.get(props.channel_id)?.name ?? ""}
                 </div>
             </h2>
         </div>

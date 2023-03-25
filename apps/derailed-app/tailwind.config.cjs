@@ -11,12 +11,11 @@ module.exports = {
         'login': "url('/imgs/bg-media.jpg')"
       },
       colors: {
-        'light-dark': '#323036',
-        'dark': '#232226',
-        'darker-dark': '#1F1F22',
-        'derailed-gray': '#5a5c5a',
-        'verlp': '#807ef2',
-        'verlp-dark': '#6664CD'
+        'light': '#132745',
+        'dark': '#0a1628',
+        'verlp': '#7364FF',
+        'verlp-dark': '#5d50d9',
+        'derailed-gray': '#121F2F'
       }
     },
   },
