@@ -1,5 +1,6 @@
 defmodule Derailed.GRPC.Guild do
   use GRPC.Server, service: Derailed.GRPC.Guild.Proto.Service
+  require Logger
 
   @doc """
   Process responsible for publishing messages to Guilds
@@ -7,15 +8,18 @@ defmodule Derailed.GRPC.Guild do
   @spec publish(Derailed.GRPC.Guild.Proto.Publ.t(), GRPC.Server.Stream.t()) ::
           Derailed.GRPC.Guild.Proto.Publr.t()
   def publish(publish_info, _stream) do
+    Logger.debug publish_info
     guild_id = publish_info.guild_id
 
     {:ok, message} = Jsonrs.decode(publish_info.message.data)
 
     case GenRegistry.lookup(Derailed.Guild, guild_id) do
       {:ok, guild_pid} ->
+        Logger.debug "Guild found"
         Derailed.Guild.publish(guild_pid, %{t: publish_info.event, d: message})
 
       {:error, :not_found} ->
+        Logger.debug "Guild not found"
         :ok
     end
 

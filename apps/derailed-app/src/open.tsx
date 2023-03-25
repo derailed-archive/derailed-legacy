@@ -16,9 +16,7 @@ const Open = observer(() => {
     return (
         // @ts-ignore
         <div className="flex" style={{msOverflowStyle: 'none', scrollbarWidth: 'none'}}>
-            <nav>
-                <GuildSidebar />
-            </nav>
+            <GuildSidebar />
             <div className='bg-dark w-full select-none'>
                 <h1 className="text-center text-white text-4xl mt-32">
                     Welcome to back to Derailed!

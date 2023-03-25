@@ -17,20 +17,22 @@ const Message = ({ author_name, author_id, timestamp, message_id, content }) => 
     }
 
     return (
-        <li className="bg-light-dark hover:bg-dark pb-5 pt-5 pl-4" key={message_id} style={{listStyleType: "none"}}>
-            <div id="head" className="flex gap-3">
-                <div className="bg-gray-700 rounded-full w-10 h-10">
+        <li className="pb-0.5 pt-0.5" key={message_id}>
+            <div className="bg-light-dark hover:bg-dark pt-3 pb-3 pl-4" style={{listStyleType: "none"}}>
+                <div id="head" className="flex gap-3">
+                    <div className="bg-gray-700 rounded-full w-10 h-10">
 
+                    </div>
+                    <h3 className="text-verlp font-bold hover:underline">
+                        {author_name}
+                    </h3>
+                    <h4 className="text-derailed-gray">
+                        {displayedTimestamp}
+                    </h4>
                 </div>
-                <h3 className="text-verlp font-bold hover:underline">
-                    {author_name}
-                </h3>
-                <h4 className="text-derailed-gray">
-                    {displayedTimestamp}
-                </h4>
-            </div>
-            <div id="content" className="max-w-lg text-white ml-14 select-text">
-                {content}
+                <div id="content" className="max-w-lg text-white ml-14 select-text">
+                    {content}
+                </div>
             </div>
         </li>
     )

@@ -32,15 +32,11 @@ const ChannelComponent = observer(() => {
 
     state.start()
 
-    action(() => {
-        state.setChannel(channel_id!)
-    })
+    state.setChannel(channel_id!)
 
     return (
         <div className="flex bg-darker-dark flex-1">
-            <nav>
-                <GuildSidebar />
-            </nav>
+            <GuildSidebar />
             <ChannelSidebar guild_id={guild_id} />
             <Channel channel_id={channel_id} />
         </div>

@@ -2,6 +2,7 @@ import HTTPClient from "./http"
 import Gateway from "./gateway"
 import { Channel, ChannelMessage, Guild } from "./types"
 import { makeAutoObservable } from "mobx"
+import { action } from "mobx"
 
 
 export class State {
@@ -36,7 +37,9 @@ export class State {
     }
 
     setChannel(channel_id: string | null) {
-        this.current_channel = channel_id
+        action(() => {
+            this.current_channel = channel_id
+        })
         if (channel_id !== null) {
             this.fill_messages(channel_id)
         }
@@ -81,7 +84,7 @@ export class State {
     start() {
         if (this._started === false) {
             this.ws.connect()
-            this.ws.emitter.on("HELLO", () => this.ws?.identify(), this)
+            this.ws.emitter.on("HELLO", this.on_open, this)
             this._started = true
             this.ws.emitter.on('GUILD_CREATE', this.on_guild_create, this)
             this.ws.emitter.on("CLOSE", this.on_close, this)
@@ -103,6 +106,13 @@ export class State {
         // @ts-ignore
         this.guild_channels.set(String(guild.id), channels)
         channels?.forEach((v, _idx, _arr) => { this.channels.set(v.id, v) })
+    }
+
+    on_open() {
+        this.ws?.identify()
+        if (this.current_channel !== null) {
+            this.fill_messages(this.current_channel)
+        }
     }
 
     on_close() {

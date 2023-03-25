@@ -1,4 +1,5 @@
 import { state } from "@derailed/library/state";
+import { observer } from "mobx-react-lite";
 import React from "react";
 import Message from "./message";
 import MessageInput from "./message_input";
@@ -8,7 +9,7 @@ interface Props {
     channel_id: string
 }
 
-const MessageList = (props: Props) => {
+const MessageList = observer((props: Props) => {
   return (
     <div className="max-h-screen/2">
       <ul className="overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 max-h-screen/2">
@@ -34,7 +35,7 @@ const MessageList = (props: Props) => {
       </ul>
     </div>
   )
-}
+})
 
   
 
