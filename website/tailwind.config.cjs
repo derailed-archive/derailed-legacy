@@ -13,6 +13,7 @@ module.exports = {
 			},
 			fontFamily: {
 				'header': ['Inter'],
+				'brand': ['Vampire Wars']
 			}
 		},
 	},

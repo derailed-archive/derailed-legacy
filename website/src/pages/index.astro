@@ -8,10 +8,7 @@ import '@fontsource/inter/600.css'
 import '@fontsource/inter/700.css'
 import '@fontsource/inter/800.css'
 import '@fontsource/inter/900.css'
-import { Icon } from 'astro-icon'
-import Header from '../components/header.astro';
-import Feature from '../components/feature.astro';
-import FeatureRight from '../components/feature_right.astro';
+import Header from '../components/header.astro'
 ---
 
 <html lang="en">
@@ -19,67 +16,92 @@ import FeatureRight from '../components/feature_right.astro';
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content={Astro.generator} />
-		<title>Derailed - Open & Secure Communication</title>
+		<title>Derailed - Your place to talk</title>
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="https://derailed.one/" />
 		<meta property="og:site_name" content="Derailed" />
 		<meta property="og:keywords" content="Free chat,Communications,Chat app,Derailed,Voice,Free voice,Chat,Discord alternatives,Open source chat,Open Communications, Free chat" />
-		<meta property="og:description" content="The new open free voice & text communications platform for chat. Play games, talk to your friends, and hang out all in a safe and open environment." />
-		<meta property="description" content="The new open free voice & text communications platform for chat. Play games, talk to your friends, and hang out all in a safe and open environment." />
+		<meta property="og:description" content="A place for smart communications. Hang out with your friends, have a business meeting, or talk to communities about your newest release. Possibilities unlocked." />
+		<meta property="description" content="A place for smart communications. Hang out with your friends, have a business meeting, or talk to communities about your newest release. Possibilities unlocked." />
 	</head>
-	<body>
-		<div class="bg-[#2D2C30] pb-10 sm:px-2 sm:w-screen sm:h-screen">
-			<Header />
-			<div>
-				<div class="bg-texty rounded-3xl rounded-t-none font-header max-w-7xl m-auto">
-					<div class="flex px-10 py-10">
-						<div class="block pl-10">
-							<h1 class="font-bold text-white text-7xl max-w-md pt-20">
-								Communication should be in
-							</h1>
-							<h1 class="font-bold text-transparent bg-clip-text bg-gradient-to-r mb-10 text-7xl max-w-xl text-gradient-to-r from-[#706fe3] to-[#e65fed] py-2">
-								your control.
-							</h1>
-							<a class="mt-10 ml-5" href="/register">
-								<button class="text-gray-200 font-semibold text-2xl rounded-xl border border-[#706fe3] bg-[#706fe3] transition duration-500 hover:bg-almost-dark-blue px-5 py-2">
-									Try for free
-								</button>
-							</a>
-						</div>
-						<div class="w-80 max-lg:hidden mt-20 ml-56">
-							<Icon name="mascot" />
-						</div>
-					</div>
-				</div>
+	<style>
+		@font-face {
+			font-family: Vampire Wars;
+			src: url(../Vampire_Wars.ttf);
+		}
+	</style>
+	<body class="bg-[#0a1628]">
+		<Header />
+		<div class="text-white lg:pt-20 md:pt-20 sm:pt-14 font-header">
+			<h1 class="text-4xl text-center font-bold max-w-2xl m-auto pt-10">
+				Your smart communications platform.
+			</h1>
+			<h3 class="text-xl text-center font-light pt-12 lg:max-w-3xl md:max-w-2xl sm:max-w-xl text-gray-200 m-auto">
+				Hang out with your friends, have a business meeting, or form a new clan in the newest game.
+				Limitless possibilities while being open, free, and secure.
+			</h3>
+			<div class="flex justify-center items-center pt-7 gap-7 pb-40">
+				<a href="https://derailed.one/register">
+					<button class="rounded-full text-xl px-6 py-2 bg-[#7364FF] transition duration-800 hover:bg-[#5d50d9]">
+						Give it a try!
+					</button>
+				</a>
+				<a href="https://github.com/derailedapp/derailed">
+					<button class="rounded-full text-xl px-4 py-2 bg-[#FF785F] transition duration-800 hover:bg-[#d66651]">
+						Check the Source
+					</button>
+				</a>
 			</div>
-			<div class="pt-36" />
-			<FeatureRight fname="secure" header="Secure without loss." svg="home-secure" description="Don't lose your time worrying about security, or setting up mindless security games. Derailed provides it for you, completely for free." />
-			<div class="pt-36" />
-			<Feature fname="reliable" header="Reliability Unperturbed." svg="engine-line" description="Play games with your friends, have a mod meeting, or even hold a meeting with your pals about the next Genshin version. Never worry about downtimes, or rocky latency, we have you covered." />
-			<div class="pt-36" />
-			<FeatureRight fname="open-source" header="Open for the People." svg="source-repository-multiple" description="Derailed is completely open source to give benefit to people wanting to use their own specialized Derailed. You can easily open up your computer and host Derailed any time!" />
-			<div class="pt-36" />
-			<div>
-				<div class="bg-texty rounded-3xl font-header max-w-7xl m-auto pb-20">
-					<div class="flex px-10 py-10">
-						<div class="block pl-10">
-							<h1 class="font-bold text-right text-[#706fe3] text-7xl max-w-xl pt-20">
-								What are you waiting for?
-							</h1>
-							<h3 class="font-normal text-right text-white text-xl max-w-lg pl-3 mt-10 pb-10">
-								Derailed is completely free, and is out now! Don't be scared to try is just because it's new,
-								give yourself a feel first.
-							</h3>
-							<a class="pl-40" href="/register">
-								<button class="text-gray-200 font-semibold text-lg rounded-xl border border-[#706fe3] bg-[#706fe3] ml-10 transition duration-300 hover:bg-gradient-to-r from-[#706fe3] to-[#e65fed] px-5 py-2">
-									Don't miss the new platform
-								</button>
-							</a>
-						</div>
-						<div class="w-80 max-lg:hidden mt-20 ml-32">
-							<Icon name="mdi:open-source-initiative" style="color: #706fe3;" />
-						</div>
-					</div>
+			<div class="pt-40 pb-40 bg-white text-[#0a1628] m-auto">
+				<h1 class="text-4xl text-center font-bold max-w-2xl m-auto pt-10">
+					Tomorrow's communication, today.
+				</h1>
+				<h3 class="text-xl text-center font-light pt-12 lg:max-w-3xl md:max-w-2xl sm:max-w-xl text-slate-900 m-auto">
+					Communicate using a modern and safe interface tailored for you. Use the possibilities and
+					power of Derailed's chat with a modern forum-based experience.
+				</h3>
+			</div>
+			<div class="pt-40 pb-40 bg-[#0a1628] text-white m-auto">
+				<h1 class="text-4xl text-center font-bold max-w-2xl m-auto pt-10">
+					Speedy Communications at your doorstep.
+				</h1>
+				<h3 class="text-xl text-center font-light pt-12 lg:max-w-3xl md:max-w-2xl sm:max-w-xl text-gray-200 m-auto">
+					Use a platform which is extra-speedy. We mean really speedy, don't worry about Derailed taking up
+					too much memory on your computer, or taking too long to respond. We built Derailed from the ground up to be
+					turbo fast.
+				</h3>
+			</div>
+			<div class="pt-40 pb-40 bg-white text-[#0a1628] m-auto">
+				<h1 class="text-4xl text-center font-bold max-w-2xl m-auto pt-10">
+					Powered by Open Source.
+				</h1>
+				<h3 class="text-xl text-center font-light pt-12 lg:max-w-3xl md:max-w-2xl sm:max-w-xl text-slate-900 m-auto">
+					Operate with an open platform which displays what its doing with your data, but not your data, publicly.
+					Keep an ease of mind knowing we aren't selling your data to third-parties, and don't have any obvious vulnerabilities.
+				</h3>
+			</div>
+
+			<div class="pt-40 pb-40 bg-[#0a1628] text-white m-auto">
+				<h1 class="text-4xl text-center font-bold max-w-2xl m-auto pt-10">
+					Mentored for Reliability.
+				</h1>
+				<h3 class="text-xl text-center font-light pt-12 lg:max-w-3xl md:max-w-2xl sm:max-w-xl text-gray-100 m-auto">
+					Derailed's systems have been mentored for reliability.
+					Get low latency high-quality Voice from January, and near-perfect Video playing
+					in the grip of your fingers.
+				</h3>
+			</div>
+
+			<div class="pt-40 bg-white text-[#0a1628] m-auto">
+				<h1 class="text-2xl text-center font-bold max-w-2xl m-auto pt-10">
+					Tired of other platforms? Get started with Derailed!
+				</h1>
+				<div class="flex justify-center items-center pt-7 gap-7 pb-40">
+					<a href="https://derailed.one/register">
+						<button class="rounded-full text-white text-xl px-6 py-2 bg-[#7364FF] transition duration-800 hover:bg-[#5d50d9]">
+							Start my journey
+						</button>
+					</a>
 				</div>
 			</div>
 		</div>
