@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+
+package derailed.gateway;
+
+service Guild {
+    rpc dispatch (Interchange) returns (google.protobuf.Empty);
+    rpc recv (Parcel) returns (stream Interchange);
+    rpc get_metadata (Guild) returns (GuildMetadata);
+    rpc get_members (Guild) returns (stream MemberData);
+}
+
+message Interchange {
+    string t = 1;
+    int64 gid = 2;
+    map<string, google.protobuf.Any> d = 3;
+}
+
+message Parcel {
+    int64 gid = 1;
+    int64 uid = 2;
+    string sid = 3;
+}
+
+message MemberData {
+    int64 gid = 1;
+    repeated map<string, google.protobuf.Any> members = 2;
+}
+
+message Guild {
+    int64 id = 1;
+}
+
+message GuildMetadata {
+    bool available = 1;
+    int32 presences = 2;
+}
