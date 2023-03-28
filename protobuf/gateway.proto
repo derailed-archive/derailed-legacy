@@ -8,14 +8,15 @@ package derailed.gateway;
 service Guild {
     rpc dispatch (Interchange) returns (google.protobuf.Empty);
     rpc recv (Parcel) returns (stream Interchange);
-    rpc get_metadata (Guild) returns (GuildMetadata);
-    rpc get_members (Guild) returns (stream MemberData);
+    rpc get_metadata (GuildInfo) returns (GuildMetadata);
+    // TODO: add a way to limit the amount of members streamed back
+    rpc get_members (GuildInfo) returns (stream MemberData);
 }
 
 message Interchange {
     string t = 1;
     int64 gid = 2;
-    map<string, google.protobuf.Any> d = 3;
+    repeated google.protobuf.Any d = 3;
 }
 
 message Parcel {
@@ -26,10 +27,10 @@ message Parcel {
 
 message MemberData {
     int64 gid = 1;
-    repeated map<string, google.protobuf.Any> members = 2;
+    repeated google.protobuf.Any members = 2;
 }
 
-message Guild {
+message GuildInfo {
     int64 id = 1;
 }
 
