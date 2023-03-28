@@ -23,13 +23,13 @@ $$;
 CREATE TABLE IF NOT EXISTS users (
     id bigint PRIMARY KEY,
     username varchar(32) NOT NULL,
-    discriminator varchar(4) NOT NULL,
+    discriminator varchar(4) NOT NULL DEFAULT generate_discriminator('username'),
     email varchar(100) NOT NULL UNIQUE,
     password text NOT NULL,
-    flags int NOT NULL,
-    system boolean NOT NULL,
+    flags int NOT NULL DEFAULT 0,
+    system boolean NOT NULL DEFAULT false,
     deletor_job_id bigint UNIQUE,
-    suspended boolean NOT NULL
+    suspended boolean NOT NULL DEFAULT false
 );
 
 CREATE UNIQUE INDEX user_email ON users (email);

@@ -4,11 +4,45 @@
 */
 
 use sqlx::{postgres::PgPoolOptions, PgPool};
+use chrono::Utc;
 
+#[derive(Debug)]
+pub struct Snowflake {
+    epoch: i64,
+    thread_id: i64,
+    process_id: i64,
+    sequence: i64,
+}
+
+
+// Snowflake implementation
+impl Snowflake {
+    pub fn new(epoch: i64, thread_id: i64, process_id: i64) -> Snowflake {
+        Snowflake {
+            epoch,
+            thread_id,
+            process_id,
+            sequence: 0,
+        }
+    }
+
+    pub fn generate(&mut self) -> i64 {
+        let timestamp = self.get_time();
+        self.sequence = self.sequence + 1;
+
+        return (timestamp << 22) | (self.thread_id << 17) | (self.process_id << 12) | self.sequence
+    }
+
+    fn get_time(&self) -> i64 {
+        Utc::now().timestamp_millis() - self.epoch
+    }
+}
 #[derive(Debug)]
 pub struct State {
     pub db: PgPool,
+    pub sf: Snowflake
 }
+
 
 pub async fn create_pool(uri: &str) -> Result<PgPool, sqlx::Error> {
     PgPoolOptions::new().connect(uri).await

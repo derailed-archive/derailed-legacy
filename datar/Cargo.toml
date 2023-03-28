@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 sqlx = { version = "0.6.2", features = ["postgres", "runtime-tokio-rustls", "macros", "migrate", "json", "offline", "time"] }
+chrono = "0.4.24"
