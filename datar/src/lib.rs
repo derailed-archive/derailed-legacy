@@ -6,7 +6,7 @@
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use chrono::Utc;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Snowflake {
     epoch: i64,
     thread_id: i64,
@@ -37,7 +37,7 @@ impl Snowflake {
         Utc::now().timestamp_millis() - self.epoch
     }
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct State {
     pub db: PgPool,
     pub sf: Snowflake

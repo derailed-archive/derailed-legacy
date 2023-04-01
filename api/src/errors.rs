@@ -5,34 +5,27 @@
 
 use actix_web::{
     error,
-    http::{header::ContentType, StatusCode},
+    http::StatusCode,
     HttpResponse,
 };
 use derive_more::{Display, Error};
 
 #[derive(Debug, Display, Error)]
 pub enum DerailedError {
-    #[display(fmt = "Internal Server Error")]
     InternalError,
-    BadData {
-        reason: String,
-    },
-
-    #[display(fmt = "Gateway Timeout")]
+    BadData,
     Timeout,
 }
 
 impl error::ResponseError for DerailedError {
     fn error_response(&self) -> HttpResponse {
-        HttpResponse::build(self.status_code())
-            .insert_header(ContentType::plaintext())
-            .body(self.to_string())
+        HttpResponse::build(self.status_code()).finish()
     }
 
     fn status_code(&self) -> StatusCode {
         match *self {
             DerailedError::InternalError => StatusCode::INTERNAL_SERVER_ERROR,
-            DerailedError::BadData { reason } => StatusCode::BAD_REQUEST,
+            DerailedError::BadData => StatusCode::BAD_REQUEST,
             DerailedError::Timeout => StatusCode::GATEWAY_TIMEOUT,
         }
     }

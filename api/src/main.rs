@@ -7,15 +7,16 @@ use actix_web::{web, App, HttpServer};
 use dotenvy::dotenv;
 use std::env;
 use std::process;
-use std::sync::Arc;
 pub mod errors;
 mod routes;
 pub mod structs;
+use tokio::sync::Mutex;
 
-#[actix_web::main]
+
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-    let db = datar::create_pool(env::var("PG_URI").unwrap().as_str())
+    let db = datar::create_pool(env::var("DATABASE_URL").unwrap().as_str())
         .await
         .unwrap();
     datar::migrate(&db).await;
@@ -24,10 +25,14 @@ async fn main() -> std::io::Result<()> {
         thread_id::get().try_into().unwrap(),
         process::id().try_into().unwrap(),
     );
-    let state = Arc::new(datar::State { db, sf });
+    let state = datar::State { db, sf };
 
-    HttpServer::new(move || App::new().app_data(web::Data::new(state.clone())))
-        .bind(("0.0.0.0", 8080))?
-        .run()
-        .await
+    HttpServer::new(move || {
+        App::new()
+            .app_data(web::Data::new(Mutex::new(state.clone())))
+            .service(routes::register)
+    })
+    .bind(("0.0.0.0", 8080))?
+    .run()
+    .await
 }

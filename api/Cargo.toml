@@ -17,3 +17,5 @@ thread-id = "4"
 serde_valid = "0.15.0"
 bcrypt = "0.14.0"
 derive_more = "0.99.17"
+tokio = { version = "1.27.0", features = ["full"] }
+quote = "1.0.26"

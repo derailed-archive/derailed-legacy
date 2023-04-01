@@ -1,0 +1,26 @@
+{
+  "db": "PostgreSQL",
+  "c64e8e464001ab8c19f0b252edd6dc10ba96e708b86b3bbda7f5067e2ffddd15": {
+    "describe": {
+      "columns": [
+        {
+          "name": "discriminator",
+          "ordinal": 0,
+          "type_info": "Varchar"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int8",
+          "Varchar",
+          "Varchar",
+          "Text"
+        ]
+      }
+    },
+    "query": "INSERT INTO users\n            (id, username, email, password)\n        VALUES\n            ($1, $2, $3, $4)\n        RETURNING\n            discriminator"
+  }
+}
