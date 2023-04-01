@@ -9,25 +9,21 @@ services:
       - "8080:8080"
     build:
       context: .
-      dockerfile: backend/Dockerfile
+      dockerfile: api/Dockerfile
     environment:
-      - PG_URI=postgresql+asyncpg://postgres:abcefghijklmnopqrswxyz1234567890@localhost:5432
-      - GUILD_CHANNEL=gateway:50051
-      - USER_CHANNEL=gateway:50052
+      - DATABASE_URL=postgresql+asyncpg://postgres:abcefghijklmnopqrswxyz1234567890@localhost:5432
 
   gateway:
     container_name: derailed-gateway
     restart: unless-stopped
     depends_on: [ "postgres" ]
     ports:
-      - "10000:10000"
-      - "50051:50051"
-      - "50052:50052"
+      - "9090:9090"
     build:
       context: .
       dockerfile: gateway/Dockerfile
     environment:
-      - PG_URI=postgresql://postgres:abcefghijklmnopqrswxyz1234567890@localhost:5432
+      - DATABASE_URL=postgresql://postgres:abcefghijklmnopqrswxyz1234567890@localhost:5432
 
   postgres:
     image: postgres
