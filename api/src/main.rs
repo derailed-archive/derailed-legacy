@@ -11,7 +11,6 @@ pub mod errors;
 mod routes;
 use tokio::sync::Mutex;
 
-
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
@@ -30,6 +29,7 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(Mutex::new(state.clone())))
             .service(routes::register)
+            .service(routes::get_me)
     })
     .bind(("0.0.0.0", 8080))?
     .run()

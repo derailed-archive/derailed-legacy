@@ -4,8 +4,9 @@
 */
 
 use crate::errors::DerailedError;
-use datar::structs::User;
 use actix_web::{post, web, Responder, Result};
+use datar::auth::create_token;
+use datar::structs::UserToken;
 use datar::State;
 use serde::{Deserialize, Serialize};
 use serde_valid::Validate;
@@ -22,7 +23,10 @@ struct Register {
 }
 
 #[post("/register")]
-async fn register(state: web::Data<Mutex<State>>, data: web::Json<Register>) -> Result<impl Responder> {
+async fn register(
+    state: web::Data<Mutex<State>>,
+    data: web::Json<Register>,
+) -> Result<impl Responder> {
     let password = bcrypt::hash(&data.password, 18).unwrap();
 
     let mut db = state.lock().await.db.acquire().await.unwrap();
@@ -44,7 +48,7 @@ async fn register(state: web::Data<Mutex<State>>, data: web::Json<Register>) -> 
     .await;
 
     if let Ok(Some(discrim)) = discriminator {
-        return Ok(web::Json(User {
+        Ok(web::Json(UserToken {
             id: user_id.to_string(),
             username: data.username.clone(),
             discriminator: discrim.discriminator,
@@ -52,9 +56,9 @@ async fn register(state: web::Data<Mutex<State>>, data: web::Json<Register>) -> 
             flags: 0,
             system: false,
             suspended: false,
-        }));
+            token: create_token(user_id, password),
+        }))
     } else {
-        return Err((DerailedError::BadData)
-        .into());
-    };
+        Err((DerailedError::BadData).into())
+    }
 }

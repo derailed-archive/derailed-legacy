@@ -15,3 +15,15 @@ pub struct User {
     pub system: bool,
     pub suspended: bool,
 }
+
+#[derive(Debug, Serialize)]
+pub struct UserToken {
+    pub id: String,
+    pub username: String,
+    pub discriminator: String,
+    pub email: String,
+    pub flags: i32,
+    pub system: bool,
+    pub suspended: bool,
+    pub token: String,
+}
