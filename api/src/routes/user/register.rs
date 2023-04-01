@@ -4,7 +4,7 @@
 */
 
 use crate::errors::DerailedError;
-use crate::structs::User;
+use datar::structs::User;
 use actix_web::{post, web, Responder, Result};
 use datar::State;
 use serde::{Deserialize, Serialize};

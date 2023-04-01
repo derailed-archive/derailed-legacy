@@ -9,7 +9,6 @@ use std::env;
 use std::process;
 pub mod errors;
 mod routes;
-pub mod structs;
 use tokio::sync::Mutex;
 
 

@@ -5,6 +5,7 @@
 
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use chrono::Utc;
+pub mod structs;
 
 #[derive(Debug, Clone)]
 pub struct Snowflake {
