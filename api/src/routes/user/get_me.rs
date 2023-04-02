@@ -4,9 +4,10 @@
 */
 
 use crate::errors::verify_idiomatic;
-use actix_web::{get, http::header::HeaderValue, web, Responder, Result};
+use actix_web::{get, web, Responder, Result};
 use datar::State;
 use tokio::sync::Mutex;
+
 
 #[get("/users/@me")]
 async fn get_me(
@@ -14,12 +15,7 @@ async fn get_me(
     state: web::Data<Mutex<State>>,
 ) -> Result<impl Responder> {
     let user = verify_idiomatic(
-        req.headers()
-            .get("authorization")
-            .unwrap_or(&HeaderValue::from_static("authorization=0"))
-            .to_str()
-            .unwrap_or("")
-            .to_string(),
+        req,
         state.lock().await.db.acquire().await.unwrap(),
     )
     .await?;

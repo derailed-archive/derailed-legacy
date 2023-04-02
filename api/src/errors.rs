@@ -3,7 +3,7 @@
     Copyright 2021-2023 Derailed
 */
 
-use actix_web::{error, http::StatusCode, HttpResponse};
+use actix_web::{error, http::{StatusCode, header::HeaderValue}, HttpResponse};
 use datar::{auth::verify, structs::User};
 use derive_more::{Display, Error};
 use sqlx::{pool::PoolConnection, Postgres};
@@ -18,9 +18,16 @@ pub enum DerailedError {
 }
 
 pub async fn verify_idiomatic(
-    token: String,
+    req: actix_web::HttpRequest,
     db: PoolConnection<Postgres>,
 ) -> actix_web::Result<User> {
+    let token = req.headers()
+        .get("authorization")
+        .unwrap_or(&HeaderValue::from_static("null"))
+        .to_str()
+        .unwrap_or("")
+        .to_string();
+
     if let Ok(user) = verify(token, db).await {
         Ok(user)
     } else {
