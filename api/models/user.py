@@ -58,7 +58,7 @@ class User(Object):
         VALUES
             ($1, $2, $3, $4, $5)
         RETURNING
-            discriminator""",
+            discriminator;""",
                 name="register_user",
             )
 

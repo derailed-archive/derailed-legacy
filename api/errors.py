@@ -21,3 +21,8 @@ class UserDoesNotExist(DerailedException):
 class UsernameOverused(DerailedException):
     def inspect(self) -> str:
         return "Username is overused, try another one"
+
+
+class InvalidToken(DerailedException):
+    def inspect(self) -> str:
+        return "Token given is invalid"
