@@ -2,10 +2,13 @@
 # Part of the Derailed Project
 # Copyright 2021-2023 Derailed
 
+import copy
 import typing
 from dataclasses import dataclass
 
-from ..errors import UserDoesNotExist, UsernameOverused
+import asyncpg
+
+from ..errors import CustomError, UserDoesNotExist, UsernameOverused
 from ..metadata import Object, meta
 
 
@@ -128,5 +131,46 @@ class User(Object):
 
         return base
 
+    async def modify(self) -> None:
+        if self == self.___old_self:
+            return
+
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare(
+                "UPDATE USERS SET username = $1, discriminator = $2, flags = $3, suspended = $4, email = $5, password = $6 WHERE id = $7;",
+                name="update_user",
+            )
+            await stmt.fetchrow(
+                self.username,
+                self.discriminator,
+                self.flags,
+                self.suspended,
+                self.email,
+                self.password,
+                self.id,
+            )
+            self._cache()
+
+    async def delete(self) -> None:
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare(
+                "DELETE FROM users WHERE id = $1;", name="delete_user"
+            )
+            try:
+                await stmt.fetchrow(self.id)
+            except asyncpg.TriggeredActionError:
+                raise CustomError("Cannot delete user due to a continuous dependency")
+
+    def __eq__(self, value: "User") -> bool:
+        return (
+            self.username == value.username
+            and self.discriminator == value.discriminator
+            and self.flags == value.flags
+            and self.suspended == value.suspended
+            and self.email == value.email
+            and self.password == value.password
+        )
+
     def _cache(self) -> None:
         meta.cache[self.id] = self
+        self.___old_self = copy.copy(self)

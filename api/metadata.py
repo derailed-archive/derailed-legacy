@@ -4,12 +4,15 @@
 
 from __future__ import annotations
 
+import datetime
 import os
 import threading
 import time
 import typing
+from datetime import timedelta
 
 import asyncpg
+import cachetools
 
 if typing.TYPE_CHECKING:
     from .refs.current_user_ref import CurUserRef
@@ -19,8 +22,12 @@ __all__ = ("Meta", "Object", "meta")
 
 class Meta:
     def __init__(self) -> None:
-        self.cache: dict[str, Object] = {}
-        self.token_cache: dict[str, CurUserRef] = {}
+        self.cache: cachetools.TTLCache[str, Object] = cachetools.TTLCache(
+            100000, timedelta(hours=1), timer=datetime.datetime.now
+        )
+        self.token_cache: cachetools.TTLCache[str, CurUserRef] = cachetools.TTLCache(
+            1000000, timedelta(hours=2), timer=datetime.datetime.now
+        )
         self.curthread = threading.current_thread().ident
         self.pid = os.getpid()
         self._epoch = 1672531200000

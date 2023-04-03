@@ -4,6 +4,8 @@
 
 import functools
 import weakref
+from enum import Enum, auto
+from typing import Literal
 
 import async_lru
 
@@ -26,3 +28,10 @@ def memo(*lru_args, **lru_kwargs):
         return wrapped_func
 
     return decorator
+
+
+class Missing(Enum):
+    MISSING = auto()
+
+
+MISSING: Literal[Missing.MISSING] = Missing.MISSING
