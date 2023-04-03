@@ -2,6 +2,7 @@
 # Part of the Derailed Project
 # Copyright 2021-2023 Derailed
 
+from __future__ import annotations
 
 import os
 import threading
@@ -10,12 +11,16 @@ import typing
 
 import asyncpg
 
+if typing.TYPE_CHECKING:
+    from .refs.current_user_ref import CurUserRef
+
 __all__ = ("Meta", "Object", "meta")
 
 
 class Meta:
     def __init__(self) -> None:
         self.cache: dict[str, Object] = {}
+        self.token_cache: dict[str, CurUserRef] = {}
         self.curthread = threading.current_thread().ident
         self.pid = os.getpid()
         self._epoch = 1672531200000

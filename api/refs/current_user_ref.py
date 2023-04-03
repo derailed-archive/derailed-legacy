@@ -3,14 +3,16 @@
 # Copyright 2021-2023 Derailed
 
 
-from functools import cached_property, lru_cache
+from functools import cached_property
 from typing import Annotated, NotRequired, TypedDict
 
 import jwt
 from fastapi import Header
 
 from ..errors import InvalidToken
+from ..metadata import meta
 from ..models.user import User
+from ..utils import memo
 from .base import Ref
 
 
@@ -37,7 +39,7 @@ class CurUserRef(Ref):
         except (KeyError, ValueError):
             raise InvalidToken
 
-    @lru_cache
+    @memo()
     async def get_user(self) -> User:
         """Verifies user identity then returns user.
         Raises an error if identity is invalid.
@@ -62,12 +64,15 @@ class CurUserRef(Ref):
 
         # to save space, bots don't register sessions.
         if bot:
+            meta.token_cache[self.__token] = self
             return user
 
         # TODO: verify sessions
+
+        meta.token_cache[self.__token] = self
 
         return user
 
 
 def cur_ref(token: Annotated[str, Header(alias="authorization")]) -> CurUserRef:
-    return CurUserRef(token=token)
+    return meta.token_cache.get(token) or CurUserRef(token=token)
