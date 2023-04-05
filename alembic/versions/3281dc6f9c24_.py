@@ -73,7 +73,7 @@ def upgrade() -> None:
         "guilds",
         sa.Column("id", sa.BIGINT, primary_key=True),
         sa.Column("name", sa.VARCHAR(32)),
-        sa.Column("flags", sa.INT, nullabzle=False, default=0),
+        sa.Column("flags", sa.INT, nullable=False, default=0),
         sa.Column(
             "owner_id",
             sa.BIGINT,
