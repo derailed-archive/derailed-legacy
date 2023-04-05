@@ -8,6 +8,7 @@ from fastapi.responses import ORJSONResponse
 
 from .errors import DerailedException
 from .metadata import meta
+from .routes import route_users
 
 derailed = FastAPI(
     title="Derailed API",
@@ -15,6 +16,7 @@ derailed = FastAPI(
     version="1.0.0(ALPHA): Crestella",
     default_response_class=ORJSONResponse,
 )
+derailed.include_router(route_users)
 
 
 # NOTE: streams globally prior to async setup

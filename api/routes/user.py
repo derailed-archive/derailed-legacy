@@ -7,7 +7,7 @@ from typing import Annotated
 
 import bcrypt
 import pydantic
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from ..errors import CustomError
 from ..metadata import meta
@@ -24,21 +24,24 @@ class RegisterData(pydantic.BaseModel):
     email: str = pydantic.Field(max_length=100, min_length=5)
 
 
-class ModifySelfData(pydantic.BaseConfig):
+class ModifySelfData(pydantic.BaseModel):
     password: str | Missing = pydantic.Field(MISSING, max_length=72, min_length=2)
     old_password: str = pydantic.Field(max_length=72, min_length=2)
-    email: pydantic.EmailStr | Missing = pydantic.Field(
-        MISSING, max_length=100, min_length=5
-    )
+    email: pydantic.EmailStr | Missing = pydantic.Field(MISSING)
 
 
-class DeleteSelfData(pydantic.BaseConfig):
+class DeleteSelfData(pydantic.BaseModel):
     password: str | Missing = pydantic.Field(MISSING, max_length=72, min_length=2)
 
 
 @route_users.post("/register")
 async def register(payload: RegisterData):
     """Registers a new user to Derailed."""
+
+    if len(payload.email) > 100:
+        raise CustomError('Email must be under 100 characters')
+    elif len(payload.email) < 5:
+        raise CustomError('Email must be over 5 characters')
 
     salt = bcrypt.gensalt(14)
     password = bcrypt.hashpw(payload.password.encode(), salt)
@@ -52,7 +55,7 @@ async def register(payload: RegisterData):
 
 @route_users.patch("/users/@me")
 async def modify_current_user(
-    ref: Annotated[CurUserRef, cur_ref], payload: ModifySelfData
+    payload: ModifySelfData, ref: CurUserRef = Depends(cur_ref)
 ):
     """Modifies the current user."""
 
@@ -61,13 +64,18 @@ async def modify_current_user(
     if bcrypt.checkpw(payload.old_password.encode(), user.password.encode()) is False:
         raise CustomError("Invalid password")
 
+    if payload.email is not MISSING:
+        if len(payload.email) > 100:
+            raise CustomError('Email must be under 100 characters')
+        elif len(payload.email) < 5:
+            raise CustomError('Email must be over 5 characters')
+
+        user.email = str(payload.email)
+
     if payload.password is not MISSING:
         salt = bcrypt.gensalt(14)
         password = bcrypt.hashpw(payload.password.encode(), salt)
         user.password = password.decode()
-
-    if payload.email is not MISSING:
-        user.email = str(payload.email)
 
     await user.modify()
 
@@ -75,7 +83,7 @@ async def modify_current_user(
 
 
 @route_users.get("/users/@me")
-async def get_current_user(ref: Annotated[CurUserRef, cur_ref]):
+async def get_current_user(ref: CurUserRef = Depends(cur_ref)):
     """Route for fetching the current user of this token."""
 
     return await (await ref.get_user()).publicize(secure=True)
@@ -83,7 +91,7 @@ async def get_current_user(ref: Annotated[CurUserRef, cur_ref]):
 
 @route_users.delete("/users/@me")
 async def delete_current_user(
-    ref: Annotated[CurUserRef, cur_ref], payload: DeleteSelfData
+    payload: DeleteSelfData, ref: CurUserRef = Depends(cur_ref)
 ):
     """Deletes the current user immediately."""
 

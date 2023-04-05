@@ -56,13 +56,7 @@ class User(Object):
 
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                """INSERT INTO users
-            (id, username, email, password, system)
-        VALUES
-            ($1, $2, $3, $4, $5)
-        RETURNING
-            discriminator;""",
-                name="register_user",
+                """INSERT INTO users (id, username, email, password, system) VALUES ($1, $2, $3, $4, $5) RETURNING discriminator;""",
             )
 
             rec = await stmt.fetchrow(user_id, username, email, password, system)
@@ -105,7 +99,7 @@ class User(Object):
 
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                f"SELECT * FROM users WHERE id = $1;", name="select_user_id"
+                f"SELECT * FROM users WHERE id = $1;"
             )
             user_row = await stmt.fetchrow(user_id)
 
@@ -138,7 +132,6 @@ class User(Object):
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
                 "UPDATE USERS SET username = $1, discriminator = $2, flags = $3, suspended = $4, email = $5, password = $6 WHERE id = $7;",
-                name="update_user",
             )
             await stmt.fetchrow(
                 self.username,
@@ -154,7 +147,7 @@ class User(Object):
     async def delete(self) -> None:
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                "DELETE FROM users WHERE id = $1;", name="delete_user"
+                "DELETE FROM users WHERE id = $1;"
             )
             try:
                 await stmt.fetchrow(self.id)

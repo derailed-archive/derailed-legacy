@@ -31,9 +31,10 @@ class Meta:
         self.curthread = threading.current_thread().ident
         self.pid = os.getpid()
         self._epoch = 1672531200000
+        self._incr = 0
 
     async def initialize(self) -> None:
-        self.db = asyncpg.create_pool(os.environ["DATABASE_URL"])
+        self.db = await asyncpg.create_pool(os.environ["DATABASE_URL"])
 
     def genflake(self) -> int:
         current_ms = int(time.time() * 1000)
