@@ -59,7 +59,10 @@ class User(Object):
                 """INSERT INTO users (id, username, email, password, system) VALUES ($1, $2, $3, $4, $5) RETURNING discriminator;""",
             )
 
-            rec = await stmt.fetchrow(user_id, username, email, password, system)
+            try:
+                rec = await stmt.fetchrow(user_id, username, email, password, system)
+            except asyncpg.UniqueViolationError:
+                raise CustomError("Email already used")
 
             if rec is None:
                 raise UsernameOverused
@@ -98,9 +101,7 @@ class User(Object):
             return obj
 
         async with meta.db.acquire() as db:
-            stmt = await db.prepare(
-                f"SELECT * FROM users WHERE id = $1;"
-            )
+            stmt = await db.prepare(f"SELECT * FROM users WHERE id = $1;")
             user_row = await stmt.fetchrow(user_id)
 
             if user_row is None:
@@ -112,7 +113,7 @@ class User(Object):
 
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
         base = {
-            "id": self.id,
+            "id": str(self.id),
             "username": self.username,
             "discriminator": self.discriminator,
             "flags": self.flags,
@@ -146,13 +147,13 @@ class User(Object):
 
     async def delete(self) -> None:
         async with meta.db.acquire() as db:
-            stmt = await db.prepare(
-                "DELETE FROM users WHERE id = $1;"
-            )
+            stmt = await db.prepare("DELETE FROM users WHERE id = $1;")
             try:
                 await stmt.fetchrow(self.id)
             except asyncpg.TriggeredActionError:
                 raise CustomError("Cannot delete user due to a continuous dependency")
+
+            meta.cache.pop(self.id, None)
 
     def __eq__(self, value: "User") -> bool:
         return (

@@ -10,6 +10,7 @@ import pydantic
 from fastapi import APIRouter, Depends
 
 from ..errors import CustomError
+from ..identity import create_token
 from ..metadata import meta
 from ..models.user import User
 from ..refs.current_user_ref import CurUserRef, cur_ref
@@ -39,9 +40,9 @@ async def register(payload: RegisterData):
     """Registers a new user to Derailed."""
 
     if len(payload.email) > 100:
-        raise CustomError('Email must be under 100 characters')
+        raise CustomError("Email must be under 100 characters")
     elif len(payload.email) < 5:
-        raise CustomError('Email must be over 5 characters')
+        raise CustomError("Email must be over 5 characters")
 
     salt = bcrypt.gensalt(14)
     password = bcrypt.hashpw(payload.password.encode(), salt)
@@ -50,12 +51,14 @@ async def register(payload: RegisterData):
         meta.genflake(), payload.username, payload.email, password.decode()
     )
 
-    return await user.publicize(secure=True)
+    pub = await user.publicize(secure=True)
+    pub["token"] = create_token(user)
+    return pub
 
 
 @route_users.patch("/users/@me")
 async def modify_current_user(
-    payload: ModifySelfData, ref: CurUserRef = Depends(cur_ref)
+    payload: ModifySelfData, ref: Annotated[CurUserRef, Depends(cur_ref)]
 ):
     """Modifies the current user."""
 
@@ -66,9 +69,9 @@ async def modify_current_user(
 
     if payload.email is not MISSING:
         if len(payload.email) > 100:
-            raise CustomError('Email must be under 100 characters')
+            raise CustomError("Email must be under 100 characters")
         elif len(payload.email) < 5:
-            raise CustomError('Email must be over 5 characters')
+            raise CustomError("Email must be over 5 characters")
 
         user.email = str(payload.email)
 
@@ -83,7 +86,7 @@ async def modify_current_user(
 
 
 @route_users.get("/users/@me")
-async def get_current_user(ref: CurUserRef = Depends(cur_ref)):
+async def get_current_user(ref: Annotated[CurUserRef, Depends(cur_ref)]):
     """Route for fetching the current user of this token."""
 
     return await (await ref.get_user()).publicize(secure=True)
@@ -91,7 +94,7 @@ async def get_current_user(ref: CurUserRef = Depends(cur_ref)):
 
 @route_users.delete("/users/@me")
 async def delete_current_user(
-    payload: DeleteSelfData, ref: CurUserRef = Depends(cur_ref)
+    payload: DeleteSelfData, ref: Annotated[CurUserRef, Depends(cur_ref)]
 ):
     """Deletes the current user immediately."""
 

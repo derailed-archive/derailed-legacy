@@ -22,15 +22,15 @@ depends_on = None
 def upgrade() -> None:
     op.execute(
         """CREATE OR REPLACE FUNCTION generate_discriminator(TEXT)
-    RETURNS SMALLINT
+    RETURNS TEXT
     LANGUAGE plpgsql
     AS $$
     DECLARE
-        out SMALLINT;
+        out VARCHAR(4);
     BEGIN
         SELECT * FROM (
             SELECT
-                trunc(random() * 9999 + 1) AS discrim
+                LPAD(CAST(trunc(random() * 9999 + 1) AS TEXT), 4, '0') AS discrim
             FROM
                 generate_series(1, 9999)
         ) AS result
@@ -39,7 +39,7 @@ def upgrade() -> None:
         )
         LIMIT 1
         INTO out;
-        RETURN out;
+        RETURN substr(out, 1, 4);
     END;
     $$;"""
     )
@@ -50,16 +50,16 @@ def upgrade() -> None:
         sa.Column("username", sa.VARCHAR(32), nullable=False, index=True),
         sa.Column(
             "discriminator",
-            sa.VARCHAR(4),
+            sa.TEXT,
             nullable=False,
-            default="generate_discriminator('username')",
+            server_default=sa.func.generate_discriminator("username"),
         ),
         sa.Column("email", sa.VARCHAR(100), nullable=False, unique=True, index=True),
         sa.Column("password", sa.TEXT, nullable=False),
-        sa.Column("flags", sa.INT, nullable=False, default=0),
-        sa.Column("system", sa.BOOLEAN, default=False),
+        sa.Column("flags", sa.INT, nullable=False, server_default="0"),
+        sa.Column("system", sa.BOOLEAN, server_default="FALSE"),
         sa.Column("deletor_job_id", sa.BIGINT, unique=True),
-        sa.Column("suspended", sa.BOOLEAN, default=False),
+        sa.Column("suspended", sa.BOOLEAN, server_default="FALSE"),
     )
 
     op.create_table(
@@ -73,7 +73,7 @@ def upgrade() -> None:
         "guilds",
         sa.Column("id", sa.BIGINT, primary_key=True),
         sa.Column("name", sa.VARCHAR(32)),
-        sa.Column("flags", sa.INT, nullable=False, default=0),
+        sa.Column("flags", sa.INT, nullable=False, server_default="0"),
         sa.Column(
             "owner_id",
             sa.BIGINT,
@@ -166,6 +166,7 @@ def upgrade() -> None:
             primary_key=True,
         ),
         sa.Column("nick", sa.VARCHAR(32)),
+        sa.Column("joined_at", sa.DATE, server_default=sa.func.now()),
     )
 
     op.create_table(

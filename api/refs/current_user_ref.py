@@ -9,10 +9,10 @@ from typing import Annotated, NotRequired, TypedDict
 import jwt
 from fastapi import Header
 
-from ..errors import InvalidToken
+from ..errors import InvalidToken, UserDoesNotExist
+from ..identity import get_token_user_id, verify_token
 from ..metadata import meta
 from ..models.user import User
-from ..utils import memo
 from .base import Ref
 
 
@@ -29,17 +29,8 @@ class CurUserRef(Ref):
     def user_id(self) -> int:
         """Parse the token of this ref and return the user id given."""
 
-        try:
-            header = jwt.get_unverified_header(self.__token)
-        except jwt.InvalidTokenError:
-            raise InvalidToken
+        return get_token_user_id(self.__token)
 
-        try:
-            return int(header["jti"])
-        except (KeyError, ValueError):
-            raise InvalidToken
-
-    @memo()
     async def get_user(self) -> User:
         """Verifies user identity then returns user.
         Raises an error if identity is invalid.
@@ -49,27 +40,12 @@ class CurUserRef(Ref):
 
         user_id = self.user_id
 
-        user = await User.acquire(user_id)
-
         try:
-            decoded_jwt: JWTFormat = jwt.decode(self.__token, user.password, ["HS512"])
-        except jwt.InvalidTokenError:
+            user = await User.acquire(user_id)
+        except UserDoesNotExist:
             raise InvalidToken
 
-        session_id = decoded_jwt.get("session_id")
-        bot = decoded_jwt.get("bot")
-
-        if session_id is None or bot is None:
-            raise InvalidToken
-
-        # to save space, bots don't register sessions.
-        if bot:
-            meta.token_cache[self.__token] = self
-            return user
-
-        # TODO: verify sessions
-
-        meta.token_cache[self.__token] = self
+        verify_token(user, self.__token)
 
         return user
 

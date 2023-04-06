@@ -16,7 +16,7 @@ class InternalException(DerailedException):
 
 
 class UserDoesNotExist(DerailedException):
-    code = 400
+    code = 404
 
     def inspect(self) -> str:
         return "Specified user does not exist in some form"
