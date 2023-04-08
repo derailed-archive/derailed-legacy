@@ -22,6 +22,13 @@ class UserDoesNotExist(DerailedException):
         return "Specified user does not exist in some form"
 
 
+class GuildDoesNotExist(DerailedException):
+    code = 404
+
+    def inspect(self) -> str:
+        return "Specified guild does not exist in some form"
+
+
 class UsernameOverused(DerailedException):
     code = 400
 

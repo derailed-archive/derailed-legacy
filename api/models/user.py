@@ -2,7 +2,6 @@
 # Part of the Derailed Project
 # Copyright 2021-2023 Derailed
 
-import copy
 import typing
 from dataclasses import dataclass
 
@@ -30,7 +29,7 @@ class User(Object):
 
     @classmethod
     async def register(
-        self,
+        cls,
         user_id: int,
         username: str,
         email: str,
@@ -67,7 +66,7 @@ class User(Object):
             if rec is None:
                 raise UsernameOverused
 
-            user = User(
+            user = cls(
                 id=user_id,
                 username=username,
                 discriminator=rec["discriminator"],
@@ -77,7 +76,6 @@ class User(Object):
                 suspended=False,
                 password=password,
             )
-            user._cache()
             return user
 
     @classmethod
@@ -87,19 +85,13 @@ class User(Object):
         Parameters
         ----------
         user_id: :class:`int`
-            The user id to acquire
+            The user id to acquire.
 
         Raises
         ------
         UserDoesNotExist:
             Raised when no users with `user_id` exist.
         """
-
-        obj = meta.cache.get(user_id)
-
-        if obj:
-            return obj
-
         async with meta.db.acquire() as db:
             stmt = await db.prepare(f"SELECT * FROM users WHERE id = $1;")
             user_row = await stmt.fetchrow(user_id)
@@ -132,9 +124,9 @@ class User(Object):
 
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                "UPDATE USERS SET username = $1, discriminator = $2, flags = $3, suspended = $4, email = $5, password = $6 WHERE id = $7;",
+                "UPDATE users SET username = $1, discriminator = $2, flags = $3, suspended = $4, email = $5, password = $6 WHERE id = $7;",
             )
-            await stmt.fetchrow(
+            await stmt.fetch(
                 self.username,
                 self.discriminator,
                 self.flags,
@@ -143,7 +135,6 @@ class User(Object):
                 self.password,
                 self.id,
             )
-            self._cache()
 
     async def delete(self) -> None:
         async with meta.db.acquire() as db:
@@ -152,8 +143,6 @@ class User(Object):
                 await stmt.fetchrow(self.id)
             except asyncpg.TriggeredActionError:
                 raise CustomError("Cannot delete user due to a continuous dependency")
-
-            meta.cache.pop(self.id, None)
 
     def __eq__(self, value: "User") -> bool:
         return (
@@ -164,7 +153,3 @@ class User(Object):
             and self.email == value.email
             and self.password == value.password
         )
-
-    def _cache(self) -> None:
-        meta.cache[self.id] = self
-        self.___old_self = copy.copy(self)
