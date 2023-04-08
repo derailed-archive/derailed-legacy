@@ -3,11 +3,15 @@
 # Copyright 2021-2023 Derailed
 
 from enum import Enum, auto
-from typing import Literal
+from typing import Literal, TypeVar, Union
+
+T = TypeVar("T")
 
 
 class Missing(Enum):
     MISSING = auto()
 
 
-MISSING: Literal[Missing.MISSING] = Missing.MISSING
+MISSED: Literal[Missing.MISSING] = Missing.MISSING
+
+MISSING = Union[T, MISSED]

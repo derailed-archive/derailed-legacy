@@ -9,6 +9,7 @@ import asyncpg
 
 from ..errors import CustomError, UserDoesNotExist, UsernameOverused
 from ..metadata import Object, meta
+from .settings import Settings
 
 
 @dataclass
@@ -26,6 +27,9 @@ class User(Object):
     # private fields
     password: str | None = None
     deletor_job_id: int | None = None
+
+    async def get_settings(self) -> Settings:
+        return Settings.acquire(self.id)
 
     @classmethod
     async def register(
@@ -100,7 +104,6 @@ class User(Object):
                 raise UserDoesNotExist
 
             user = User(**dict(user_row))
-            user._cache()
             return user
 
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:

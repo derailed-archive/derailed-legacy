@@ -3,7 +3,7 @@
 # Copyright 2021-2023 Derailed
 
 
-from typing import Annotated
+from typing import Annotated, Literal
 
 import bcrypt
 import pydantic
@@ -14,7 +14,7 @@ from ..identity import create_token
 from ..metadata import meta
 from ..models.user import User
 from ..refs.current_user_ref import CurUserRef, cur_ref
-from ..utils import MISSING, Missing
+from ..utils import MISSED, MISSING
 
 route_users = APIRouter()
 
@@ -26,13 +26,18 @@ class RegisterData(pydantic.BaseModel):
 
 
 class ModifySelfData(pydantic.BaseModel):
-    password: str | Missing = pydantic.Field(MISSING, max_length=72, min_length=2)
+    password: MISSING[str] = pydantic.Field(MISSED, max_length=72, min_length=2)
     old_password: str = pydantic.Field(max_length=72, min_length=2)
-    email: pydantic.EmailStr | Missing = pydantic.Field(MISSING)
+    email: MISSING[pydantic.EmailStr] = pydantic.Field(MISSED)
 
 
 class DeleteSelfData(pydantic.BaseModel):
-    password: str | Missing = pydantic.Field(MISSING, max_length=72, min_length=2)
+    password: MISSING[str] = pydantic.Field(MISSED, max_length=72, min_length=2)
+
+
+class ModifySettings(pydantic.BaseModel):
+    theme: MISSING[Literal["dark", "light"]] = pydantic.Field(MISSED)
+    status: MISSING[Literal[0, 1, 2, 3]] = pydantic.Field(MISSED)
 
 
 @route_users.post("/register")
@@ -67,7 +72,7 @@ async def modify_current_user(
     if bcrypt.checkpw(payload.old_password.encode(), user.password.encode()) is False:
         raise CustomError("Invalid password")
 
-    if payload.email is not MISSING:
+    if payload.email is not MISSED:
         if len(payload.email) > 100:
             raise CustomError("Email must be under 100 characters")
         elif len(payload.email) < 5:
@@ -75,7 +80,7 @@ async def modify_current_user(
 
         user.email = str(payload.email)
 
-    if payload.password is not MISSING:
+    if payload.password is not MISSED:
         salt = bcrypt.gensalt(14)
         password = bcrypt.hashpw(payload.password.encode(), salt)
         user.password = password.decode()
@@ -90,6 +95,37 @@ async def get_current_user(ref: Annotated[CurUserRef, Depends(cur_ref)]):
     """Route for fetching the current user of this token."""
 
     return await (await ref.get_user()).publicize(secure=True)
+
+
+@route_users.get("/users/@me/settings")
+async def get_settings(ref: Annotated[CurUserRef, Depends(cur_ref)]):
+    """Get the settings of the current user."""
+
+    user = await ref.get_user()
+
+    return await (await user.get_settings()).publicize()
+
+
+@route_users.patch("/users/@me/settings")
+async def modify_settings(
+    ref: Annotated[CurUserRef, Depends(cur_ref)], pd: ModifySettings
+):
+    """Modify this users' settings."""
+
+    user = await ref.get_user()
+
+    settings = await user.get_settings()
+
+    if pd != {}:
+        if pd.theme:
+            settings.theme = pd.theme
+
+        if pd.status is not MISSED:
+            settings.status = pd.status
+
+        await settings.modify()
+
+    return await settings.publicize()
 
 
 @route_users.delete("/users/@me")

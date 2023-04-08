@@ -3,15 +3,12 @@
 # Copyright 2021-2023 Derailed
 
 
-from functools import cached_property
 from typing import Annotated, NotRequired, TypedDict
 
-import jwt
 from fastapi import Header
 
 from ..errors import InvalidToken, UserDoesNotExist
 from ..identity import get_token_user_id, verify_token
-from ..metadata import meta
 from ..models.user import User
 from .base import Ref
 
@@ -25,7 +22,7 @@ class CurUserRef(Ref):
     def __init__(self, token: str) -> None:
         self.__token = token
 
-    @cached_property
+    @property
     def user_id(self) -> int:
         """Parse the token of this ref and return the user id given."""
 
@@ -51,4 +48,4 @@ class CurUserRef(Ref):
 
 
 def cur_ref(token: Annotated[str, Header(alias="authorization")]) -> CurUserRef:
-    return meta.token_cache.get(token) or CurUserRef(token=token)
+    return CurUserRef(token=token)

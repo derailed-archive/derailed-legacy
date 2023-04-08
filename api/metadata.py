@@ -4,30 +4,18 @@
 
 from __future__ import annotations
 
-import datetime
 import os
 import threading
 import time
 import typing
-from datetime import timedelta
 
 import asyncpg
-import cachetools
-
-if typing.TYPE_CHECKING:
-    from .refs.current_user_ref import CurUserRef
 
 __all__ = ("Meta", "Object", "meta")
 
 
 class Meta:
     def __init__(self) -> None:
-        self.cache: cachetools.TTLCache[str, Object] = cachetools.TTLCache(
-            100000, timedelta(hours=1), timer=datetime.datetime.now
-        )
-        self.token_cache: cachetools.TTLCache[str, CurUserRef] = cachetools.TTLCache(
-            1000000, timedelta(hours=2), timer=datetime.datetime.now
-        )
         self.curthread = threading.current_thread().ident
         self.pid = os.getpid()
         self._epoch = 1672531200000
@@ -60,10 +48,6 @@ meta = Meta()
 
 
 class Object:
-    @classmethod
-    def from_cache(self, object_id: int | str) -> typing.Self | None:
-        return meta.cache.get(object_id)
-
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
         """Return a dictionary representation of this object for the general public.
 
