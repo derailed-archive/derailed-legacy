@@ -12,6 +12,8 @@ from ..metadata import Object, meta
 
 @dataclass
 class Settings(Object):
+    """Represents a users' settings."""
+
     user_id: int
     theme: str
     status: int
