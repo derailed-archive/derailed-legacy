@@ -14,4 +14,4 @@ class Missing(Enum):
 
 MISSED: Literal[Missing.MISSING] = Missing.MISSING
 
-MISSING = Union[T, MISSED]
+MISSING = Union[T, Missing]
