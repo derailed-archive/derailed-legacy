@@ -102,8 +102,9 @@ async def get_settings(ref: Annotated[CurUserRef, Depends(cur_ref)]):
     """Get the settings of the current user."""
 
     user = await ref.get_user()
+    settings = await user.get_settings()
 
-    return await (await user.get_settings()).publicize()
+    return await settings.publicize()
 
 
 @route_users.patch("/users/@me/settings")

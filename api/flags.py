@@ -24,6 +24,10 @@ class RolePermissions(IntFlag):
     MENTION_EVERYONE = 14
 
 
+class UserFlags(IntFlag):
+    STAFF = 0
+
+
 DEFAULT_PERMISSIONS = (
     RolePermissions.VIEW_MESSAGE_HISTORY
     | RolePermissions.VIEW_CHANNELS

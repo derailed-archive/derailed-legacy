@@ -11,6 +11,9 @@ T = TypeVar("T")
 class Missing(Enum):
     MISSING = auto()
 
+    def __bool__(self) -> Literal[False]:
+        return False
+
 
 MISSED: Literal[Missing.MISSING] = Missing.MISSING
 

@@ -3,6 +3,7 @@
 # Copyright 2021-2023 Derailed
 
 
+import datetime
 import typing
 from dataclasses import dataclass
 
@@ -78,10 +79,34 @@ class Guild(Object):
 
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                "INSERT INTO guilds (id, name, owner_id, flags, permissions) VALUES ($1, $2, $3, $4, $5);"
+                "INSERT INTO guilds (id, name, owner_id, flags, "
+                "permissions) VALUES ($1, $2, $3, $4, $5);"
+            )
+            stmt2 = await db.prepare(
+                "INSERT INTO members (user_id, guild_id, nick, "
+                "joined_at) VALUES ($1, $2, $3, $4);"
+            )
+            stmt3 = await db.prepare(
+                "INSERT INTO channels (id, name, type, guild_id, "
+                "parent_id, position) VALUES ($1, $2, $3, $4, $5, $6);"
             )
             guild_id = meta.genflake()
-            await stmt.fetch(guild_id, name, owner_id, flags, int(permissions))
+            trans = db.transaction()
+            await trans.start()
+
+            try:
+                await stmt.fetch(guild_id, name, owner_id, flags, int(permissions))
+                await stmt2.fetch(
+                    owner_id, guild_id, None, datetime.datetime.utcnow().isoformat()
+                )
+                cat = meta.genflake()
+                await stmt3.fetch(cat, "General", 0, guild_id, None, 0)
+                await stmt3.fetch(meta.genflake(), "general", 1, guild_id, cat, 0)
+            except Exception as exc:
+                await trans.rollback()
+                raise exc
+
+            await trans.commit()
 
             return cls(
                 id=guild_id,

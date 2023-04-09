@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import asyncpg
 
 from ..errors import CustomError, UserDoesNotExist, UsernameOverused
+from ..flags import UserFlags
 from ..metadata import Object, meta
 from .settings import Settings
 
@@ -20,7 +21,7 @@ class User(Object):
     username: str
     discriminator: str
     email: str
-    flags: int
+    flags: UserFlags
     system: bool
     suspended: bool
 
@@ -29,7 +30,7 @@ class User(Object):
     deletor_job_id: int | None = None
 
     async def get_settings(self) -> Settings:
-        return Settings.acquire(self.id)
+        return await Settings.acquire(self.id)
 
     @classmethod
     async def register(
@@ -61,11 +62,27 @@ class User(Object):
             stmt = await db.prepare(
                 """INSERT INTO users (id, username, email, password, system) VALUES ($1, $2, $3, $4, $5) RETURNING discriminator;""",
             )
+            stmt2 = await db.prepare(
+                "INSERT INTO user_settings (user_id, status, theme) VALUES ($1, $2, $3);"
+            )
+
+            trans = db.transaction()
+            await trans.start()
 
             try:
-                rec = await stmt.fetchrow(user_id, username, email, password, system)
-            except asyncpg.UniqueViolationError:
-                raise CustomError("Email already used")
+                try:
+                    rec = await stmt.fetchrow(
+                        user_id, username, email, password, system
+                    )
+                except asyncpg.UniqueViolationError:
+                    raise CustomError("Email already used")
+
+                await stmt2.fetch(user_id, 0, "dark")
+            except Exception as exc:
+                await trans.rollback()
+                raise exc
+
+            await trans.commit()
 
             if rec is None:
                 raise UsernameOverused
@@ -75,7 +92,7 @@ class User(Object):
                 username=username,
                 discriminator=rec["discriminator"],
                 email=email,
-                flags=0,
+                flags=UserFlags(0),
                 system=system,
                 suspended=False,
                 password=password,
@@ -104,6 +121,7 @@ class User(Object):
                 raise UserDoesNotExist
 
             user = User(**dict(user_row))
+            user.flags = UserFlags(user.flags)
             return user
 
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
@@ -111,7 +129,7 @@ class User(Object):
             "id": str(self.id),
             "username": self.username,
             "discriminator": self.discriminator,
-            "flags": self.flags,
+            "flags": int(self.flags),
             "system": self.system,
             "suspended": self.suspended,
         }
