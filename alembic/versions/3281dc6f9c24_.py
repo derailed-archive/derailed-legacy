@@ -188,9 +188,12 @@ def upgrade() -> None:
     op.create_table(
         "member_assigned_roles",
         sa.Column(
-            "role_id", sa.BIGINT, sa.ForeignKey("guild_roles.id"), primary_key=True
+            "role_id", sa.BIGINT, sa.ForeignKey("guild_roles.id", ondelete="CASCADE"), primary_key=True
         ),
-        sa.Column("user_id", sa.BIGINT, sa.ForeignKey("users.id"), primary_key=True),
+        sa.Column(
+            "guild_id", sa.BIGINT, sa.ForeignKey("guilds.id", ondelete="CASCADE")
+        ),
+        sa.Column("user_id", sa.BIGINT, sa.ForeignKey("users.id", ondelete="CASCADE"), primary_key=True),
     )
 
     op.create_table(

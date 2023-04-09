@@ -140,9 +140,6 @@ class User(Object):
         return base
 
     async def modify(self) -> None:
-        if self == self.___old_self:
-            return
-
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
                 "UPDATE users SET username = $1, discriminator = $2, flags = $3, suspended = $4, email = $5, password = $6 WHERE id = $7;",
