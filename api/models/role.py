@@ -6,6 +6,8 @@
 import typing
 from dataclasses import dataclass
 
+from ..utils import MISSING, Maybe
+
 from ..errors import CustomError
 from ..flags import RolePermissions
 from ..metadata import Object, meta
@@ -45,6 +47,13 @@ class Role(Object):
                 deny=RolePermissions(row["deny"]),
                 position=row["position"],
             )
+
+    @classmethod
+    async def create(cls, name: str, guild_id: int, allow: int = 0, deny: int = 0, position: Maybe[int | None] = MISSING) -> typing.Self:
+        if position is None:
+            position = 0
+
+        # TODO!
 
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
         return {

@@ -10,7 +10,9 @@ from datetime import datetime
 import asyncpg
 
 from ..errors import CustomError
+from ..flags import RolePermissions
 from ..metadata import Object, meta
+from .role import Role
 from .user import User
 
 
@@ -102,3 +104,30 @@ class Member(Object):
                 "nick": self.nick,
                 "joined_at": self.joined_at,
             }
+
+    async def get_roles(self) -> list[Role]:
+        """Fetches the roles for this Member."""
+
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare(
+                "SELECT * FROM roles WHERE id IN "
+                "(SELECT id FROM member_assigned_roles "
+                "WHERE user_id = $1 AND guild_id = $2);"
+            )
+            rows = await stmt.fetch(self.user_id, self.guild_id)
+
+        roles = []
+
+        for row in rows:
+            roles.append(
+                Role(
+                    id=row["id"],
+                    guild_id=row["guild_id"],
+                    name=row["name"],
+                    allow=RolePermissions(row["allow"]),
+                    deny=RolePermissions(row["deny"]),
+                    position=row["position"],
+                )
+            )
+
+        return roles

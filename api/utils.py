@@ -15,6 +15,6 @@ class Missing(Enum):
         return False
 
 
-MISSED: Literal[Missing.MISSING] = Missing.MISSING
+MISSING: Literal[Missing.MISSING] = Missing.MISSING
 
-MISSING = Union[T, Missing]
+Maybe = Union[T, Missing]

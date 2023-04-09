@@ -14,7 +14,7 @@ from ..identity import create_token
 from ..metadata import meta
 from ..models.user import User
 from ..refs.current_user_ref import CurUserRef, cur_ref
-from ..utils import MISSED, MISSING
+from ..utils import MISSING, Maybe
 
 route_users = APIRouter()
 
@@ -26,18 +26,18 @@ class RegisterData(pydantic.BaseModel):
 
 
 class ModifySelfData(pydantic.BaseModel):
-    password: MISSING[str] = pydantic.Field(MISSED, max_length=72, min_length=2)
+    password: Maybe[str] = pydantic.Field(MISSING, max_length=72, min_length=2)
     old_password: str = pydantic.Field(max_length=72, min_length=2)
-    email: MISSING[pydantic.EmailStr] = pydantic.Field(MISSED)
+    email: Maybe[pydantic.EmailStr] = pydantic.Field(MISSING)
 
 
 class DeleteSelfData(pydantic.BaseModel):
-    password: MISSING[str] = pydantic.Field(MISSED, max_length=72, min_length=2)
+    password: Maybe[str] = pydantic.Field(MISSING, max_length=72, min_length=2)
 
 
 class ModifySettings(pydantic.BaseModel):
-    theme: MISSING[Literal["dark", "light"]] = pydantic.Field(MISSED)
-    status: MISSING[Literal[0, 1, 2, 3]] = pydantic.Field(MISSED)
+    theme: Maybe[Literal["dark", "light"]] = pydantic.Field(MISSING)
+    status: Maybe[Literal[0, 1, 2, 3]] = pydantic.Field(MISSING)
 
 
 @route_users.post("/register")
@@ -72,7 +72,7 @@ async def modify_current_user(
     if bcrypt.checkpw(payload.old_password.encode(), user.password.encode()) is False:
         raise CustomError("Invalid password")
 
-    if payload.email is not MISSED:
+    if payload.email:
         if len(payload.email) > 100:
             raise CustomError("Email must be under 100 characters")
         elif len(payload.email) < 5:
@@ -80,7 +80,7 @@ async def modify_current_user(
 
         user.email = str(payload.email)
 
-    if payload.password is not MISSED:
+    if payload.password:
         salt = bcrypt.gensalt(14)
         password = bcrypt.hashpw(payload.password.encode(), salt)
         user.password = password.decode()
@@ -121,7 +121,7 @@ async def modify_settings(
         if pd.theme:
             settings.theme = pd.theme
 
-        if pd.status is not MISSED:
+        if pd.status is not MISSING:
             settings.status = pd.status
 
         await settings.modify()
