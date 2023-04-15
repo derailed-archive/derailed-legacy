@@ -5,7 +5,7 @@
 import functools
 import weakref
 from enum import Enum, auto
-from typing import Callable, Literal, TypeVar, Union
+from typing import Literal, TypeVar, Union
 
 import async_lru
 
