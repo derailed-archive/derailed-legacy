@@ -12,7 +12,9 @@ import asyncpg
 from ..errors import CustomError
 from ..flags import RolePermissions
 from ..metadata import Object, meta
-from .role import Role
+from ..utils import cache
+from .guild import Guild
+from .role import ADMIN_PERM, Role
 from .user import User
 
 
@@ -105,6 +107,7 @@ class Member(Object):
                 "joined_at": self.joined_at,
             }
 
+    @cache()
     async def get_roles(self) -> list[Role]:
         """Fetches the roles for this Member."""
 
@@ -119,7 +122,8 @@ class Member(Object):
         roles = []
 
         for row in rows:
-            roles.append(
+            roles.insert(
+                row["position"],
                 Role(
                     id=row["id"],
                     guild_id=row["guild_id"],
@@ -127,7 +131,25 @@ class Member(Object):
                     allow=RolePermissions(row["allow"]),
                     deny=RolePermissions(row["deny"]),
                     position=row["position"],
-                )
+                ),
             )
 
         return roles
+
+    async def has_permissions(
+        self, perms: list[int | RolePermissions], guild: Guild | None = None
+    ) -> None:
+        roles = await self.get_roles()
+
+        if roles != []:
+            for role in roles:
+                if not role.has_permissions(perms=perms):
+                    raise CustomError("Need elevated permissions to do action", 403)
+        else:
+            if guild:
+                for perm in perms:
+                    if bool(guild.permissions & ADMIN_PERM) is True:
+                        break
+
+                    if not bool(guild.permissions & perm):
+                        raise CustomError("Need elevated permissions to do action", 403)

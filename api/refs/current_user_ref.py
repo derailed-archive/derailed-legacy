@@ -3,7 +3,7 @@
 # Copyright 2021-2023 Derailed
 
 
-from typing import Annotated, NotRequired, TypedDict
+from typing import Annotated
 
 from fastapi import Header
 
@@ -11,11 +11,6 @@ from ..errors import InvalidToken, UserDoesNotExist
 from ..identity import get_token_user_id, verify_token
 from ..models.user import User
 from .base import Ref
-
-
-class JWTFormat(TypedDict):
-    session_id: NotRequired[str]
-    bot: NotRequired[bool]
 
 
 class CurUserRef(Ref):

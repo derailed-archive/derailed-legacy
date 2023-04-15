@@ -6,11 +6,12 @@
 import typing
 from dataclasses import dataclass
 
-from ..utils import MISSING, Maybe
-
 from ..errors import CustomError
 from ..flags import RolePermissions
 from ..metadata import Object, meta
+from ..utils import MISSING, Maybe
+
+ADMIN_PERM = RolePermissions.ADMINISTRATOR.value
 
 
 @dataclass
@@ -21,6 +22,34 @@ class Role(Object):
     allow: RolePermissions
     deny: RolePermissions
     position: int
+
+    def has_permission(self, perm: int | RolePermissions) -> bool:
+        return self.has_permissions(perms=[perm])
+
+    def has_permissions(self, perms: list[int | RolePermissions]) -> bool:
+        results: list[bool] = []
+
+        for perm in perms:
+            if isinstance(perm, RolePermissions):
+                perm = perm.value
+
+            if bool(self.allow, ADMIN_PERM):
+                results.append(True)
+                continue
+
+            # deny takes precedent over allow
+            if bool(self.deny, perm) is True:
+                results.append(False)
+                continue
+            elif bool(self.allow, perm) is True:
+                results.append(True)
+                continue
+            else:
+                results.append(False)
+                continue
+
+        if False in results:
+            return False
 
     @classmethod
     async def acquire(cls, id: int) -> typing.Self:
@@ -49,7 +78,14 @@ class Role(Object):
             )
 
     @classmethod
-    async def create(cls, name: str, guild_id: int, allow: int = 0, deny: int = 0, position: Maybe[int | None] = MISSING) -> typing.Self:
+    async def create(
+        cls,
+        name: str,
+        guild_id: int,
+        allow: int = 0,
+        deny: int = 0,
+        position: Maybe[int | None] = MISSING,
+    ) -> typing.Self:
         if position is None:
             position = 0
 
