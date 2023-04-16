@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 from ..errors import CustomError
 from ..flags import RolePermissions
+from ..metadata import meta
 from ..models.guild import Guild
 from ..refs.current_guild import CurrentGuildRef, cur_guild_ref
 from ..refs.current_user_ref import CurUserRef, cur_ref
@@ -27,7 +28,9 @@ async def create_guild(cur_user: Annotated[CurUserRef, cur_ref], payload: Create
 
     guild = await Guild.create(payload.name, user.id)
 
-    return await guild.publicize()
+    await meta.dispatch_user("GUILD_CREATE", user.id, guild.publicize())
+
+    return guild.publicize()
 
 
 @route_guilds.get("/guilds/{guild_id}")
@@ -37,7 +40,6 @@ async def get_guild(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
     return await (await cur_guild.get_guild()).publicize()
 
 
-# TODO: add gateway calls
 @route_guilds.get("/guilds/{guild_id}/preview")
 async def get_guild(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
     return await (await cur_guild.get_guild()).publicize()
@@ -54,6 +56,8 @@ async def modify_guild(
 
     await guild.modify()
 
+    await meta.dispatch_guild("GUILD_EDIT", guild.id, guild.publicize())
+
     return await guild.publicize()
 
 
@@ -65,5 +69,7 @@ async def delete_guild(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
         raise CustomError("Must be owner to delete guild")
 
     await guild.delete()
+
+    await meta.dispatch_guild("GUILD_DELETE", guild.id, {"guild_id": guild.id})
 
     return ""

@@ -6,12 +6,10 @@
 from dataclasses import dataclass
 from typing import Any
 
-from .user import User
-
-from .guild import Guild
-
-from ..utils import MISSING, Maybe
 from ..metadata import Object
+from ..utils import MISSING, Maybe
+from .guild import Guild
+from .user import User
 
 
 @dataclass
@@ -22,7 +20,13 @@ class Invite(Object):
     channel_id: int
     created_at: str
 
-    async def publicize(self, secure: bool = False, guild: Maybe[Guild] = MISSING, author: Maybe[User] = MISSING, channel: Maybe[Object] = MISSING) -> dict[str, Any]:
+    async def publicize(
+        self,
+        secure: bool = False,
+        guild: Maybe[Guild] = MISSING,
+        author: Maybe[User] = MISSING,
+        channel: Maybe[Object] = MISSING,
+    ) -> dict[str, Any]:
         if not guild:
             guild = await Guild.acquire(self.guild_id)
 
@@ -33,11 +37,11 @@ class Invite(Object):
             channel = ...
 
         return {
-            'id': self.id,
-            'meta': {
-                'guild': guild,
-                'author': author,
-                'channel': channel,  
+            "id": self.id,
+            "meta": {
+                "guild": guild,
+                "author": author,
+                "channel": channel,
             },
-            'created_at': self.created_at
+            "created_at": self.created_at,
         }

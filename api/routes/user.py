@@ -87,6 +87,8 @@ async def modify_current_user(
 
     await user.modify()
 
+    await meta.dispatch_user("USER_UPDATE", user.id, await user.publicize(secure=True))
+
     return await user.publicize(secure=True)
 
 
@@ -126,6 +128,10 @@ async def modify_settings(
 
         await settings.modify()
 
+    await meta.dispatch_user(
+        "USER_SETTINGS_UPDATE", user.id, await settings.publicize(secure=True)
+    )
+
     return await settings.publicize()
 
 
@@ -137,5 +143,8 @@ async def delete_current_user(
 
     user = await ref.get_user()
     await user.delete()
+
+    # this event is more internally for the Gateway to process that it should disconnect this user.
+    await meta.dispatch_user("USER_DELETE", user.id, {"user_id": user.id})
 
     return ""

@@ -12,6 +12,7 @@ from api.refs import current_guild
 
 from ..errors import CustomError
 from ..flags import DEFAULT_PERMISSIONS, RolePermissions
+from ..metadata import meta
 from ..models.role import Role
 from ..refs.current_guild import CurrentGuildRef
 from ..utils import MISSING, Maybe
@@ -53,6 +54,7 @@ async def create_role(
         deny=payload.deny or 0,
         position=payload.position,
     )
+    await meta.dispatch_guild("ROLE_CREATE", guild_ref.guild_id, await role.publicize())
 
     return await role.publicize()
 
@@ -107,6 +109,8 @@ async def modify_guild_role(
 
     await role.modify()
 
+    await meta.dispatch_guild("ROLE_EDIT", guild_ref.guild_id, await role.publicize())
+
     return await role.publicize()
 
 
@@ -126,5 +130,11 @@ async def delete_guild_role(
         raise CustomError("Cannot delete role above your own")
 
     await role.delete()
+
+    await meta.dispatch_guild(
+        "ROLE_DELETE",
+        guild_ref.guild_id,
+        {"role_id": role.id, "guild_id": role.guild_id},
+    )
 
     return ""
