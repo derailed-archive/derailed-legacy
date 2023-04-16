@@ -118,6 +118,7 @@ def upgrade() -> None:
             index=True,
             nullable=False,
         ),
+        sa.Column("created_at", sa.DATE, server_default=sa.func.now()),
     )
 
     op.create_table(
