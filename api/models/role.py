@@ -91,6 +91,28 @@ class Role(Object):
 
         # TODO!
 
+    @classmethod
+    async def acquire_all(cls, guild_id: int) -> list[typing.Self]:
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare("SELECT * FROM guild_roles WHERE guild_id = $1;")
+            rows = await stmt.fetch(guild_id)
+
+        roles: list[typing.Self] = []
+
+        for row in rows:
+            roles.append(
+                cls(
+                    id=id,
+                    guild_id=row["guild_id"],
+                    name=row["name"],
+                    allow=RolePermissions(row["allow"]),
+                    deny=RolePermissions(row["deny"]),
+                    position=row["position"],
+                )
+            )
+
+        return roles
+
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
         return {
             "id": str(self.id),
@@ -100,3 +122,27 @@ class Role(Object):
             "deny": str(self.deny),
             "position": self.position,
         }
+
+    async def move(self, position: int) -> None:
+        if position == self.position:
+            return
+
+        roles = await Role.acquire_all(self.guild_id)
+
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare("UPDATE roles SET position = $2 WHERE id = $1;")
+
+            updates: dict[int, int] = {}
+
+            for role in roles:
+                if role.position >= self.position:
+                    updates[role.id] = role.position + 1
+                elif role.position <= self.position:
+                    updates[role.id] = role.position - 1
+
+            if updates == {}:
+                return
+
+            await stmt.executemany([(rid, rp) for rid, rp in updates.items()])
+
+            self.position = position
