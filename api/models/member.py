@@ -27,6 +27,12 @@ class Member(Object):
     nick: str | None
     joined_at: datetime
 
+    async def highest_role_position(self) -> int:
+        roles = await self.get_roles()
+        role_positions = [role.position for role in roles]
+
+        return max(role_positions)
+
     @classmethod
     async def acquire(cls, user_id: int, guild_id: int) -> typing.Self:
         """Acquire a member from a guild.

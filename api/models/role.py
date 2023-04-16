@@ -84,12 +84,26 @@ class Role(Object):
         guild_id: int,
         allow: int = 0,
         deny: int = 0,
-        position: Maybe[int | None] = MISSING,
+        position: Maybe[int] = MISSING,
     ) -> typing.Self:
-        if position is None:
-            position = 0
+        async with meta.db.acquire() as db:
+            role_id = meta.genflake()
+            stmt = await db.prepare(
+                "INSERT INTO guild_roles (id, name, guild_id, allow, deny, position) VALUES ($1, $3, $2, $4, $5, $6);"
+            )
+            await stmt.fetch(role_id, guild_id, name, allow, deny, position or 0)
 
-        # TODO!
+            self = cls(
+                id=role_id,
+                name=name,
+                guild_id=guild_id,
+                allow=allow,
+                deny=deny,
+                position=position,
+            )
+            await self.move(position or 0)
+
+            return self
 
     @classmethod
     async def acquire_all(cls, guild_id: int) -> list[typing.Self]:
@@ -130,12 +144,16 @@ class Role(Object):
         roles = await Role.acquire_all(self.guild_id)
 
         async with meta.db.acquire() as db:
-            stmt = await db.prepare("UPDATE roles SET position = $2 WHERE id = $1;")
+            stmt = await db.prepare(
+                "UPDATE guild_roles SET position = $2 WHERE id = $1;"
+            )
 
             updates: dict[int, int] = {}
 
             for role in roles:
-                if role.position >= self.position:
+                if role.id == self.id:
+                    continue
+                elif role.position >= self.position:
                     updates[role.id] = role.position + 1
                 elif role.position <= self.position:
                     updates[role.id] = role.position - 1
@@ -146,3 +164,18 @@ class Role(Object):
             await stmt.executemany([(rid, rp) for rid, rp in updates.items()])
 
             self.position = position
+
+    async def modify(self) -> None:
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare(
+                "UPDATE guild_roles SET name = $2, allow = $3, deny = $4, position = $5 WHERE id = $1"
+            )
+
+            await stmt.fetch(
+                self.id, self.name, self.allow.value, self.deny.value, self.position
+            )
+
+    async def delete(self) -> None:
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare("DELETE FROM guild_roles WHERE id = $1;")
+            await stmt.fetchrow(self.id)
