@@ -43,6 +43,30 @@ def upgrade() -> None:
     END;
     $$;"""
     )
+    op.execute(
+        """CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+    CREATE OR REPLACE FUNCTION generate_invite_id()
+    RETURNS TEXT
+    LANGUAGE plpgsql
+    AS $$
+    DECLARE
+        out TEXT;
+    BEGIN
+        SELECT * FROM (
+            SELECT
+                replace(replace(encode(gen_random_bytes(6), 'base64'), '/', '_'), '+', '-') AS invite_id
+            FROM
+                generate_series(1, 9999)
+        ) AS result
+        WHERE result.invite_id NOT IN (
+            SELECT id FROM invites WHERE id = $1
+        )
+        LIMIT 1
+        INTO out;
+        RETURN out;
+    END;
+    $$;"""
+    )
 
     op.create_table(
         "users",

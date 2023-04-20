@@ -5,6 +5,7 @@
 
 from dataclasses import dataclass
 from typing import Any
+import typing
 
 from ..metadata import Object
 from ..utils import MISSING, Maybe
@@ -45,3 +46,7 @@ class Invite(Object):
             },
             "created_at": self.created_at,
         }
+
+    @classmethod
+    async def create(cls, guild_id: int, author_id: int, channel_id: int, created_at: str) -> typing.Self:
+        
