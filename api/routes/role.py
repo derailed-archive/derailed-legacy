@@ -17,7 +17,7 @@ from ..models.role import Role
 from ..refs.current_guild import CurrentGuildRef
 from ..utils import MISSING, Maybe
 
-role_routes = APIRouter()
+route_roles = APIRouter()
 
 
 class CreateRole:
@@ -34,7 +34,7 @@ class ModifyRole:
     position: Maybe[int] = Field(MISSING)
 
 
-@role_routes.post("/guilds/{guild_id}/roles")
+@route_roles.post("/guilds/{guild_id}/roles")
 async def create_role(
     guild_ref: Annotated[CurrentGuildRef, current_guild], payload: CreateRole
 ):
@@ -59,7 +59,7 @@ async def create_role(
     return await role.publicize()
 
 
-@role_routes.get("/guilds/{guild_id}/roles")
+@route_roles.get("/guilds/{guild_id}/roles")
 async def get_guild_roles(guild_ref: Annotated[CurrentGuildRef, current_guild]):
     await guild_ref.get_member()
 
@@ -68,7 +68,7 @@ async def get_guild_roles(guild_ref: Annotated[CurrentGuildRef, current_guild]):
     return [await role.publicize() for role in roles]
 
 
-@role_routes.get("/guilds/{guild_id}/roles/{role_id}")
+@route_roles.get("/guilds/{guild_id}/roles/{role_id}")
 async def get_guild_role(
     guild_ref: Annotated[CurrentGuildRef, current_guild], role_id: int
 ):
@@ -79,7 +79,7 @@ async def get_guild_role(
     return await role.publicize()
 
 
-@role_routes.patch("/guilds/{guild_id}/roles/{role_id}")
+@route_roles.patch("/guilds/{guild_id}/roles/{role_id}")
 async def modify_guild_role(
     guild_ref: Annotated[CurrentGuildRef, current_guild],
     role_id: int,
@@ -114,7 +114,7 @@ async def modify_guild_role(
     return await role.publicize()
 
 
-@role_routes.delete("/guilds/{guild_id}/roles/{role_id}")
+@route_roles.delete("/guilds/{guild_id}/roles/{role_id}")
 async def delete_guild_role(
     guild_ref: Annotated[CurrentGuildRef, current_guild], role_id: int
 ):

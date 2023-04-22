@@ -7,7 +7,7 @@ from typing import Annotated
 
 from fastapi import Header
 
-from ..errors import InvalidToken, UserDoesNotExist
+from ..errors import CustomError, InvalidToken, UserDoesNotExist
 from ..identity import get_token_user_id, verify_token
 from ..models.user import User
 from .base import Ref
@@ -44,3 +44,12 @@ class CurUserRef(Ref):
 
 def cur_ref(token: Annotated[str, Header(alias="authorization")]) -> CurUserRef:
     return CurUserRef(token=token)
+
+
+async def admin(ref: Annotated[CurUserRef, cur_ref]) -> User:
+    user = await ref.get_user()
+
+    if not user.flags.staff:
+        raise CustomError("Path forbidden", 403)
+
+    return user

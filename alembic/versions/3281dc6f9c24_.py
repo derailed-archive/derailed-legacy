@@ -44,26 +44,39 @@ def upgrade() -> None:
     $$;"""
     )
     op.execute(
-        """CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-    CREATE OR REPLACE FUNCTION generate_invite_id()
-    RETURNS TEXT
+        """CREATE OR REPLACE FUNCTION generate_invite_id()
+    RETURNS VARCHAR(11)
     LANGUAGE plpgsql
     AS $$
     DECLARE
-        out TEXT;
+        id VARCHAR(11);
     BEGIN
-        SELECT * FROM (
-            SELECT
-                replace(replace(encode(gen_random_bytes(6), 'base64'), '/', '_'), '+', '-') AS invite_id
-            FROM
-                generate_series(1, 9999)
-        ) AS result
-        WHERE result.invite_id NOT IN (
-            SELECT id FROM invites WHERE id = $1
-        )
-        LIMIT 1
-        INTO out;
-        RETURN out;
+        id := REPLACE(
+                REPLACE(
+                    REPLACE(
+                        REPLACE(
+                            REPLACE(
+                                encode(gen_random_bytes(4), 'base64')
+                                , '/', '_')
+                            , '+', '-')
+                        , 'O', '0')
+                    , 'I', '1')
+                , 'l', '1');
+        WHILE EXISTS(SELECT 1 FROM invites WHERE id = id)
+        LOOP
+            id := REPLACE(
+                    REPLACE(
+                        REPLACE(
+                            REPLACE(
+                                REPLACE(
+                                    encode(gen_random_bytes(4), 'base64')
+                                    , '/', '_')
+                                , '+', '-')
+                            , 'O', '0')
+                        , 'I', '1')
+                    , 'l', '1');
+        END LOOP;
+        RETURN id;
     END;
     $$;"""
     )
@@ -124,7 +137,7 @@ def upgrade() -> None:
 
     op.create_table(
         "invites",
-        sa.Column("id", sa.TEXT, primary_key=True),
+        sa.Column("id", sa.TEXT, primary_key=True, server_default=sa.func.generate_invite_id()),
         sa.Column(
             "guild_id",
             sa.BIGINT,
@@ -258,6 +271,7 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     op.execute("DROP FUNCTION IF EXISTS generate_discriminator(TEXT);")
+    op.execute("DROP FUNCTION IF EXISTS generate_invite_id();")
     op.drop_table("users")
     op.drop_table("user_settings")
     op.drop_table("guilds")

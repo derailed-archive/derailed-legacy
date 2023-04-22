@@ -25,7 +25,8 @@ class RolePermissions(IntFlag):
 
 
 class UserFlags(IntFlag):
-    STAFF = 0
+    staff = 0
+    bot = 1
 
 
 DEFAULT_PERMISSIONS = (

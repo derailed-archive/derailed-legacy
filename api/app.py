@@ -12,7 +12,7 @@ from fastapi.routing import APIRoute
 
 from .errors import DerailedException
 from .metadata import meta
-from .routes import route_guilds, route_users
+from .routes import route_guilds, route_invites, route_roles, route_users
 
 
 class MSGSpecResponse(JSONResponse):
@@ -51,6 +51,8 @@ derailed.router.route_class = MSGSpecRoute
 
 derailed.include_router(route_users)
 derailed.include_router(route_guilds)
+derailed.include_router(route_roles)
+derailed.include_router(route_invites)
 
 
 # NOTE: streams globally prior to async setup

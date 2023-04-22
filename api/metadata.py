@@ -74,3 +74,10 @@ class Object:
         secure: :class:`bool`
             Whether this is secure and can return sensitive data like emails.
         """
+
+    async def partialize(self, *args: str) -> dict[str, typing.Any]:
+        """Return a partial dictionary representation of this object for the general public."""
+
+        pub = await self.publicize()
+
+        return {arg: pub[arg] for arg in args}
