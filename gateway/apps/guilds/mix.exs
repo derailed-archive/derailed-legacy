@@ -36,7 +36,7 @@ defmodule Derailed.Guild.MixProject do
   defp deps do
     [
       {:gen_registry, "~> 1.3.0"},
-      {:postgrex, "~> 0.16.5"},
+      {:postgrex, "~> 0.17.0"},
       {:dotenv, "~> 3.1.0"},
       {:manifold, "~> 1.6"},
       {:zen_monitor, "~> 2.0.2"},
