@@ -25,7 +25,7 @@ defmodule Derailed.GRPC.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:protobuf, "~> 0.11"},
+      {:protobuf, "~> 0.12"},
       {:grpc, "~> 0.5"}
     ]
   end
