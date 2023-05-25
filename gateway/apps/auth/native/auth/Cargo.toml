@@ -10,6 +10,6 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-base64 = "0.21.0"
+base64 = "0.21.2"
 itsdangerous = "0.4.1"
-rustler = "0.27.0"
+rustler = "0.28.0"
