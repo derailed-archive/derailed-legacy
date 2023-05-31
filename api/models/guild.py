@@ -7,9 +7,13 @@ import datetime
 import typing
 from dataclasses import dataclass
 
+from asyncpg import Record
+
 from ..errors import GuildDoesNotExist
 from ..flags import DEFAULT_PERMISSIONS, RolePermissions
 from ..metadata import Object, meta
+from ..utils import cache
+from .channel import Channel
 
 
 @dataclass
@@ -142,3 +146,41 @@ class Guild(Object):
             "owner_id": str(self.owner_id),
             "permissions": str(self.permissions),
         }
+
+    def _form_channel(
+        self, row: Record | None, rows: list[Record] = []
+    ) -> Channel | None:
+        if row is None:
+            return None
+
+        return Channel(
+            id=row["id"],
+            name=row["name"],
+            type=row["type"],
+            guild_id=self.id,
+            last_message_id=row["last_message_id"],
+            parent=self._form_channel(rows.get(row["parent_id"]), rows),
+            position=row["position"],
+        )
+
+    @cache()
+    async def get_channels(self) -> list[Channel]:
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare("SELECT * FROM channels WHERE guild_id = $1;")
+
+            raw_rows = await stmt.fetch(self.id)
+
+            rows = {r["id"]: r for r in raw_rows}
+
+        channels = []
+
+        for row in rows:
+            channels.append(self._form_channel(row, rows))
+
+        return channels
+
+    async def highest_channel_position(self) -> int:
+        channels = await self.get_channels()
+        channel_positions = [channel.position for channel in channels]
+
+        return max(channel_positions)

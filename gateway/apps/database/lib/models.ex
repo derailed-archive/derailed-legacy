@@ -11,7 +11,6 @@ defmodule Derailed.Database.User do
 
   schema "users" do
     field(:username, :string)
-    field(:discriminator, :string)
     field(:email, :string)
     field(:password, :string)
     field(:flags, :integer)

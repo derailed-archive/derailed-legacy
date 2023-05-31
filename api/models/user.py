@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import asyncpg
 
 from ..errors import CustomError, UserDoesNotExist, UsernameOverused
-from ..flags import UserFlags
+from ..flags import DEFAULT_FLAGS, UserFlags
 from ..metadata import Object, meta
 from .settings import Settings
 
@@ -18,8 +18,8 @@ class User(Object):
     """Represents a Derailed user."""
 
     id: int
+    display_name: str | None
     username: str
-    discriminator: str
     email: str
     flags: UserFlags
     system: bool
@@ -40,6 +40,7 @@ class User(Object):
         email: str,
         password: str,
         system: bool = False,
+        display_name: str | None = None,
     ) -> typing.Self:
         """Register a new user into Derailed.
 
@@ -56,11 +57,13 @@ class User(Object):
         system: :class:`bool`
             Whether this user is for Derailed's system.
             Defaults to `False`.
+        display_name: :class:`str`
+            The display name for this user.
         """
 
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                """INSERT INTO users (id, username, email, password, system) VALUES ($1, $2, $3, $4, $5) RETURNING discriminator;""",
+                """INSERT INTO users (id, username, email, password, system, display_name) VALUES ($1, $2, $3, $4, $5, $6);""",
             )
             stmt2 = await db.prepare(
                 "INSERT INTO user_settings (user_id, status, theme) VALUES ($1, $2, $3);"
@@ -72,10 +75,10 @@ class User(Object):
             try:
                 try:
                     rec = await stmt.fetchrow(
-                        user_id, username, email, password, system
+                        user_id, username, email, password, system, display_name
                     )
                 except asyncpg.UniqueViolationError:
-                    raise CustomError("Email already used")
+                    raise CustomError("email or username is already used")
 
                 await stmt2.fetch(user_id, 0, "dark")
             except Exception as exc:
@@ -90,9 +93,8 @@ class User(Object):
             user = cls(
                 id=user_id,
                 username=username,
-                discriminator=rec["discriminator"],
                 email=email,
-                flags=UserFlags(0),
+                flags=DEFAULT_FLAGS,
                 system=system,
                 suspended=False,
                 password=password,
@@ -127,8 +129,8 @@ class User(Object):
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
         base = {
             "id": str(self.id),
+            "display_name": self.display_name,
             "username": self.username,
-            "discriminator": self.discriminator,
             "flags": int(self.flags),
             "system": self.system,
             "suspended": self.suspended,
@@ -142,16 +144,16 @@ class User(Object):
     async def modify(self) -> None:
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                "UPDATE users SET username = $1, discriminator = $2, flags = $3, suspended = $4, email = $5, password = $6 WHERE id = $7;",
+                "UPDATE users SET username = $1, flags = $3, suspended = $4, email = $5, password = $6, display_name = $7 WHERE id = $7;",
             )
             await stmt.fetch(
                 self.username,
-                self.discriminator,
                 self.flags,
                 self.suspended,
                 self.email,
                 self.password,
                 self.id,
+                self.display_name,
             )
 
     async def delete(self) -> None:
@@ -165,7 +167,6 @@ class User(Object):
     def __eq__(self, value: "User") -> bool:
         return (
             self.username == value.username
-            and self.discriminator == value.discriminator
             and self.flags == value.flags
             and self.suspended == value.suspended
             and self.email == value.email

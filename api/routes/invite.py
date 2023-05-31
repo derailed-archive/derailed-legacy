@@ -3,6 +3,7 @@
 # Copyright 2021-2023 Derailed
 
 
+from datetime import datetime
 from typing import Annotated
 
 from fastapi import APIRouter
@@ -11,7 +12,9 @@ from pydantic import BaseModel
 from ..errors import CustomError
 from ..flags import RolePermissions
 from ..metadata import meta
+from ..models.invites import Invite
 from ..models.member import Member
+from ..refs.channel_ref import ChannelRef, cur_channel_ref
 from ..refs.current_guild import CurrentGuildRef, cur_guild_ref
 from ..refs.current_user_ref import CurUserRef, cur_ref
 from ..refs.invite_ref import InviteRef, invite_ref
@@ -48,10 +51,26 @@ async def join_guild(
     return await member.publicize()
 
 
-# TODO: requires channels.
-@route_invites.post("/guilds/{guild_id}/channels/{}/invites")
-async def create_invite(guild_ref: Annotated[CurrentGuildRef, cur_guild_ref]):
-    ...
+@route_invites.post("/guilds/{guild_id}/channels/{channel_id}/invites")
+async def create_invite(
+    guild_ref: Annotated[CurrentGuildRef, cur_guild_ref],
+    channel_ref: Annotated[ChannelRef, cur_channel_ref],
+):
+    guild = await guild_ref.get_guild()
+    member = await guild_ref.get_member(
+        perm=RolePermissions.CREATE_INVITES, guild=guild
+    )
+
+    invite = await Invite.create(
+        guild_ref.guild_id,
+        member.user_id,
+        channel_ref.channel_id,
+        datetime.utcnow().isoformat(),
+    )
+
+    return await invite.publicize(
+        guild=guild, author=guild_ref.user, channel=channel_ref.channel
+    )
 
 
 @route_invites.delete("/guilds/{guild_id}/invites/{invite_id}")

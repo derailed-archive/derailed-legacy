@@ -6,11 +6,11 @@
 import datetime
 import typing
 from dataclasses import dataclass
-from typing import Any
 
 from ..errors import CustomError
 from ..metadata import Object, meta
 from ..utils import MISSING, Maybe
+from .channel import Channel
 from .guild import Guild
 from .user import User
 
@@ -28,8 +28,8 @@ class Invite(Object):
         secure: bool = False,
         guild: Maybe[Guild] = MISSING,
         author: Maybe[User] = MISSING,
-        channel: Maybe[Object] = MISSING,
-    ) -> dict[str, Any]:
+        channel: Maybe[Channel] = MISSING,
+    ) -> dict[str, typing.Any]:
         if not guild:
             guild = await Guild.acquire(self.guild_id)
 
@@ -37,12 +37,12 @@ class Invite(Object):
             author = await User.acquire(self.author_id)
 
         if not channel:
-            channel = ...
+            channel = await Channel.acquire(self.channel_id)
 
         return {
             "id": self.id,
             "guild": guild.publicize(),
-            "author": author.partialize("id", "username", "discriminator"),
+            "author": author.partialize("id", "username"),
             "channel": channel.partialize("id", "name"),
             "created_at": self.created_at,
         }

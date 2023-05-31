@@ -1,7 +1,6 @@
 export interface User {
     id: string,
     username: string,
-    discriminator: string,
     email: string | undefined,
     flags: number,
     system: boolean,

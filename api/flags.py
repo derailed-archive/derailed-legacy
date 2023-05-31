@@ -27,6 +27,11 @@ class RolePermissions(IntFlag):
 class UserFlags(IntFlag):
     staff = 0
     bot = 1
+    early_user = 2
+    original_tester = 3
+
+
+DEFAULT_FLAGS = UserFlags.early_user | UserFlags.original_tester
 
 
 DEFAULT_PERMISSIONS = (

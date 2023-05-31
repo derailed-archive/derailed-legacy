@@ -26,8 +26,6 @@ class CurUserRef(Ref):
     async def get_user(self) -> User:
         """Verifies user identity then returns user.
         Raises an error if identity is invalid.
-
-        **This is an async property, and henceforth must be awaited to be used.**
         """
 
         user_id = self.user_id

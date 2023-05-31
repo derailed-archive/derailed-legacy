@@ -79,7 +79,7 @@ class Member(Object):
 
         async with meta.db.acquire() as db:
             stmt = await db.prepare(
-                "INSERT INTO members (user_id, guild_id, nick, joined_at)"
+                "INSERT INTO members (user_id, guild_id, nick, joined_at) VALUES ($1, $2, $3, $4);"
             )
 
             try:
