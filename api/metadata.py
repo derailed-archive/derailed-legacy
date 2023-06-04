@@ -13,9 +13,14 @@ import asyncpg
 import grpc.aio as grpc
 
 from .dgrpc import GuildStub, Interchange
-from .dgrpc.gateway_pb2 import BulkInterchange
+from .dgrpc.gateway_pb2 import BulkInterchange, GuildInfo
 
 __all__ = ("Meta", "Object", "meta")
+
+
+class GuildMetadata(typing.TypedDict):
+    presences: int
+    available: bool
 
 
 class Meta:
@@ -28,19 +33,30 @@ class Meta:
 
     async def initialize(self) -> None:
         self.db = await asyncpg.create_pool(os.environ["DATABASE_URL"])
-        channel = grpc.insecure_channel(os.getenv("GRPC_URL") or "localhost:8000")
-        self._grpc_stub = GuildStub(channel)
+        if os.getenv("GRPC_URL") is not None:
+            channel = grpc.insecure_channel(os.environ["GRPC_URL"])
+            self._grpc_stub = GuildStub(channel)
 
     async def dispatch_guild(self, type: str, guild_id: int, data: typing.Any) -> None:
-        await self._grpc_stub.dispatch_guild(Interchange(t=type, id=guild_id, d=data))
+        if self._grpc_stub:
+            await self._grpc_stub.dispatch_guild(Interchange(t=type, id=guild_id, d=data))
 
     async def dispatch_user(self, type: str, user_id: int, data: typing.Any) -> None:
-        await self._grpc_stub.dispatch_user(Interchange(t=type, id=user_id, d=data))
+        if self._grpc_stub:
+            await self._grpc_stub.dispatch_user(Interchange(t=type, id=user_id, d=data))
 
     async def dispatch_bulk(
         self, type: str, data: typing.Any, users: list[int]
     ) -> None:
-        await self._grpc_stub.dispatch_user(BulkInterchange(t=type, uids=users, d=data))
+        if self._grpc_stub:
+            await self._grpc_stub.dispatch_user(BulkInterchange(t=type, uids=users, d=data))
+
+    async def get_guild_metadata(self, guild_id: int) -> GuildMetadata:
+        if self._grpc_stub:
+            metadata = await self._grpc_stub.get_metadata(GuildInfo(id=guild_id))
+            return {'presences': metadata.presences, 'available': metadata.available}
+        else:
+            return {'presences': 0, 'available': False}
 
     def genflake(self) -> int:
         current_ms = int(time.time() * 1000)

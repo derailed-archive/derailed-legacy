@@ -21,7 +21,7 @@ message Interchange {
 message BulkInterchange {
     string t = 1;
     repeated int64 uids = 2;
-    repeated Interchange d = 3;
+    Interchange d = 3;
 }
 
 message GuildInfo {

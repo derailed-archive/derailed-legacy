@@ -41,8 +41,15 @@ async def get_guild(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
 
 
 @route_guilds.get("/guilds/{guild_id}/preview")
-async def get_guild(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
-    return await (await cur_guild.get_guild()).publicize()
+async def get_guild_preview(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
+    pub = await (await cur_guild.get_guild()).publicize()
+
+    md = await meta.get_guild_metadata(cur_guild.guild_id)
+
+    pub['presences'] = md['presences']
+    pub['available'] = md['available']
+
+    return pub
 
 
 @route_guilds.patch("/guilds/{guild_id}")
