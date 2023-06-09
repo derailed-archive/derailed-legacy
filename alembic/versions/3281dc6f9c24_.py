@@ -237,7 +237,7 @@ def upgrade() -> None:
             sa.ForeignKey("users.id", ondelete="CASCADE"),
             primary_key=True,
         ),
-        sa.Column("last_message_id", sa.BIGINT),
+        sa.Column("last_message_id", sa.BIGINT, sa.ForeignKey("messages.id", ondelete="SET NULL")),
     )
 
     op.create_table(

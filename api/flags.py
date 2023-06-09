@@ -29,6 +29,7 @@ class UserFlags(IntFlag):
     bot = 1
     early_user = 2
     original_tester = 3
+    mod = 4
 
 
 DEFAULT_FLAGS = UserFlags.early_user | UserFlags.original_tester

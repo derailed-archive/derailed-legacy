@@ -1,13 +1,11 @@
 defmodule Derailed.Guild do
   @moduledoc """
-  Process holding data for an online Guild
+  Represents an online, active, Derailed Guild.
   """
   require Logger
   use GenServer
-  import Ecto.Query
 
-  # GenServer API
-
+  # middle end
   def start_link(guild_id) do
     Logger.debug("Spinning up new Guild: #{inspect(guild_id)}")
     GenServer.start_link(__MODULE__, guild_id)
@@ -34,14 +32,18 @@ defmodule Derailed.Guild do
     GenServer.cast(pid, {:unsubscribe, session_pid})
   end
 
-  # shared API between gRPC and Sessions
+  @spec get_members(pid(), pid()) :: :ok
+  def get_members(pid, session_pid) do
+    GenServer.cast(pid, {:get_members, session_pid})
+  end
+
+  # shared between the gRPC & sessions interfaces
   @spec publish(pid(), any()) :: :ok
   def publish(pid, message) do
-    Logger.debug("Publishing #{inspect(message)} to #{inspect(pid)}")
     GenServer.call(pid, {:publish, message})
   end
 
-  # backend server api
+  # backend api
   def handle_cast({:subscribe, pid, user_id}, state) do
     ZenMonitor.monitor(pid)
     {:noreply, %{state | sessions: Map.put(state.sessions, pid, %{pid: pid, user_id: user_id})}}
@@ -58,70 +60,49 @@ defmodule Derailed.Guild do
     {:noreply, %{state | sessions: nmp}}
   end
 
-  def handle_call({:get_guild_members, session_pid}, state) do
-    member_query =
-      from(m in Derailed.Database.Member,
-        where: m.guild_id == ^state.id,
-        select: m
-      )
+  def handle_cast({:get_members, session_pid}, state) do
+    stmt =
+      Postgrex.prepare!(:db, "get_guild_members", "SELECT * FROM members WHERE guild_id = $1")
 
-    members = Derailed.Database.Repo.all(member_query)
+    results = Postgrex.execute!(:db, stmt, [state.id])
+    maps = Derailed.Utils.maps!(results)
 
-    members =
-      Enum.map(members, fn m ->
-        member = Map.new(m)
-
-        roles_query =
-          from(mr in Derailed.Database.MemberRole,
-            where: mr.user_id == ^member.id,
-            where: mr.guild_id == ^state.id,
-            select: mr.role_id
+    maps =
+      Enum.map(maps, fn map ->
+        get_member_roles =
+          Postgrex.prepare!(
+            :db,
+            "get_member_roles",
+            "SELECT * FROM roles WHERE id IN (SELECT id FROM member_assigned_roles WHERE user_id = $1 AND guild_id = $2);"
           )
 
-        roles_lick = Derailed.Database.Repo.all(roles_query)
+        get_user = Postgrex.prepare!(:db, "get_user", "SELECT * FROM users WHERE id = $1")
 
         roles =
-          Enum.map(roles_lick, fn rl ->
-            rl.role_id
-          end)
+          Derailed.Utils.maps!(Postgrex.execute!(:db, get_member_roles, [map.user_id, state.id]))
 
-        user_query =
-          from(u in Derailed.Database.User,
-            where: u.id == ^member.id,
-            select: u
-          )
+        user = Derailed.Utils.map!(Postgrex.execute!(:db, get_user, [map.user_id]))
 
-        user =
-          Map.delete(
-            Map.delete(Map.from_struct(Derailed.Database.Repo.one(user_query)), :password),
-            :__meta__
-          )
-
-        member = Map.put(member, "roles", roles)
-        member = Map.delete(member, "user_id")
-        Map.put(member, "user", user)
+        Map.put(Map.put(Map.delete(map, "user_id"), "user", user), "roles", roles)
       end)
 
-    Manifold.send(
-      session_pid,
-      {:publish,
-       %{
-         "t" => "MEMBER_CACHE_UPDATE",
-         "d" => %{"guild_id" => state.guild_id, "members" => members}
-       }}
-    )
+    Manifold.send(session_pid, {:publish, %{t: "MEMBER_CHUNK", d: maps}})
+    {:noreply, state}
   end
 
   def handle_call({:publish, message}, _from, %{sessions: sessions} = state) do
+    Logger.debug("Publishing #{inspect(message)} in #{state.id}")
     Enum.each(sessions, &Manifold.send(&1.pid, {:publish, message}))
     {:reply, :ok, state}
   end
 
-  def handle_info({:DOWN, _ref, :process, pid, {:zen_monitor, _reason}}, state) do
+  def handle_info({:DOWN, _ref, :process, session_pid, {:zen_monitor, _reason}}, state) do
+    Derailed.Guild.unsubscribe(self(), session_pid)
+
     {:noreply,
      %{
        state
-       | sessions: Map.delete(state.sessions, pid)
+       | sessions: Map.delete(state.sessions, session_pid)
      }}
   end
 end

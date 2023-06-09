@@ -1,4 +1,4 @@
-defmodule Derailed.Guild.Application do
+defmodule Derailed.Utils.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -8,13 +8,12 @@ defmodule Derailed.Guild.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      {GenRegistry, worker_module: Derailed.Guild},
-      {GenRegistry, worker_module: Derailed.PresenceTracker}
+      {Postgrex, Application.fetch_env!(:derailed, :db)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Derailed.Guild.Supervisor]
+    opts = [strategy: :one_for_one, name: Derailed.Utils.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

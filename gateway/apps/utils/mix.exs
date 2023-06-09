@@ -1,10 +1,10 @@
-defmodule Derailed.Guilds.MixProject do
+defmodule Utils.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :guilds,
-      version: "0.0.0",
+      app: :utils,
+      version: "0.1.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -25,11 +25,7 @@ defmodule Derailed.Guilds.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:manifold, "~> 1.6"},
-      {:zen_monitor, "~> 2.0"},
-      {:gen_registry, "~> 1.3.0"},
-      {:postgrex, "~> 0.17.1"},
-      {:utils, in_umbrella: true}
+      {:postgrex, "~> 0.17.1"}
     ]
   end
 end

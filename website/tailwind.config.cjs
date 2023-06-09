@@ -10,10 +10,11 @@ module.exports = {
 				'almost-dark-blue': '#6664CD',
 				'texty': '#23272A',
 				'derailed-gray': '#6b6b6b',
+				'bgray': '#22242F'
 			},
 			fontFamily: {
 				'header': ['Inter'],
-				'brand': ['Vampire Wars']
+				'brand': ['Vampire Wars'],
 			}
 		},
 	},

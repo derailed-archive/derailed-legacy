@@ -1,4 +1,4 @@
-defmodule GuildsTest do
+defmodule Derailed.GuildsTest do
   use ExUnit.Case
-  doctest Guilds
+  doctest Derailed.Guild
 end

@@ -1,3 +1,3 @@
-# Derailed Gateway
+# Gateway
 
-The full and bright real-time infrastructure of Derailed. The Gateway.
+The real-time Derailed Gateway!

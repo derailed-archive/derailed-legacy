@@ -36,6 +36,7 @@ async def get_channel_message(message_ref: Annotated[MessageRef, cur_message_ref
 async def create_message(
     channel_ref: Annotated[ChannelRef, cur_channel_ref], payload: CreateMessage
 ):
+    
     message = await Message.create(
         channel_ref.user.id, payload.content, channel_ref.channel_id
     )
