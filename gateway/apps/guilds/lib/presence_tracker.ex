@@ -43,6 +43,11 @@ defmodule Derailed.PresenceTracker do
     GenServer.cast(pid, {:publish, user_id, presence})
   end
 
+  @spec count(pid()) :: {:ok, integer()}
+  def count(pid) do
+    GenServer.call(pid, {:count})
+  end
+
   # backend api
   def handle_cast({:subscribe, pid, user_id}, state) do
     ZenMonitor.monitor(pid)
@@ -68,5 +73,9 @@ defmodule Derailed.PresenceTracker do
   def handle_cast({:publish, user_id, presence}, state) do
     Enum.each(state.sessions, &Manifold.send(&1.pid, presence))
     {:noreply, %{state | presences: Map.put(state.presences, user_id, presence)}}
+  end
+
+  def handle_call({:count}, _from, state) do
+    {:reply, {:ok, Enum.count_until(state.presences, 20000)}, state}
   end
 end

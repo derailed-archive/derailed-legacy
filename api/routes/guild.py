@@ -46,8 +46,8 @@ async def get_guild_preview(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]
 
     md = await meta.get_guild_metadata(cur_guild.guild_id)
 
-    pub['presences'] = md['presences']
-    pub['available'] = md['available']
+    pub["presences"] = md["presences"]
+    pub["available"] = md["available"]
 
     return pub
 

@@ -4,10 +4,10 @@
 
 
 import typing
+from dataclasses import dataclass
 
 from ..errors import CustomError
 from ..metadata import Object, meta
-from dataclasses import dataclass
 
 
 @dataclass
@@ -32,16 +32,22 @@ class ReadState(Object):
         return ReadState(channel_id, user_id, row.get("last_message_id"))
 
     @classmethod
-    async def acquire_mass(cls, user_id: int, channel_ids: list[int]) -> list[typing.Self]:
+    async def acquire_mass(
+        cls, user_id: int, channel_ids: list[int]
+    ) -> list[typing.Self]:
         async with meta.db.acquire() as db:
             stmt = await db.prepare("SELECT * WHERE channel_id = $1 AND user_id = $2;")
-            rows = await stmt.executemany([(user_id, channel_id) for channel_id in channel_ids])
+            rows = await stmt.executemany(
+                [(user_id, channel_id) for channel_id in channel_ids]
+            )
 
         read_states = []
 
         for row in rows:
             if row is not None:
-                read_states.append(ReadState(row['channel_id'], user_id, row.get("last_message_id")))
+                read_states.append(
+                    ReadState(row["channel_id"], user_id, row.get("last_message_id"))
+                )
 
         return read_states
 
@@ -54,33 +60,50 @@ class ReadState(Object):
         read_states = []
 
         for row in rows:
-            read_states.append(ReadState(row['channel_id'], user_id, row.get("last_message_id")))
+            read_states.append(
+                ReadState(row["channel_id"], user_id, row.get("last_message_id"))
+            )
 
         return read_states
 
     @classmethod
-    async def create(cls, channel_id: int, user_id: int, last_message_id: int) -> typing.Self:
+    async def create(
+        cls, channel_id: int, user_id: int, last_message_id: int
+    ) -> typing.Self:
         async with meta.db.acquire() as db:
-            stmt = await db.prepare("INSERT INTO read_states (channel_id, user_id, last_message_id) VALUES ($1, $2, $3);")
+            stmt = await db.prepare(
+                "INSERT INTO read_states (channel_id, user_id, last_message_id) VALUES ($1, $2, $3);"
+            )
             await stmt.fetch(channel_id, user_id, last_message_id)
 
         return ReadState(channel_id, user_id, last_message_id)
 
     async def modify(self) -> None:
         async with meta.db.acquire() as db:
-            stmt = await db.prepare("UPDATE read_states SET last_message_id = $3 WHERE channel_id = $1 AND user_id = $2;")
+            stmt = await db.prepare(
+                "UPDATE read_states SET last_message_id = $3 WHERE channel_id = $1 AND user_id = $2;"
+            )
             await stmt.fetch(self.last_message_id)
 
     async def delete(self) -> None:
         async with meta.db.acquire() as db:
-            stmt = await db.prepare("DELETE FROM read_states WHERE channel_id = $1 AND user_id = $2;")
+            stmt = await db.prepare(
+                "DELETE FROM read_states WHERE channel_id = $1 AND user_id = $2;"
+            )
             await stmt.fetch(self.channel_id, self.user_id)
 
     @classmethod
     async def mass_delete(self, read_states: list[typing.Self]) -> None:
         async with meta.db.acquire() as db:
-            stmt = await db.prepare("DELETE FROM read_states WHERE channel_id = $1 AND user_id = $2 AND EXISTS (SELECT 1 FROM read_states WHERE channel_id = $1 AND user_id = $2);")
-            await stmt.executemany([(read_state.channel_id, read_state.user_id) for read_state in read_states])
+            stmt = await db.prepare(
+                "DELETE FROM read_states WHERE channel_id = $1 AND user_id = $2 AND EXISTS (SELECT 1 FROM read_states WHERE channel_id = $1 AND user_id = $2);"
+            )
+            await stmt.executemany(
+                [
+                    (read_state.channel_id, read_state.user_id)
+                    for read_state in read_states
+                ]
+            )
 
     @classmethod
     async def mass_modify(self, read_state_updates: dict[typing.Self, int]) -> None:
@@ -93,5 +116,7 @@ class ReadState(Object):
             return
 
         async with meta.db.acquire() as db:
-            stmt = await db.prepare("UPDATE read_states SET last_message_id = $3 WHERE channel_id = $1 AND user_id = $2;")
+            stmt = await db.prepare(
+                "UPDATE read_states SET last_message_id = $3 WHERE channel_id = $1 AND user_id = $2;"
+            )
             await stmt.executemany(updates)

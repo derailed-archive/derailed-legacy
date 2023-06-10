@@ -5,17 +5,17 @@ defmodule Derailed.Utils do
     Map.delete(m, :__meta__)
   end
 
-  @spec map!(Postgrex.Result) :: list
+  @spec map!(Postgrex.Result) :: map()
   def map!(result) do
     case result do
       %{rows: []} ->
-        []
+        Map.new()
 
       %{rows: [row], columns: columns} ->
         mapify(columns, row)
 
       _ ->
-        raise "err"
+        raise "Error in mapping database result"
     end
   end
 
@@ -29,7 +29,7 @@ defmodule Derailed.Utils do
         Enum.map(rows, fn row -> mapify(columns, row) end)
 
       _ ->
-        raise "err"
+        raise "Error in mapping database results"
     end
   end
 

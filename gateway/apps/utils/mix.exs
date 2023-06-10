@@ -1,4 +1,4 @@
-defmodule Utils.MixProject do
+defmodule Derailed.Utils.MixProject do
   use Mix.Project
 
   def project do

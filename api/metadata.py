@@ -39,7 +39,9 @@ class Meta:
 
     async def dispatch_guild(self, type: str, guild_id: int, data: typing.Any) -> None:
         if self._grpc_stub:
-            await self._grpc_stub.dispatch_guild(Interchange(t=type, id=guild_id, d=data))
+            await self._grpc_stub.dispatch_guild(
+                Interchange(t=type, id=guild_id, d=data)
+            )
 
     async def dispatch_user(self, type: str, user_id: int, data: typing.Any) -> None:
         if self._grpc_stub:
@@ -49,14 +51,16 @@ class Meta:
         self, type: str, data: typing.Any, users: list[int]
     ) -> None:
         if self._grpc_stub:
-            await self._grpc_stub.dispatch_user(BulkInterchange(t=type, uids=users, d=data))
+            await self._grpc_stub.dispatch_user(
+                BulkInterchange(t=type, uids=users, d=data)
+            )
 
     async def get_guild_metadata(self, guild_id: int) -> GuildMetadata:
         if self._grpc_stub:
             metadata = await self._grpc_stub.get_metadata(GuildInfo(id=guild_id))
-            return {'presences': metadata.presences, 'available': metadata.available}
+            return {"presences": metadata.presences, "available": metadata.available}
         else:
-            return {'presences': 0, 'available': False}
+            return {"presences": 0, "available": False}
 
     def genflake(self) -> int:
         current_ms = int(time.time() * 1000)

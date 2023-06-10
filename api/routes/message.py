@@ -5,6 +5,7 @@
 
 from typing import Annotated
 
+import markupsafe
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
@@ -36,9 +37,10 @@ async def get_channel_message(message_ref: Annotated[MessageRef, cur_message_ref
 async def create_message(
     channel_ref: Annotated[ChannelRef, cur_channel_ref], payload: CreateMessage
 ):
-    
     message = await Message.create(
-        channel_ref.user.id, payload.content, channel_ref.channel_id
+        channel_ref.user.id,
+        str(markupsafe.escape(payload.content)),
+        channel_ref.channel_id,
     )
 
     pub = await message.publicize()
@@ -54,7 +56,7 @@ async def modify_message(
 ):
     message = message_ref.message
 
-    message.content = payload.content
+    message.content = str(markupsafe.escape(payload.content))
 
     await message.modify()
 
