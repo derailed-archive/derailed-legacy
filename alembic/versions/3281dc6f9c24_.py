@@ -157,7 +157,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("type", sa.INT, nullable=False),
-        sa.Column("created_at", sa.DATE, nullable=False),
+        sa.Column("created_at", sa.DATE, nullable=False, default=sa.func.now()),
         sa.Column("content", sa.VARCHAR(32)),
     )
 

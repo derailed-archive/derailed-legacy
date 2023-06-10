@@ -16,3 +16,7 @@ import Config
 #       format: "$date $time [$level] $metadata$message\n",
 #       metadata: [:user_id]
 #
+
+config :snowflake,
+  machine_id: 2,
+  epoch: 1_672_531_200_000

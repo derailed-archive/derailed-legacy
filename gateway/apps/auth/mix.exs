@@ -1,9 +1,9 @@
-defmodule Derailed.Session.MixProject do
+defmodule Derailed.Auth.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :session,
+      app: :auth,
       version: "0.0.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -18,21 +18,14 @@ defmodule Derailed.Session.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger],
-      mod: {Session.Application, []}
+      extra_applications: [:logger]
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:manifold, "~> 1.6"},
-      {:zen_monitor, "~> 2.0"},
-      {:gen_registry, "~> 1.3.0"},
-      {:postgrex, "~> 0.17.1"},
-      {:utils, in_umbrella: true},
-      {:auth, in_umbrella: true},
-      {:guilds, in_umbrella: true}
+      {:rustler, "~> 0.27.0", optional: Mix.env() == :prod}
     ]
   end
 end

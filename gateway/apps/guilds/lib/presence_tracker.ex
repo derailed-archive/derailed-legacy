@@ -43,9 +43,19 @@ defmodule Derailed.PresenceTracker do
     GenServer.cast(pid, {:publish, user_id, presence})
   end
 
+  @spec count(pid) :: integer()
+  def count(pid) do
+    GenServer.call(pid, :count)
+  end
+
+  @spec get_guild_id(pid) :: integer()
+  def get_guild_id(pid) do
+    GenServer.call(pid, :get_guild_id)
+  end
+
   @spec count(pid()) :: {:ok, integer()}
   def count(pid) do
-    GenServer.call(pid, {:count})
+    GenServer.call(pid, :count)
   end
 
   # backend api
@@ -75,7 +85,11 @@ defmodule Derailed.PresenceTracker do
     {:noreply, %{state | presences: Map.put(state.presences, user_id, presence)}}
   end
 
-  def handle_call({:count}, _from, state) do
-    {:reply, {:ok, Enum.count_until(state.presences, 20000)}, state}
+  def handle_call(:count, _from, state) do
+    {:reply, Enum.count_until(state.presences, 20000), state}
+  end
+
+  def handle_call(:get_guild_id, _from, state) do
+    {:reply, state.id, state}
   end
 end

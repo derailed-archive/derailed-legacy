@@ -1,3 +1,2 @@
 [workspace]
-members = ["auth", "apps/derailed-app/src-tauri"]
-exclude = ["gateway/apps/auth/native/auth"]
+members = ["gateway/apps/auth/native/auth", "apps/derailed-app/src-tauri"]
