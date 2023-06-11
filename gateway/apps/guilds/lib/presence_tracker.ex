@@ -92,4 +92,12 @@ defmodule Derailed.PresenceTracker do
   def handle_call(:get_guild_id, _from, state) do
     {:reply, state.id, state}
   end
+
+  def handle_info({:DOWN, _ref, :process, session_pid, {:zen_monitor, _reason}}, state) do
+    {:noreply,
+     %{
+       state
+       | sessions: Map.delete(state.sessions, session_pid)
+     }}
+  end
 end

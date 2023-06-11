@@ -1,3 +1,5 @@
+# TODO: handle session process crashing
+
 defmodule Derailed.WebSocket do
   @behaviour :cowboy_websocket
   require Logger
@@ -282,6 +284,15 @@ defmodule Derailed.WebSocket do
       {:ok, %{state | pinged: false}}
     else
       {:reply, {:close, 5004, "Heartbeat time surpassed"}}
+    end
+  end
+
+  def terminate(_reason, _req, state) do
+    if state.ready == true do
+      case GenRegistry.lookup(Derailed.Session.Registry, state.user_id) do
+        {:ok, pid} -> Derailed.Session.Registry.remove_session(pid, state.session_pid)
+      end
+      GenRegistry.stop(Derailed.Session, state.session_id)
     end
   end
 end
