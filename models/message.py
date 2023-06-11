@@ -7,9 +7,9 @@ import typing
 from dataclasses import dataclass
 from datetime import datetime
 
-from ..errors import CustomError
-from ..metadata import Object, meta
-from ..utils import date_or_none
+from ..api.errors import CustomError
+from ..api.metadata import Object, meta
+from ..api.utils import date_or_none
 
 
 @dataclass
@@ -23,9 +23,9 @@ class Message(Object):
 
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
         return {
-            "id": self.id,
-            "channel_id": self.channel_id,
-            "author_id": self.author_id,
+            "id": str(self.id),
+            "channel_id": str(self.channel_id),
+            "author_id": str(self.author_id),
             "content": self.content,
             "timestamp": self.timestamp.isoformat(),
             "edited_timestamp": self.edited_timestamp.isoformat(),

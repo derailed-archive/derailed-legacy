@@ -6,8 +6,8 @@
 import typing
 from dataclasses import dataclass
 
-from ..errors import CustomError
-from ..metadata import Object, meta
+from ..api.errors import CustomError
+from ..api.metadata import Object, meta
 
 
 @dataclass
@@ -15,6 +15,12 @@ class ReadState(Object):
     channel_id: int
     user_id: int
     last_message_id: int
+
+    async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
+        return {
+            'channel_id': str(self.channel_id),
+            'last_message_id': str(self.last_message_id)
+        }
 
     @property
     def info(self):

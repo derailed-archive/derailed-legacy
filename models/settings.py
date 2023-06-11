@@ -6,8 +6,8 @@
 import typing
 from dataclasses import dataclass
 
-from ..errors import UserDoesNotExist
-from ..metadata import Object, meta
+from ..api.errors import UserDoesNotExist
+from ..api.metadata import Object, meta
 
 
 @dataclass

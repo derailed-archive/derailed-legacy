@@ -7,9 +7,9 @@ from dataclasses import dataclass
 
 import asyncpg
 
-from ..errors import CustomError, UserDoesNotExist, UsernameOverused
-from ..flags import DEFAULT_FLAGS, UserFlags
-from ..metadata import Object, meta
+from ..api.errors import CustomError, UserDoesNotExist, UsernameOverused
+from ..api.flags import DEFAULT_FLAGS, UserFlags
+from ..api.metadata import Object, meta
 from .settings import Settings
 
 

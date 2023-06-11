@@ -25,7 +25,7 @@ defmodule Derailed.Auth.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:rustler, "~> 0.27.0", optional: Mix.env() == :prod}
+      {:rustler, "~> 0.28.0", optional: Mix.env() == :prod}
     ]
   end
 end

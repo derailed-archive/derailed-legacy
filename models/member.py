@@ -9,10 +9,10 @@ from datetime import datetime
 
 import asyncpg
 
-from ..errors import CustomError
-from ..flags import RolePermissions
-from ..metadata import Object, meta
-from ..utils import cache
+from ..api.errors import CustomError
+from ..api.flags import RolePermissions
+from ..api.metadata import Object, meta
+from ..api.utils import cache
 from .guild import Guild
 from .role import ADMIN_PERM, Role
 from .user import User
@@ -66,6 +66,34 @@ class Member(Object):
             )
 
     @classmethod
+    async def acquire_all(cls, user_id: int) -> list[typing.Self]:
+        """Acquire a users members objectsz.
+
+        Parameters
+        ----------
+        user_id: :class:`int`
+            The user id of this member.
+        """
+
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare(
+                "SELECT * FROM members WHERE user_id = $1;"
+            )
+            rows = await stmt.fetchrow(user_id)
+
+        members = []
+
+        for row in rows:
+            members.append(cls(
+                user_id=user_id,
+                guild_id=row['guild_id'],
+                nick=row["nick"],
+                joined_at=datetime.fromisoformat(row["joined_at"]),
+            ))
+
+        return members
+
+    @classmethod
     async def join(cls, user_id: int, guild_id: int) -> typing.Self:
         """Join this Guild as a user.
 
@@ -97,21 +125,27 @@ class Member(Object):
             )
             await stmt.fetch(self.user_id, self.guild_id, self.nick)
 
-    async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
+    async def publicize(self, secure: bool = False, roles: bool = False) -> dict[str, typing.Any]:
         if secure:
-            return {
+            d = {
                 "user": await (await User.acquire(self.user_id)).publicize(),
-                "guild_id": self.guild_id,
+                "guild_id": str(self.guild_id),
                 "nick": self.nick,
                 "joined_at": self.joined_at,
             }
         else:
-            return {
-                "user_id": self.user_id,
-                "guild_id": self.guild_id,
+            d = {
+                "user_id": str(self.user_id),
+                "guild_id": str(self.guild_id),
                 "nick": self.nick,
                 "joined_at": self.joined_at,
             }
+
+        if roles:
+            roles = await self.get_roles()
+            d['roles'] = [await role.publicize() for role in roles]
+
+        return d
 
     @cache()
     async def get_roles(self) -> list[Role]:

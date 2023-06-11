@@ -10,8 +10,8 @@ from dataclasses import dataclass
 if typing.TYPE_CHECKING:
     from .guild import Guild
 
-from ..errors import CustomError
-from ..metadata import Object, meta
+from ..api.errors import CustomError
+from ..api.metadata import Object, meta
 
 
 @dataclass
@@ -33,12 +33,12 @@ class Channel(Object):
 
     async def publicize(self, secure: bool = False):
         return {
-            "id": self.id,
+            "id": str(self.id),
             "name": self.name,
             "type": self.type,
-            "guild_id": self.guild_id,
-            "last_message_id": self.last_message_id,
-            "parent_id": self.parent_id,
+            "guild_id": str(self.guild_id),
+            "last_message_id": str(self.last_message_id),
+            "parent_id": str(self.parent_id),
             "position": self.position,
         }
 
@@ -49,22 +49,26 @@ class Channel(Object):
 
             rows = await stmt.fetch(guild_id)
 
-            for row in rows:
-                channel_id = row["id"]
-                if row.get("parent_id") is not None:
-                    parent = await Channel.acquire(row["parent_id"])
-                else:
-                    parent = None
+        acqs = []
 
-                return cls(
-                    id=channel_id,
-                    name=row["name"],
-                    type=row["type"],
-                    guild_id=row.get("guild_id"),
-                    last_message_id=row.get("last_message_id"),
-                    parent=parent,
-                    position=row.get("position"),
-                )
+        for row in rows:
+            channel_id = row["id"]
+            if row.get("parent_id") is not None:
+                parent = await Channel.acquire(row["parent_id"])
+            else:
+                parent = None
+
+            acqs.append(cls(
+                id=channel_id,
+                name=row["name"],
+                type=row["type"],
+                guild_id=row.get("guild_id"),
+                last_message_id=row.get("last_message_id"),
+                parent=parent,
+                position=row.get("position"),
+            ))
+
+        return acqs
 
     @classmethod
     async def acquire(cls, channel_id: int) -> typing.Self:

@@ -9,10 +9,10 @@ from dataclasses import dataclass
 
 from asyncpg import Record
 
-from ..errors import GuildDoesNotExist
-from ..flags import DEFAULT_PERMISSIONS, RolePermissions
-from ..metadata import Object, meta
-from ..utils import cache
+from ..api.errors import GuildDoesNotExist
+from ..api.flags import DEFAULT_PERMISSIONS, RolePermissions
+from ..api.metadata import Object, meta
+from ..api.utils import cache
 from .channel import Channel
 
 
