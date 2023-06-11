@@ -53,7 +53,7 @@ defmodule Derailed.PresenceTracker do
     GenServer.call(pid, :get_guild_id)
   end
 
-  @spec count(pid()) :: {:ok, integer()}
+  @spec count(pid()) :: integer()
   def count(pid) do
     GenServer.call(pid, :count)
   end
