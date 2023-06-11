@@ -24,7 +24,6 @@ defmodule Derailed.WebSocket do
       # 3 => :ack
       4 => :ping,
       # 5 => :hello,
-      6 => :update_presence
     }[op]
   end
 
@@ -170,88 +169,6 @@ defmodule Derailed.WebSocket do
     catch
       _ -> {:reply, {:close, 5006, "Invalid Token"}}
     end
-  end
-
-  def job({:update_presence, data}, state) do
-    if not state.ready do
-      {:reply, {:close, 5008, "Has not identified with Gateway"}}
-    end
-
-    schema =
-      %{
-        "type" => "object",
-        "properties" => %{
-          "activities" => %{
-            "type" => "array",
-            "maxItems" => 5,
-            "uniqueItems" => true,
-            "items" => %{
-              "type" => "object",
-              "properties" => %{
-                "type" => %{
-                  "enum" => [0]
-                },
-                "content" => %{
-                  "type" => "string",
-                  "minLength" => 1,
-                  "maxLength" => 32
-                }
-              }
-            }
-          },
-          "status" => %{
-            "enum" => [0, 1, 2, 3]
-          }
-        }
-      }
-      |> ExJsonSchema.Schema.resolve()
-
-    if not ExJsonSchema.Validator.valid?(schema, data) do
-      {:reply, {:close, 5007, "Invalid data"}}
-    end
-
-    get_user = Postgrex.prepare!(:db, "get_user", "SELECT * FROM users WHERE id = $1")
-    user = Derailed.Utils.map!(Postgrex.execute!(:db, get_user, [state.user_id]))
-
-    activities = Map.get(data, "activities")
-    status = Map.get(data, "status")
-
-    delete_activities =
-      Postgrex.prepare!(
-        :db,
-        "delete_user_activities",
-        "DELETE FROM activities WHERE user_id = $1;"
-      )
-
-    Postgrex.execute!(:db, delete_activities, [state.user_id])
-
-    activities =
-      Enum.map(activities, fn act ->
-        {:ok, id} = Snowflake.next_id()
-
-        dt = DateTime.now!("Etc/UTC")
-        date = DateTime.to_string(dt)
-
-        create_activity =
-          Postgrex.prepare!(
-            :db,
-            "create_activity",
-            "INSERT INTO activities (id, user_id, type, created_at, content) VALUES ($1, $2, $3, $4, $5);"
-          )
-
-        Postgrex.execute!(:db, create_activity, [id, state.user_id, act.type, date, act.content])
-
-        %{id: id, user_id: state.user_id, type: act.type, created_at: date, content: act.content}
-      end)
-
-    Enum.each(Derailed.Session.get_presence_pids(state.session_pid), fn pid ->
-      Derailed.PresenceTracker.publish_presence(pid, state.user_id, %{
-        user: user,
-        guild_id: Derailed.PresenceTracker.get_guild_id(pid),
-        status: status,
-        activities: activities
-      })
-    end)
   end
 
   def job({:ping, data}, state) do

@@ -31,7 +31,6 @@ defmodule Derailed.WebSocket.MixProject do
       {:msgpax, "~> 2.4.0"},
       {:jsonrs, "~> 0.3.0"},
       {:hammer, "~> 6.1"},
-      {:snowflake, "~> 1.0.0"},
       {:guilds, in_umbrella: true},
       {:session, in_umbrella: true},
       {:utils, in_umbrella: true}
