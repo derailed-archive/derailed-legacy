@@ -6,10 +6,10 @@
 import typing
 from dataclasses import dataclass
 
-from ..api.errors import CustomError
-from ..api.flags import RolePermissions
-from ..api.metadata import Object, meta
-from ..api.utils import MISSING, Maybe
+from ..errors import CustomError
+from ..flags import RolePermissions
+from ..metadata import Object, meta
+from ..utils import MISSING, Maybe
 
 ADMIN_PERM = RolePermissions.ADMINISTRATOR.value
 

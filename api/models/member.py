@@ -9,10 +9,10 @@ from datetime import datetime
 
 import asyncpg
 
-from ..api.errors import CustomError
-from ..api.flags import RolePermissions
-from ..api.metadata import Object, meta
-from ..api.utils import cache
+from ..errors import CustomError
+from ..flags import RolePermissions
+from ..metadata import Object, meta
+from ..utils import cache
 from .guild import Guild
 from .role import ADMIN_PERM, Role
 from .user import User

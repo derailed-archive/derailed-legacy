@@ -10,8 +10,8 @@ from dataclasses import dataclass
 if typing.TYPE_CHECKING:
     from .guild import Guild
 
-from ..api.errors import CustomError
-from ..api.metadata import Object, meta
+from ..errors import CustomError
+from ..metadata import Object, meta
 
 
 @dataclass

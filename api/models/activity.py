@@ -6,8 +6,8 @@
 from dataclasses import dataclass
 import typing
 
-from ..api.errors import CustomError
-from ..api.metadata import Object, meta
+from ..errors import CustomError
+from ..metadata import Object, meta
 
 
 @dataclass

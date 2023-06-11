@@ -7,9 +7,9 @@ import datetime
 import typing
 from dataclasses import dataclass
 
-from ..api.errors import CustomError
-from ..api.metadata import Object, meta
-from ..api.utils import MISSING, Maybe
+from ..errors import CustomError
+from ..metadata import Object, meta
+from ..utils import MISSING, Maybe
 from .channel import Channel
 from .guild import Guild
 from .user import User
