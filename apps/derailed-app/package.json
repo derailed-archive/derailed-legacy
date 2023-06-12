@@ -18,7 +18,7 @@
     "mobx-react-lite": "^3.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.8.2"
+    "react-router-dom": "^6.12.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1.2.3",
