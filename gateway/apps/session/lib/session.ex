@@ -23,7 +23,9 @@ defmodule Derailed.Session do
              ws_pid: atom | pid | {atom, atom},
              ws_ref: reference(),
              guild_refs: map(),
-             presence_refs: map()
+             presence_refs: map(),
+             activities: list(),
+             status: integer()
            }}
   def init({session_id, ws_pid, user_id}) do
     ref = ZenMonitor.monitor(ws_pid)
@@ -38,7 +40,9 @@ defmodule Derailed.Session do
        disconnected: false,
        ws_ref: ref,
        guild_refs: Map.new(),
-       presence_refs: Map.new()
+       presence_refs: Map.new(),
+       activities: [],
+       status: -1
      }}
   end
 
@@ -132,7 +136,6 @@ defmodule Derailed.Session do
         if status != 2 do
           Derailed.PresenceTracker.publish_presence(pid, user.id, %{
             user: user,
-            guild_id: guild.id,
             status: status,
             activities: activities
           })
@@ -168,7 +171,9 @@ defmodule Derailed.Session do
        | guild_pids: pids,
          guild_refs: refs,
          presence_pids: presence_pids,
-         presence_refs: presence_refs
+         presence_refs: presence_refs,
+         activities: activities,
+         status: status
      }}
   end
 
@@ -235,7 +240,63 @@ defmodule Derailed.Session do
       Manifold.send(state.ws_pid, {:publish, message})
     end
 
-    {:noreply, state}
+    t = Map.get(message, "t")
+
+    case t do
+      "GUILD_CREATE" ->
+        {:ok, pid} = GenRegistry.lookup_or_start(Derailed.Guild, message.d.id, [message.d.id])
+
+        {:ok, presence_pid} =
+          GenRegistry.lookup_or_start(Derailed.PresenceTracker, message.d.id, [message.d.id])
+
+        Derailed.Guild.subscribe(pid, self(), state.user_id)
+        Derailed.PresenceTracker.subscribe(presence_pid, self(), state.user_id)
+
+        ref = ZenMonitor.monitor(pid)
+        pres_ref = ZenMonitor.monitor(presence_pid)
+
+        if state.status != 1 do
+          Derailed.PresenceTracker.publish_presence(presence_pid, state.user_id, %{
+            user_id: state.user_id,
+            activities: state.activities,
+            status: state.status
+          })
+        end
+
+        {:noreply,
+         %{
+           state
+           | guild_pids: Map.put(state.guild_pids, message.d.id, pid),
+             presence_pids: Map.put(state.presence_pids, message.d.id, presence_pid),
+             guild_refs: Map.put(state.guild_refs, ref, message.d.id),
+             presence_refs: Map.put(state.presence_refs, pres_ref, message.d.id)
+         }}
+
+      "GUILD_DELETE" ->
+        # TODO: make actually work.
+        {:ok, pid} = GenRegistry.lookup_or_start(Derailed.Guild, message.d.id, [message.d.id])
+
+        {:ok, presence_pid} =
+          GenRegistry.lookup_or_start(Derailed.PresenceTracker, message.d.id, [message.d.id])
+
+        Derailed.Guild.unsubscribe(pid, self())
+        Derailed.PresenceTracker.unsubscribe(presence_pid, self())
+
+        ref = ZenMonitor.demonitor(pid, Map.get(state.guild_pids, message.d.guild_id))
+        pres_ref = ZenMonitor.demonitor(presence_pid)
+
+        {:noreply,
+         %{
+           state
+           | guild_pids: Map.delete(state.guild_pids, message.d.id),
+             presence_pids: Map.delete(state.presence_pids, message.d.id),
+             guild_refs: Map.delete(state.guild_refs, ref),
+             presence_refs: Map.delete(state.presence_refs, pres_ref)
+         }}
+
+      _ ->
+        {:noreply, state}
+    end
   end
 
   def handle_info({:setup_guilds, guilds, members, activities, partial_user, status}, state) do

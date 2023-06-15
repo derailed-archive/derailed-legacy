@@ -10,6 +10,7 @@ service Guild {
     rpc dispatch_user (Interchange) returns (google.protobuf.Empty);
     rpc dispatch_bulk (BulkInterchange) returns (google.protobuf.Empty);
     rpc get_metadata (GuildInfo) returns (GuildMetadata);
+    rpc update_presence (UpdatePresence) returns (google.protobuf.Empty);
 }
 
 message Interchange {
@@ -31,4 +32,10 @@ message GuildInfo {
 message GuildMetadata {
     bool available = 1;
     int32 presences = 2;
+}
+
+message UpdatePresence {
+    int64 user_id = 1;
+    int32 status = 2;
+    repeated google.protobuf.Any activities = 3;
 }

@@ -29,7 +29,6 @@ defmodule Derailed.WebSocket.MixProject do
       {:ex_json_schema, "~> 0.9.3"},
       {:cowboy, "~> 2.9"},
       {:msgpax, "~> 2.4.0"},
-      {:jsonrs, "~> 0.3.0"},
       {:hammer, "~> 6.1"},
       {:guilds, in_umbrella: true},
       {:session, in_umbrella: true},

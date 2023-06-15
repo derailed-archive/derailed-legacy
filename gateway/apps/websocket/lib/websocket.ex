@@ -22,7 +22,7 @@ defmodule Derailed.WebSocket do
       1 => :identify,
       # 2 => :resume,
       # 3 => :ack
-      4 => :ping,
+      4 => :ping
       # 5 => :hello,
     }[op]
   end
@@ -81,7 +81,7 @@ defmodule Derailed.WebSocket do
 
     case Hammer.check_rate(state.session_id, 60_000, 60) do
       {:allow, _} ->
-        case Jsonrs.decode(content) do
+        case Msgpax.unpack(content) do
           {:ok, message} ->
             op = Map.get(message, "op")
             Logger.debug("Detected OP #{op}")
@@ -97,7 +97,7 @@ defmodule Derailed.WebSocket do
             job({get_op(op), Map.get(message, "d", Map.new())}, state)
 
           {:error, _reason} ->
-            {:reply, {:close, 5000, "Invalid JSON given"}}
+            {:reply, {:close, 5000, "Invalid msgpack given"}}
         end
 
       _ ->
@@ -167,7 +167,7 @@ defmodule Derailed.WebSocket do
           %{state | ready: true, session_pid: pid, sequence: state.sequence + 1, user_id: user.id}
         )}}
     catch
-      _ -> {:reply, {:close, 5006, "Invalid Token"}}
+      "User has invalid token information" -> {:reply, {:close, 5006, "Invalid Token"}}
     end
   end
 
@@ -209,6 +209,7 @@ defmodule Derailed.WebSocket do
       case GenRegistry.lookup(Derailed.Session.Registry, state.user_id) do
         {:ok, pid} -> Derailed.Session.Registry.remove_session(pid, state.session_pid)
       end
+
       GenRegistry.stop(Derailed.Session, state.session_id)
     end
   end
