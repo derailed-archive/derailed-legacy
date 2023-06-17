@@ -25,7 +25,7 @@ defmodule Derailed.Gateway.MixProject do
             grpc_users: :permanent,
             guilds: :permanent,
             sessions: :permanent,
-            database: :permanent,
+            utils: :permanent,
             websockets: :permanent
           ]
         ],
@@ -33,14 +33,14 @@ defmodule Derailed.Gateway.MixProject do
           applications: [
             grpc_guilds: :permanent,
             grpc_users: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ],
         basic: [
           applications: [
             guilds: :permanent,
             sessions: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ],
         ws: [
@@ -63,13 +63,13 @@ defmodule Derailed.Gateway.MixProject do
         guild: [
           applications: [
             guilds: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ],
         session: [
           applications: [
             sessions: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ]
       ]

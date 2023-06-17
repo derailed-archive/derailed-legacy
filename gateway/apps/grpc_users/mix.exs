@@ -1,9 +1,9 @@
-defmodule Derailed.Utils.MixProject do
+defmodule Derailed.GRPC.Users.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :utils,
+      app: :grpc_users,
       version: "0.0.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
@@ -18,15 +18,17 @@ defmodule Derailed.Utils.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Derailed.GRPC.Users.Application, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:postgrex, "~> 0.17.1"},
-      {:grpc, "~> 0.6.0"}
+      # {:dep_from_hexpm, "~> 0.3.0"},
+      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      # {:sibling_app_in_umbrella, in_umbrella: true}
     ]
   end
 end

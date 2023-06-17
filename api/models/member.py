@@ -67,7 +67,7 @@ class Member(Object):
 
     @classmethod
     async def acquire_all(cls, user_id: int) -> list[typing.Self]:
-        """Acquire a users members objectsz.
+        """Acquire a users members objects.
 
         Parameters
         ----------
@@ -76,20 +76,48 @@ class Member(Object):
         """
 
         async with meta.db.acquire() as db:
-            stmt = await db.prepare(
-                "SELECT * FROM members WHERE user_id = $1;"
-            )
+            stmt = await db.prepare("SELECT * FROM members WHERE user_id = $1;")
             rows = await stmt.fetchrow(user_id)
 
         members = []
 
         for row in rows:
-            members.append(cls(
-                user_id=user_id,
-                guild_id=row['guild_id'],
-                nick=row["nick"],
-                joined_at=datetime.fromisoformat(row["joined_at"]),
-            ))
+            members.append(
+                cls(
+                    user_id=user_id,
+                    guild_id=row["guild_id"],
+                    nick=row["nick"],
+                    joined_at=datetime.fromisoformat(row["joined_at"]),
+                )
+            )
+
+        return members
+
+    @classmethod
+    async def acquire_guild(cls, guild_id: int) -> list[typing.Self]:
+        """Acquire a guilds members objects.
+
+        Parameters
+        ----------
+        guild_id: :class:`int`
+            Member guild id.
+        """
+
+        async with meta.db.acquire() as db:
+            stmt = await db.prepare("SELECT * FROM members WHERE guild_id = $1;")
+            rows = await stmt.fetchrow(guild_id)
+
+        members = []
+
+        for row in rows:
+            members.append(
+                cls(
+                    user_id=row["user_id"],
+                    guild_id=guild_id,
+                    nick=row["nick"],
+                    joined_at=datetime.fromisoformat(row["joined_at"]),
+                )
+            )
 
         return members
 
@@ -125,7 +153,9 @@ class Member(Object):
             )
             await stmt.fetch(self.user_id, self.guild_id, self.nick)
 
-    async def publicize(self, secure: bool = False, roles: bool = False) -> dict[str, typing.Any]:
+    async def publicize(
+        self, secure: bool = False, roles: bool = False
+    ) -> dict[str, typing.Any]:
         if secure:
             d = {
                 "user": await (await User.acquire(self.user_id)).publicize(),
@@ -143,7 +173,7 @@ class Member(Object):
 
         if roles:
             roles = await self.get_roles()
-            d['roles'] = [await role.publicize() for role in roles]
+            d["roles"] = [await role.publicize() for role in roles]
 
         return d
 

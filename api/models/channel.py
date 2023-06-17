@@ -58,15 +58,17 @@ class Channel(Object):
             else:
                 parent = None
 
-            acqs.append(cls(
-                id=channel_id,
-                name=row["name"],
-                type=row["type"],
-                guild_id=row.get("guild_id"),
-                last_message_id=row.get("last_message_id"),
-                parent=parent,
-                position=row.get("position"),
-            ))
+            acqs.append(
+                cls(
+                    id=channel_id,
+                    name=row["name"],
+                    type=row["type"],
+                    guild_id=row.get("guild_id"),
+                    last_message_id=row.get("last_message_id"),
+                    parent=parent,
+                    position=row.get("position"),
+                )
+            )
 
         return acqs
 

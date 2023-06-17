@@ -18,8 +18,8 @@ class ReadState(Object):
 
     async def publicize(self, secure: bool = False) -> dict[str, typing.Any]:
         return {
-            'channel_id': str(self.channel_id),
-            'last_message_id': str(self.last_message_id)
+            "channel_id": str(self.channel_id),
+            "last_message_id": str(self.last_message_id),
         }
 
     @property

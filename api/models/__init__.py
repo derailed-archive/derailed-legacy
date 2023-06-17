@@ -4,7 +4,7 @@ api.models
 Models for Derailed API representations.
 """
 
-from .user import *
+from .activity import *
 from .channel import *
 from .guild import *
 from .invites import *
@@ -13,4 +13,4 @@ from .message import *
 from .read_states import *
 from .role import *
 from .settings import *
-from .activity import *
+from .user import *

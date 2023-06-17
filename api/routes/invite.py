@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from ..errors import CustomError
 from ..flags import RolePermissions
 from ..metadata import meta
+from ..models.guild import Guild
 from ..models.invites import Invite
 from ..models.member import Member
 from ..refs.channel_ref import ChannelRef, cur_channel_ref
@@ -46,6 +47,11 @@ async def join_guild(
 
     member = await Member.join(user.id, invite.guild_id)
 
+    await meta.dispatch_user(
+        "GUILD_CREATE",
+        member.user_id,
+        await (await Guild.acquire(member.guild_id)).publicize(),
+    )
     await meta.dispatch_guild("MEMBER_JOIN", member.guild_id, await member.publicize())
 
     return await member.publicize()
