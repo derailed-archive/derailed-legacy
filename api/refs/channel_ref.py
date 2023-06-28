@@ -5,7 +5,7 @@
 
 from typing import Annotated
 
-from fastapi import Path
+from fastapi import Depends, Path
 
 from ..models.channel import Channel
 from ..models.user import User
@@ -28,7 +28,7 @@ class ChannelRef(Ref):
 
 
 async def cur_channel_ref(
-    channel_id: Annotated[str, Path()], user_ref: Annotated[CurUserRef, cur_ref]
+    channel_id: Annotated[str, Path()], user_ref: Annotated[CurUserRef, Depends(cur_ref)]
 ) -> ChannelRef:
     ref = ChannelRef(channel_id, await user_ref.get_user())
     await ref._organize()

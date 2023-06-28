@@ -6,7 +6,7 @@
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 
 from ..errors import CustomError
@@ -24,7 +24,7 @@ route_invites = APIRouter()
 
 
 @route_invites.get("/invites/{invite_id}")
-async def get_invite(invite_ref: Annotated[InviteRef, invite_ref]):
+async def get_invite(invite_ref: Annotated[InviteRef, Depends(invite_ref)]):
     invite = await invite_ref.get()
 
     return invite.publicize()
@@ -32,8 +32,8 @@ async def get_invite(invite_ref: Annotated[InviteRef, invite_ref]):
 
 @route_invites.post("/invites/{invite_id}/join")
 async def join_guild(
-    invite_ref: Annotated[InviteRef, invite_ref],
-    cur_user: Annotated[CurUserRef, cur_ref],
+    invite_ref: Annotated[InviteRef, Depends(invite_ref)],
+    cur_user: Annotated[CurUserRef, Depends(cur_ref)],
 ):
     user = await cur_user.get_user()
 
@@ -59,8 +59,8 @@ async def join_guild(
 
 @route_invites.post("/guilds/{guild_id}/channels/{channel_id}/invites")
 async def create_invite(
-    guild_ref: Annotated[CurrentGuildRef, cur_guild_ref],
-    channel_ref: Annotated[ChannelRef, cur_channel_ref],
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
+    channel_ref: Annotated[ChannelRef, Depends(cur_channel_ref)],
 ):
     guild = await guild_ref.get_guild()
     member = await guild_ref.get_member(
@@ -81,8 +81,8 @@ async def create_invite(
 
 @route_invites.delete("/guilds/{guild_id}/invites/{invite_id}")
 async def delete_guild_invite(
-    invite_ref: Annotated[InviteRef, invite_ref],
-    cur_guild: Annotated[CurrentGuildRef, cur_guild_ref],
+    invite_ref: Annotated[InviteRef, Depends(invite_ref)],
+    cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
 ):
     await cur_guild.get_member(RolePermissions.MANAGE_INVITES)
 

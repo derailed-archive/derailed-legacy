@@ -5,7 +5,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from api.refs import channel_ref
 
@@ -19,7 +19,7 @@ router = APIRouter()
 
 
 @router.get("/read_states")
-async def get_read_states(user_ref: Annotated[CurUserRef, cur_ref]):
+async def get_read_states(user_ref: Annotated[CurUserRef, Depends(cur_ref)]):
     user = await user_ref.get_user()
 
     read_states = await ReadState.acquire_all(user.id)
@@ -28,7 +28,7 @@ async def get_read_states(user_ref: Annotated[CurUserRef, cur_ref]):
 
 
 @router.get("/guilds/{guild_id}/read_states")
-async def get_guild_read_states(guild_ref: Annotated[CurrentGuildRef, cur_guild_ref]):
+async def get_guild_read_states(guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)]):
     guild = await guild_ref.get_guild()
     member = await guild_ref.get_member(guild=guild)
 
@@ -43,7 +43,7 @@ async def get_guild_read_states(guild_ref: Annotated[CurrentGuildRef, cur_guild_
 
 @router.delete("/guilds/{guild_id}/read_states")
 async def delete_guild_read_states(
-    guild_ref: Annotated[CurrentGuildRef, cur_guild_ref]
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)]
 ):
     guild = await guild_ref.get_guild()
     member = await guild_ref.get_member(guild=guild)

@@ -5,29 +5,27 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter
-from pydantic import Field
-
-from api.refs import current_guild
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel, Field
 
 from ..errors import CustomError
 from ..flags import DEFAULT_PERMISSIONS, RolePermissions
 from ..metadata import meta
 from ..models.role import Role
-from ..refs.current_guild import CurrentGuildRef
+from ..refs.current_guild import CurrentGuildRef, cur_guild_ref
 from ..utils import MISSING, Maybe
 
 route_roles = APIRouter()
 
 
-class CreateRole:
+class CreateRole(BaseModel):
     name: str
     allow: Maybe[int] = Field(MISSING)
     deny: Maybe[int] = Field(MISSING)
     position: Maybe[int] = Field(MISSING)
 
 
-class ModifyRole:
+class ModifyRole(BaseModel):
     name: Maybe[str] = Field(MISSING)
     allow: Maybe[int] = Field(MISSING)
     deny: Maybe[int] = Field(MISSING)
@@ -36,7 +34,7 @@ class ModifyRole:
 
 @route_roles.post("/guilds/{guild_id}/roles")
 async def create_role(
-    guild_ref: Annotated[CurrentGuildRef, current_guild], payload: CreateRole
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)], payload: CreateRole
 ):
     member = await guild_ref.get_member(
         RolePermissions.MANAGE_ROLES, guild=await guild_ref.get_guild()
@@ -60,7 +58,7 @@ async def create_role(
 
 
 @route_roles.get("/guilds/{guild_id}/roles")
-async def get_guild_roles(guild_ref: Annotated[CurrentGuildRef, current_guild]):
+async def get_guild_roles(guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)]):
     await guild_ref.get_member()
 
     roles = await Role.acquire_all(guild_ref.guild_id)
@@ -70,7 +68,7 @@ async def get_guild_roles(guild_ref: Annotated[CurrentGuildRef, current_guild]):
 
 @route_roles.get("/guilds/{guild_id}/roles/{role_id}")
 async def get_guild_role(
-    guild_ref: Annotated[CurrentGuildRef, current_guild], role_id: int
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)], role_id: int
 ):
     await guild_ref.get_member()
 
@@ -81,7 +79,7 @@ async def get_guild_role(
 
 @route_roles.patch("/guilds/{guild_id}/roles/{role_id}")
 async def modify_guild_role(
-    guild_ref: Annotated[CurrentGuildRef, current_guild],
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
     role_id: int,
     payload: ModifyRole,
 ):
@@ -116,7 +114,7 @@ async def modify_guild_role(
 
 @route_roles.delete("/guilds/{guild_id}/roles/{role_id}")
 async def delete_guild_role(
-    guild_ref: Annotated[CurrentGuildRef, current_guild], role_id: int
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)], role_id: int
 ):
     member = await guild_ref.get_member(
         RolePermissions.MANAGE_ROLES, guild=await guild_ref.get_guild()

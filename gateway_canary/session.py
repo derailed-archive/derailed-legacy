@@ -11,6 +11,8 @@ import ulid
 from falcon import WebSocketDisconnected
 from falcon.asgi import WebSocket
 
+from .stream import stream
+
 from ..api.models.settings import Settings
 from .models import Activity, Guild, Member, ReadState
 from .payloads import Base, GetMembers, HeartbeatResponse, Identify, UpdatePresence
@@ -145,6 +147,11 @@ class Session:
         # TODO: dm channels
         await bulk_publish(guild_ids, presence, "PRESENCE_UPDATE")
 
+        if subscriptions.get(self.user_id):
+            subscriptions[self.user_id].append(self)
+        else:
+            subscriptions[self.user_id] = [self]
+
         for guild_id in guild_ids:
             pres = presences.get(guild_id)
 
@@ -154,6 +161,7 @@ class Session:
                 presences[guild_id] = {"count": 1, "user_ids": [self.user_id]}
 
         self.guild_ids = guild_ids
+
 
     async def update_presence(self, data: dict) -> None:
         if not self.identified:
@@ -258,6 +266,7 @@ class Session:
             self.hb_responded = True
 
     async def start(self) -> None:
+        await stream.start()
         self.session_id = str(ulid.new().hex)
 
         await self.send(2, {"heartbeat_interval": self.heartbeat_interval})
@@ -265,10 +274,19 @@ class Session:
 
         await self._recv()
 
-        presence = {
-            "user_id": str(self.user_id),
-            "status": 1,
-            "activities": [],
-        }
+        if self.identified:
+            presence = {
+                "user_id": str(self.user_id),
+                "status": 1,
+                "activities": [],
+            }
 
-        await bulk_publish(self.guild_ids, presence, "PRESENCE_UPDATE")
+            for guild_id in self.guild_ids:
+                sub = subscriptions.get(guild_id)
+
+                if sub:
+                    subscriptions[guild_id].remove(self)
+
+            del subscriptions[self.user_id]
+
+            await bulk_publish(self.guild_ids, presence, "PRESENCE_UPDATE")

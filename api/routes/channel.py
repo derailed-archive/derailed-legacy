@@ -4,7 +4,7 @@
 
 from typing import Annotated, Literal
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 from api.metadata import meta
@@ -33,7 +33,7 @@ class ModifyChannel(BaseModel):
 
 
 @router.get("/guilds/{guild_id}/channels")
-async def get_guild_channels(guild_ref: Annotated[CurrentGuildRef, cur_guild_ref]):
+async def get_guild_channels(guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)]):
     await guild_ref.get_member(perm=RolePermissions.VIEW_CHANNELS)
 
     channels = await Channel.acquire_all(guild_ref.guild_id)
@@ -43,8 +43,8 @@ async def get_guild_channels(guild_ref: Annotated[CurrentGuildRef, cur_guild_ref
 
 @router.get("/guilds/{guild_id}/channels/{channel_id}")
 async def get_guild_channels(
-    guild_ref: Annotated[CurrentGuildRef, cur_guild_ref],
-    channel_ref: Annotated[channel_ref.ChannelRef, channel_ref.cur_channel_ref],
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
+    channel_ref: Annotated[channel_ref.ChannelRef, Depends(channel_ref.cur_channel_ref)],
 ):
     await guild_ref.get_member(perm=RolePermissions.VIEW_CHANNELS)
 
@@ -53,7 +53,7 @@ async def get_guild_channels(
 
 @router.post("/guilds/{guild_id}/channels")
 async def create_channel(
-    guild_ref: Annotated[CurrentGuildRef, cur_guild_ref], payload: CreateChannel
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)], payload: CreateChannel
 ):
     await guild_ref.get_member(perm=RolePermissions.MANAGE_CHANNELS)
 
@@ -74,8 +74,8 @@ async def create_channel(
 
 @router.patch("/guilds/{guild_id}/channels/{channel_id}")
 async def modify_channel(
-    guild_ref: Annotated[CurrentGuildRef, cur_guild_ref],
-    channel_ref: Annotated[channel_ref.ChannelRef, channel_ref.cur_channel_ref],
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
+    channel_ref: Annotated[channel_ref.ChannelRef, Depends(channel_ref.cur_channel_ref)],
     payload: ModifyChannel,
 ):
     guild = await guild_ref.get_guild()
@@ -107,8 +107,8 @@ async def modify_channel(
 
 @router.delete("/guilds/{guild_id}/channels/{channel_id}")
 async def delete_channel(
-    guild_ref: Annotated[CurrentGuildRef, cur_guild_ref],
-    channel_ref: Annotated[channel_ref.ChannelRef, channel_ref.cur_channel_ref],
+    guild_ref: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
+    channel_ref: Annotated[channel_ref.ChannelRef, Depends(channel_ref.cur_channel_ref)],
 ):
     guild = await guild_ref.get_guild()
     await guild_ref.get_member(perm=RolePermissions.MANAGE_CHANNELS, guild=guild)

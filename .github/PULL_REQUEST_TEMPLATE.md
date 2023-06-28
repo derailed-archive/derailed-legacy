@@ -8,7 +8,6 @@
 
 - [ ] API
 - [ ] Gateway
-- [ ] Gateway (NIF)
 - [ ] Frontend
   - [ ] Website
 

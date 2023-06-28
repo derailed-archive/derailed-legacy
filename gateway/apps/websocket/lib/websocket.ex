@@ -159,7 +159,6 @@ defmodule Derailed.WebSocket do
             v: "1",
             mode: "msgpack",
             read_states: read_states,
-            flags: user.flags,
             settings: settings,
             activities: activities
           },

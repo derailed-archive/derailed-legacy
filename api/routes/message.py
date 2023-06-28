@@ -6,7 +6,7 @@
 from typing import Annotated
 
 import markupsafe
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 from ..metadata import meta
@@ -22,20 +22,20 @@ class CreateMessage(BaseModel):
 
 
 @router.get("/channels/{channel_id}/messages")
-async def get_channel_messages(channel_ref: Annotated[ChannelRef, cur_channel_ref]):
+async def get_channel_messages(channel_ref: Annotated[ChannelRef, Depends(cur_channel_ref)]):
     msgs = await Message.acquire_all(channel_id=channel_ref.channel_id)
 
     return [await msg.publicize() for msg in msgs]
 
 
 @router.get("/channels/{channel_id}/messages/{message_id}")
-async def get_channel_message(message_ref: Annotated[MessageRef, cur_message_ref]):
+async def get_channel_message(message_ref: Annotated[MessageRef, Depends(cur_message_ref)]):
     return await message_ref.message.publicize()
 
 
 @router.post("/channels/{channel_id}/messages")
 async def create_message(
-    channel_ref: Annotated[ChannelRef, cur_channel_ref], payload: CreateMessage
+    channel_ref: Annotated[ChannelRef, Depends(cur_channel_ref)], payload: CreateMessage
 ):
     message = await Message.create(
         channel_ref.user.id,
@@ -52,7 +52,7 @@ async def create_message(
 
 @router.patch("/channels/{channel_id}/messages/{message_id}")
 async def modify_message(
-    message_ref: Annotated[MessageRef, cur_message_ref], payload: CreateMessage
+    message_ref: Annotated[MessageRef, Depends(cur_message_ref)], payload: CreateMessage
 ):
     message = message_ref.message
 
@@ -68,7 +68,7 @@ async def modify_message(
 
 
 @router.delete("/channels/{channel_id}/messages/{message_id}")
-async def delete_message(message_ref: Annotated[MessageRef, cur_message_ref]):
+async def delete_message(message_ref: Annotated[MessageRef, Depends(cur_message_ref)]):
     await message_ref.message.delete()
 
     await meta.dispatch_guild(

@@ -5,7 +5,7 @@
 
 from typing import Annotated
 
-from fastapi import Path
+from fastapi import Depends, Path
 
 from ..flags import RolePermissions
 from ..models.guild import Guild
@@ -41,7 +41,7 @@ class CurrentGuildRef(Ref):
 
 
 async def cur_guild_ref(
-    guild_id: Annotated[int, Path()], user_ref: Annotated[CurUserRef, cur_ref]
+    guild_id: Annotated[int, Path()], user_ref: Annotated[CurUserRef, Depends(cur_ref)]
 ) -> CurrentGuildRef:
     user = await user_ref.get_user()
 

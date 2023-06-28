@@ -4,7 +4,7 @@
 
 from typing import Annotated
 
-from fastapi import Path
+from fastapi import Depends, Path
 
 from ..models.channel import Channel
 from ..models.message import Message
@@ -22,7 +22,7 @@ class MessageRef(Ref):
 
 
 async def cur_message_ref(
-    channel_ref: Annotated[ChannelRef, cur_channel_ref],
+    channel_ref: Annotated[ChannelRef, Depends(cur_channel_ref)],
     message_id: Annotated[str, Path()],
 ) -> MessageRef:
     ref = MessageRef(message_id, channel_ref.channel)

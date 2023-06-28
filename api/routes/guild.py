@@ -5,7 +5,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, Field
 
 from ..errors import CustomError
@@ -23,25 +23,25 @@ class CreateGuild(BaseModel):
 
 
 @route_guilds.post("/guilds")
-async def create_guild(cur_user: Annotated[CurUserRef, cur_ref], payload: CreateGuild):
+async def create_guild(cur_user: Annotated[CurUserRef, Depends(cur_ref)], payload: CreateGuild):
     user = await cur_user.get_user()
 
     guild = await Guild.create(payload.name, user.id)
 
     await meta.dispatch_user("GUILD_CREATE", user.id, guild.publicize())
 
-    return guild.publicize()
+    return await guild.publicize()
 
 
 @route_guilds.get("/guilds/{guild_id}")
-async def get_guild(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
+async def get_guild(cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)]):
     await cur_guild.get_member()
 
     return await (await cur_guild.get_guild()).publicize()
 
 
 @route_guilds.get("/guilds/{guild_id}/preview")
-async def get_guild_preview(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
+async def get_guild_preview(cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)]):
     pub = await (await cur_guild.get_guild()).publicize()
 
     md = await meta.get_guild_metadata(cur_guild.guild_id)
@@ -54,7 +54,7 @@ async def get_guild_preview(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]
 
 @route_guilds.patch("/guilds/{guild_id}")
 async def modify_guild(
-    cur_guild: Annotated[CurrentGuildRef, cur_guild_ref], payload: CreateGuild
+    cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)], payload: CreateGuild
 ):
     guild = await cur_guild.get_guild()
     await cur_guild.get_member(RolePermissions.MANAGE_GUILD, guild=guild)
@@ -69,7 +69,7 @@ async def modify_guild(
 
 
 @route_guilds.delete("/guilds/{guild_id}")
-async def delete_guild(cur_guild: Annotated[CurrentGuildRef, cur_guild_ref]):
+async def delete_guild(cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)]):
     guild = await cur_guild.get_guild()
 
     if guild.owner_id != cur_guild.user.id:

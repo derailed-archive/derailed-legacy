@@ -11,6 +11,8 @@ from typing import TYPE_CHECKING, Any
 
 import itsdangerous
 
+from api.metadata import meta
+
 from ..api.errors import UserDoesNotExist
 from ..api.utils import *
 from .models import User
@@ -32,7 +34,8 @@ async def publish(sub_id: int, data: dict, type: str) -> None:
 
 
 async def bulk_publish(sub_ids: list[int], data: dict, type: str) -> None:
-    await asyncio.gather(*[publish(sub_id, data, type) for sub_id in sub_ids])
+    funcs = [meta.d(type, sub_id, data) for sub_id in sub_ids]
+    await asyncio.gather(*funcs)
 
 
 def get_token_user_id(token: str) -> str:
