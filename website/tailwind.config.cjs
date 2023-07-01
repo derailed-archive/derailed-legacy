@@ -9,6 +9,10 @@ module.exports = {
 			},
 			fontFamily: {
 				main: ['Mona Sans']
+			},
+			screens: {
+				sm: '0px',
+				lg: '1050px'
 			}
 		}
 	},
