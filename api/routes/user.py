@@ -20,7 +20,9 @@ route_users = APIRouter()
 
 
 class RegisterData(pydantic.BaseModel):
-    username: str = pydantic.Field(max_length=32, min_length=2)
+    username: str = pydantic.Field(
+        max_length=32, min_length=2, regex=r"^[a-z0-9_]{3,32}$"
+    )
     password: str = pydantic.Field(max_length=72, min_length=2)
     email: str = pydantic.Field(max_length=100, min_length=5)
 
@@ -53,7 +55,7 @@ async def register(payload: RegisterData):
     password = bcrypt.hashpw(payload.password.encode(), salt)
 
     user = await User.register(
-        meta.genflake(), payload.username, payload.email, password.decode()
+        meta.genflake(), payload.username.lower(), payload.email, password.decode()
     )
 
     pub = await user.publicize(secure=True)

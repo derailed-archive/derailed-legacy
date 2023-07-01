@@ -1,4 +1,8 @@
-defmodule Derailed.GRPC.Users.Test do
+defmodule GrpcUsersTest do
   use ExUnit.Case
-  doctest Derailed.GRPC.Users
+  doctest GrpcUsers
+
+  test "greets the world" do
+    assert GrpcUsers.hello() == :world
+  end
 end

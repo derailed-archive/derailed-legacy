@@ -7,10 +7,9 @@ defmodule Derailed.Guild.Application do
 
   @impl true
   def start(_type, _args) do
-    Dotenv.load!()
-
     children = [
-      {GenRegistry, worker_module: Derailed.Guild}
+      {GenRegistry, worker_module: Derailed.Guild},
+      {GenRegistry, worker_module: Derailed.PresenceTracker}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

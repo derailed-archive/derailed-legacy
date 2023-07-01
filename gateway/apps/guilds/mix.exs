@@ -4,23 +4,14 @@ defmodule Derailed.Guild.MixProject do
   def project do
     [
       app: :guilds,
-      version: "0.1.0",
+      version: "0.0.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
-      deps: deps(),
-      xref: [
-        exclude: [
-          Derailed.Database.Repo,
-          Ecto.Query.Builder,
-          Ecto.Query,
-          Derailed.Database.Member,
-          Derailed.Database.MemberRole
-        ]
-      ]
+      deps: deps()
     ]
   end
 
@@ -35,13 +26,11 @@ defmodule Derailed.Guild.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:gen_registry, "~> 1.3.0"},
-      {:postgrex, "~> 0.16.5"},
-      {:dotenv, "~> 3.1.0"},
       {:manifold, "~> 1.6"},
-      {:zen_monitor, "~> 2.0.2"},
-      {:database, in_umbrella: true},
-      {:presences, in_umbrella: true}
+      {:zen_monitor, "~> 2.0"},
+      {:gen_registry, "~> 1.3.0"},
+      {:postgrex, "~> 0.17.1"},
+      {:utils, in_umbrella: true}
     ]
   end
 end

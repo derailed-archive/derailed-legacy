@@ -21,29 +21,6 @@ depends_on = None
 
 def upgrade() -> None:
     op.execute(
-        """CREATE OR REPLACE FUNCTION generate_discriminator(TEXT)
-    RETURNS TEXT
-    LANGUAGE plpgsql
-    AS $$
-    DECLARE
-        out VARCHAR(4);
-    BEGIN
-        SELECT * FROM (
-            SELECT
-                LPAD(CAST(trunc(random() * 9999 + 1) AS TEXT), 4, '0') AS discrim
-            FROM
-                generate_series(1, 9999)
-        ) AS result
-        WHERE result.discrim NOT IN (
-            SELECT discriminator FROM users WHERE username = $1
-        )
-        LIMIT 1
-        INTO out;
-        RETURN substr(out, 1, 4);
-    END;
-    $$;"""
-    )
-    op.execute(
         """CREATE OR REPLACE FUNCTION generate_invite_id()
     RETURNS VARCHAR(11)
     LANGUAGE plpgsql
@@ -84,13 +61,8 @@ def upgrade() -> None:
     op.create_table(
         "users",
         sa.Column("id", sa.BIGINT, primary_key=True),
-        sa.Column("username", sa.VARCHAR(32), nullable=False, index=True),
-        sa.Column(
-            "discriminator",
-            sa.TEXT,
-            nullable=False,
-            server_default=sa.func.generate_discriminator("username"),
-        ),
+        sa.Column("display_name", sa.VARCHAR(32), index=True),
+        sa.Column("username", sa.VARCHAR(32), nullable=False, index=True, unique=True),
         sa.Column("email", sa.VARCHAR(100), nullable=False, unique=True, index=True),
         sa.Column("password", sa.TEXT, nullable=False),
         sa.Column("flags", sa.INT, nullable=False, server_default="0"),
@@ -185,7 +157,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("type", sa.INT, nullable=False),
-        sa.Column("created_at", sa.DATE, nullable=False),
+        sa.Column("created_at", sa.DATE, nullable=False, default=sa.func.now()),
         sa.Column("content", sa.VARCHAR(32)),
     )
 
@@ -246,7 +218,7 @@ def upgrade() -> None:
         sa.Column(
             "author_id", sa.BIGINT, sa.ForeignKey("users.id", ondelete="SET NULL")
         ),
-        sa.Column("content", sa.VARCHAR(2048)),
+        sa.Column("content", sa.VARCHAR(8192)),
         sa.Column("timestamp", sa.DATE, nullable=False),
         sa.Column("edited_timestamp", sa.DATE),
     )
@@ -265,12 +237,26 @@ def upgrade() -> None:
             sa.ForeignKey("users.id", ondelete="CASCADE"),
             primary_key=True,
         ),
-        sa.Column("last_message_id", sa.BIGINT),
+        sa.Column("last_message_id", sa.BIGINT, sa.ForeignKey("messages.id", ondelete="SET NULL")),
+    )
+
+    op.create_table(
+        "channel_permission_overwrites",
+        sa.Column(
+            "channel_id",
+            sa.BIGINT,
+            sa.ForeignKey("channels.id", ondelete="CASCADE"),
+            primary_key=True
+        ),
+        sa.Column(
+            "user_id",
+            sa.BIGINT,
+            sa.ForeignKey("users.id", ondelete="CASCADE")
+        )
     )
 
 
 def downgrade() -> None:
-    op.execute("DROP FUNCTION IF EXISTS generate_discriminator(TEXT);")
     op.execute("DROP FUNCTION IF EXISTS generate_invite_id();")
     op.drop_table("users")
     op.drop_table("user_settings")
@@ -284,3 +270,4 @@ def downgrade() -> None:
     op.drop_table("member_assigned_roles")
     op.drop_table("messages")
     op.drop_table("read_states")
+    op.drop_table("channel_permission_overwrites")

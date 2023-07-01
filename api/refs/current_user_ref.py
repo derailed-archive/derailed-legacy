@@ -5,7 +5,7 @@
 
 from typing import Annotated
 
-from fastapi import Header
+from fastapi import Depends, Header
 
 from ..errors import CustomError, InvalidToken, UserDoesNotExist
 from ..identity import get_token_user_id, verify_token
@@ -26,8 +26,6 @@ class CurUserRef(Ref):
     async def get_user(self) -> User:
         """Verifies user identity then returns user.
         Raises an error if identity is invalid.
-
-        **This is an async property, and henceforth must be awaited to be used.**
         """
 
         user_id = self.user_id
@@ -46,7 +44,7 @@ def cur_ref(token: Annotated[str, Header(alias="authorization")]) -> CurUserRef:
     return CurUserRef(token=token)
 
 
-async def admin(ref: Annotated[CurUserRef, cur_ref]) -> User:
+async def admin(ref: Annotated[CurUserRef, Depends(cur_ref)]) -> User:
     user = await ref.get_user()
 
     if not user.flags.staff:

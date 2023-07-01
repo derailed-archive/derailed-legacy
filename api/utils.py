@@ -4,10 +4,13 @@
 
 import functools
 import weakref
+from datetime import datetime
 from enum import Enum, auto
 from typing import Literal, TypeVar, Union
 
 import async_lru
+
+from .models.channel import Channel
 
 T = TypeVar("T")
 
@@ -45,3 +48,17 @@ def cache() -> T:
         return wrapped_func
 
     return decorator
+
+
+def date_or_none(dt: str | None) -> datetime | None:
+    if dt is None:
+        return None
+    else:
+        return datetime.fromisoformat(dt)
+
+
+async def channel_or_none(channel_id: int | None) -> Channel | None:
+    if channel_id:
+        return await Channel.acquire(channel_id)
+    else:
+        return None

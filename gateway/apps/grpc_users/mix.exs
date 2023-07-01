@@ -4,7 +4,7 @@ defmodule Derailed.GRPC.Users.MixProject do
   def project do
     [
       app: :grpc_users,
-      version: "0.1.0",
+      version: "0.0.0",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -26,15 +26,9 @@ defmodule Derailed.GRPC.Users.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:gen_registry, "~> 1.3"},
-      {:jsonrs, "~> 0.3.0"},
-      {:grpc_protos, in_umbrella: true},
-      {:sessions, in_umbrella: true},
-      {:dotenv, "~> 3.1.0"},
-      {:ex_hash_ring, "~> 6.0"},
-      {:fastglobal, "~> 1.0"},
-      {:grpc, "~> 0.5"},
-      {:zen_monitor, "~> 2.0.2"}
+      # {:dep_from_hexpm, "~> 0.3.0"},
+      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      # {:sibling_app_in_umbrella, in_umbrella: true}
     ]
   end
 end

@@ -1,4 +1,4 @@
-FROM elixir:slim as release
+FROM elixir:1.14-slim as release
 
 WORKDIR /
 COPY . .
@@ -19,7 +19,7 @@ RUN mix deps.compile
 RUN mix release stack
 
 # recopy to open new build files
-FROM elixir:slim
+FROM elixir:1.14-slim
 
 COPY --from=release /_build/prod/rel/stack .
 

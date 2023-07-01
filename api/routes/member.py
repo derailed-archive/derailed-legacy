@@ -5,7 +5,7 @@
 
 from typing import Annotated
 
-from fastapi import APIRouter, Path
+from fastapi import APIRouter, Depends, Path
 from pydantic import BaseModel, Field
 
 from ..flags import RolePermissions
@@ -23,7 +23,7 @@ class ModifyMember(BaseModel):
 
 @route_members.patch("/guilds/{guild_id}/members/@me")
 async def modify_own_member(
-    cur_guild: Annotated[CurrentGuildRef, cur_guild_ref], payload: ModifyMember
+    cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)], payload: ModifyMember
 ):
     member = await cur_guild.get_member()
 
@@ -40,7 +40,7 @@ async def modify_own_member(
 
 @route_members.patch("/guilds/{guild_id}/members/{user_id}/nick")
 async def modify_member_nick(
-    cur_guild: Annotated[CurrentGuildRef, cur_guild_ref],
+    cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
     user_id: Annotated[int, Path()],
     payload: ModifyMember,
 ):
@@ -61,7 +61,7 @@ async def modify_member_nick(
 
 @route_members.patch("/guilds/{guild_id}/members/{user_id}")
 async def modify_member(
-    cur_guild: Annotated[CurrentGuildRef, cur_guild_ref],
+    cur_guild: Annotated[CurrentGuildRef, Depends(cur_guild_ref)],
     user_id: Annotated[int, Path()],
     payload: ModifyMember,
 ):

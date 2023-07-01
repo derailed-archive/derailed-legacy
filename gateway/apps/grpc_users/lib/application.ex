@@ -8,13 +8,12 @@ defmodule Derailed.GRPC.Users.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      GRPC.Server.Supervisor.child_spec(Derailed.GRPC.User.Endpoint, 50052),
-      {Task.Supervisor, name: Derailed.GRPC.User.AsyncIO}
+
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Derailed.Users.Supervisor]
+    opts = [strategy: :one_for_one, name: Derailed.GRPC.Users.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end

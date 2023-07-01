@@ -1,10 +1,10 @@
-defmodule Derailed.MixProject do
+defmodule Derailed.Gateway.MixProject do
   use Mix.Project
 
   def project do
     [
       apps_path: "apps",
-      version: "0.1.0",
+      version: "0.0.0",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       releases: [
@@ -25,7 +25,7 @@ defmodule Derailed.MixProject do
             grpc_users: :permanent,
             guilds: :permanent,
             sessions: :permanent,
-            database: :permanent,
+            utils: :permanent,
             websockets: :permanent
           ]
         ],
@@ -33,14 +33,14 @@ defmodule Derailed.MixProject do
           applications: [
             grpc_guilds: :permanent,
             grpc_users: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ],
         basic: [
           applications: [
             guilds: :permanent,
             sessions: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ],
         ws: [
@@ -63,13 +63,13 @@ defmodule Derailed.MixProject do
         guild: [
           applications: [
             guilds: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ],
         session: [
           applications: [
             sessions: :permanent,
-            database: :permanent
+            utils: :permanent
           ]
         ]
       ]

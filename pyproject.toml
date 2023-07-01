@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "api"
+name = "derailed"
 version = "0.0.0"
 description = ""
 authors = ["VincentRPS <vincentbusiness55@gmail.com>"]

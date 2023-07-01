@@ -3,8 +3,11 @@ import Dotenvy
 
 source!([".env", System.get_env()])
 
-config :database, Derailed.Database.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  pool_size: 12,
-  url: env!("PG_URI", :string!),
-  show_sensitive_data_on_connection_error: true
+config :derailed, :db,
+  name: :db,
+  database: env!("DB_DATABASE", :string!),
+  username: env!("DB_USERNAME", :string!),
+  password: env!("DB_PASSWORD", :string!),
+  hostname: env!("DB_HOSTNAME", :string!),
+  port: env!("DB_PORT", :string!),
+  pool_size: 14

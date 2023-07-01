@@ -1,0 +1,18 @@
+:root {
+	--grayish: hsl(234, 17%, 11%);
+	--porpol: hsl(233, 100%, 72%);
+}
+
+@font-face {
+	font-family: 'Mona Sans';
+	src: url('Mona-Sans.woff2') format('woff2 supports variations'),
+		url('Mona-Sans.woff2') format('woff2-variations');
+	font-weight: 400 500 700 900;
+	font-stretch: 75% 125%;
+}
+
+.main {
+	font-family: 'Mona Sans';
+	font-weight: 900;
+	width: 125;
+}

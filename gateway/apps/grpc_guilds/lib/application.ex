@@ -1,4 +1,4 @@
-defmodule Derailed.GRPC.Guild.Application do
+defmodule Derailed.GRPC.Guilds.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -8,12 +8,12 @@ defmodule Derailed.GRPC.Guild.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      GRPC.Server.Supervisor.child_spec(Derailed.GRPC.Guild.Endpoint, 50051)
+
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Derailed.GRPC.Guild.Supervisor]
+    opts = [strategy: :one_for_one, name: Derailed.GRPC.Guilds.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
